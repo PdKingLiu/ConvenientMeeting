@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bnv_meet"
+        android:icon="@mipmap/bnv_meeting"
+        android:title="@string/string_bnv_meeting" />
+    <item
+        android:id="@+id/bnv_record"
+        android:icon="@mipmap/bnv_record"
+        android:title="@string/string_bnv_record" />
+    <item
+        android:id="@+id/bnv_mine"
+        android:icon="@mipmap/bnv_mine"
+        android:title="@string/string_bnv_mine" />
+
+</menu>

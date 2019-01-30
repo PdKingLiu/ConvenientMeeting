@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#14ADEF</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="color_bnv_click">#1EACF7</color>
+    <color name="color_bnv_not_click">#6B777C</color>
+    <color name="color_bnv_up_view">#BCBCBC</color>
+
 </resources>
