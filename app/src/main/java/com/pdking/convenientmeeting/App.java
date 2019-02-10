@@ -1,7 +1,12 @@
 package com.pdking.convenientmeeting;
 
+import android.Manifest;
 import android.app.Application;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
+import com.pdking.convenientmeeting.activity.RegisterActivityThree;
 import com.pdking.convenientmeeting.common.Constant;
 
 import cn.bmob.v3.Bmob;
@@ -14,10 +19,14 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-        super.onCreate();
+
+
         /**
          * 初始化 BmobSDK
-         * */
+         *
+         *  */
         Bmob.initialize(this, Constant.APP_ID_Bmob);
+        super.onCreate();
+
     }
 }

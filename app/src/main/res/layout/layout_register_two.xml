@@ -18,6 +18,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tv_message_verify"
                 android:layout_margin="10dp"
                 android:layout_gravity="center_horizontal"
                 android:text="验证码等信息"
@@ -25,6 +26,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/tv_phone_number"
                 android:layout_margin="10dp"
                 android:layout_gravity="center_horizontal"
                 android:text="手机号码"
@@ -32,6 +34,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/ed_register_two_verify"
                 android:layout_gravity="center_horizontal"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -46,6 +49,7 @@
                 android:maxLength="6" />
 
             <Button
+                android:id="@+id/bt_register_two_new_verify"
                 android:layout_gravity="center_horizontal"
                 android:text="重新获取验证码"
                 android:textStyle="bold"

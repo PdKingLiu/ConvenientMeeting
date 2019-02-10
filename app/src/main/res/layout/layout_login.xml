@@ -28,14 +28,15 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="5dp"
-                android:includeFontPadding="true"
                 android:drawableLeft="@mipmap/ed_number_left"
+                android:drawablePadding="5dp"
                 android:drawableStart="@mipmap/ed_number_left"
                 android:hint="账号"
                 android:imeOptions="actionNext"
+                android:includeFontPadding="true"
                 android:inputType="number"
-                android:maxLength="11" />
+                android:maxLength="11"
+                android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -50,14 +51,15 @@
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="5dp"
-                android:includeFontPadding="true"
                 android:drawableLeft="@mipmap/ed_password_left"
+                android:drawablePadding="5dp"
                 android:drawableStart="@mipmap/ed_password_left"
                 android:hint="密码"
                 android:imeOptions="actionDone"
+                android:includeFontPadding="true"
                 android:inputType="textPassword"
-                android:maxLength="16" />
+                android:maxLength="16"
+                android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -77,6 +79,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/bt_login_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"

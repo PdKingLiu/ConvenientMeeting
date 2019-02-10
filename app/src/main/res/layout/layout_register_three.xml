@@ -30,6 +30,7 @@
                     android:orientation="vertical">
 
                     <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_user_icon"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:src="@mipmap/user_default_icon" />
@@ -66,6 +67,7 @@
                         android:textSize="15sp" />
 
                     <EditText
+                        android:id="@+id/ed_register_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -92,6 +94,7 @@
                         android:textSize="15sp" />
 
                     <RadioGroup
+                        android:id="@+id/rg_sex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -129,15 +132,16 @@
                         android:text="手  机"
                         android:textSize="15sp" />
 
-                    <EditText
+                    <TextView
+                        android:id="@+id/tv_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        android:background="@null"
-                        android:hint="手机号"
-                        android:maxLength="10"
+                        android:layout_margin="10dp"
+                        android:text="手机号"
+                        android:textColor="@android:color/black"
                         android:textSize="15sp" />
+
 
                 </LinearLayout>
 
@@ -155,13 +159,13 @@
                         android:textSize="15sp" />
 
                     <EditText
+                        android:id="@+id/ed_register_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
                         android:background="@null"
                         android:hint="输入邮箱"
-                        android:maxLength="10"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -188,6 +192,8 @@
                         android:textSize="15sp" />
 
                     <TextView
+                        android:focusable="true"
+                        android:id="@+id/tv_start_get_face"
                         android:layout_width="0dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center_vertical"
@@ -198,6 +204,7 @@
                         android:textSize="15sp" />
 
                     <com.haozhang.lib.SlantedTextView
+                        android:id="@+id/stv_status_get_face"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:gravity="center"
@@ -213,10 +220,11 @@
             </LinearLayout>
 
             <Button
-                android:layout_margin="6dp"
-                android:text="注册并登录"
+                android:id="@+id/btn_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:text="注册并登录" />
 
         </LinearLayout>
 
