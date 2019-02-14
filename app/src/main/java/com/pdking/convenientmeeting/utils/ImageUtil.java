@@ -1,4 +1,4 @@
-package com.pdking.convenientmeeting.activity.utils;
+package com.pdking.convenientmeeting.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -2,7 +2,6 @@ package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,13 +35,11 @@ import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.VersionInfo;
 import com.bumptech.glide.Glide;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.activity.utils.ImageUtil;
+import com.pdking.convenientmeeting.utils.ImageUtil;
 import com.pdking.convenientmeeting.common.Constant;
 import com.pdking.convenientmeeting.db.UserInfo;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
