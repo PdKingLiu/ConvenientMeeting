@@ -7,6 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <com.pdking.convenientmeeting.weight.TitleView
+        app:titleText="便捷会议"
+        app:leftTextVisibility="false"
+        app:leftIconVisibility="false"
+        android:layout_width="match_parent"
+        android:layout_height="75dp" />
 
     <FrameLayout
         android:id="@+id/fl_main"

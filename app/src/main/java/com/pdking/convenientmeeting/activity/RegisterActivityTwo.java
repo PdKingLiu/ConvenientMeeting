@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +66,7 @@ public class RegisterActivityTwo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register_two);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         ActivityContainer.addActivity(this);
         Message msg = new Message();

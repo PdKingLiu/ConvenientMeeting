@@ -38,6 +38,7 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.utils.ImageUtil;
 import com.pdking.convenientmeeting.common.Constant;
 import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -106,6 +107,7 @@ public class ShowFaceResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_show_face_result);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         faceUri = getIntent().getParcelableExtra("uri");
         File file = new File(getExternalCacheDir(), "user_face.jpg");

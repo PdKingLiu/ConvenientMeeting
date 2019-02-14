@@ -13,6 +13,7 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
         initFragment();

@@ -33,6 +33,7 @@ import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -89,9 +90,9 @@ public class RegisterActivityThree extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register_three);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         ActivityContainer.addActivity(this);
         btnLogin.setEnabled(false);

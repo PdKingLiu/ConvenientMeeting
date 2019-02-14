@@ -3,6 +3,8 @@ package com.pdking.convenientmeeting.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import android.widget.Button;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,9 +34,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login);
         ButterKnife.bind(this);
+        SystemUtil.setTitleMode(getWindow());
         ActivityContainer.addActivity(this);
         applyPermission();
     }
+
 
     @OnClick(R.id.bt_login_register)
     void onClick(View view) {

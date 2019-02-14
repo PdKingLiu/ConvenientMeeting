@@ -9,10 +9,12 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 /**
  * @author liupeidong
@@ -28,7 +30,7 @@ public class TitleView extends RelativeLayout {
     private LeftTextClickListener leftTextClickListener;
     private RightTextClickListener rightTextClickListener;
 
-    private RelativeLayout rlViewGroup;
+    private LinearLayout rlViewGroup;
 
     interface LeftClickListener {
         void OnLeftButtonClick();
@@ -123,11 +125,14 @@ public class TitleView extends RelativeLayout {
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TitleView);
 
-        int viewGroupColor = typedArray.getColor(R.styleable.TitleView_background, Color.WHITE);
-        rlViewGroup.setBackgroundColor(viewGroupColor);
+        Drawable viewGroupDrawable = typedArray.getDrawable(R.styleable.TitleView_titleBackground);
+        if (viewGroupDrawable == null) {
+            viewGroupDrawable = getResources().getDrawable(R.drawable.shape_gradient);
+        }
+        rlViewGroup.setBackground(viewGroupDrawable);
 
         float titleSize = typedArray.getDimension(R.styleable.TitleView_titleTextSize, 18);
-        int titleColor = typedArray.getColor(R.styleable.TitleView_titleColor, Color.BLACK);
+        int titleColor = typedArray.getColor(R.styleable.TitleView_titleColor, Color.WHITE);
         String titleText = typedArray.getString(R.styleable.TitleView_titleText);
         tvTitle.setText(titleText);
         tvTitle.setTextSize(titleSize);
@@ -138,10 +143,15 @@ public class TitleView extends RelativeLayout {
             leftIcon = getResources().getDrawable(R.mipmap.title_return);
         }
         String leftText = typedArray.getString(R.styleable.TitleView_leftText);
+        if (leftText == null ||leftText.equals("")) {
+            leftText = "返回";
+        }
         float leftTextSize = typedArray.getDimension(R.styleable.TitleView_leftTextSize, 15);
-        int leftTextColor = typedArray.getColor(R.styleable.TitleView_leftTextColor, Color.BLACK);
-        boolean leftIconVisibility = typedArray.getBoolean(R.styleable.TitleView_leftIconVisibility, true);
-        boolean leftTextVisibility = typedArray.getBoolean(R.styleable.TitleView_leftTextVisibility, true);
+        int leftTextColor = typedArray.getColor(R.styleable.TitleView_leftTextColor, Color.WHITE);
+        boolean leftIconVisibility = typedArray.getBoolean(R.styleable
+                .TitleView_leftIconVisibility, true);
+        boolean leftTextVisibility = typedArray.getBoolean(R.styleable
+                .TitleView_leftTextVisibility, true);
         btnReturn.setBackground(leftIcon);
         if (leftIconVisibility) {
             btnReturn.setVisibility(View.VISIBLE);
@@ -162,10 +172,15 @@ public class TitleView extends RelativeLayout {
             rightIcon = getResources().getDrawable(R.mipmap.title_menu);
         }
         String rightText = typedArray.getString(R.styleable.TitleView_rightText);
+        if (rightText == null ||leftText.equals("")) {
+            rightText = "菜单";
+        }
         float rightTextSize = typedArray.getDimension(R.styleable.TitleView_rightTextSize, 15);
-        int rightTextColor = typedArray.getColor(R.styleable.TitleView_rightTextColor, Color.BLACK);
-        boolean rightIconVisibility = typedArray.getBoolean(R.styleable.TitleView_rightIconVisibility, false);
-        boolean rightTextVisibility = typedArray.getBoolean(R.styleable.TitleView_rightTextVisibility, false);
+        int rightTextColor = typedArray.getColor(R.styleable.TitleView_rightTextColor, Color.WHITE);
+        boolean rightIconVisibility = typedArray.getBoolean(R.styleable
+                .TitleView_rightIconVisibility, false);
+        boolean rightTextVisibility = typedArray.getBoolean(R.styleable
+                .TitleView_rightTextVisibility, false);
         btnMenu.setBackground(rightIcon);
         if (rightIconVisibility) {
             btnMenu.setVisibility(View.VISIBLE);

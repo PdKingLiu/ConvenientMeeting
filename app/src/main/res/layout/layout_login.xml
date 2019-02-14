@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activity.LoginActivity">
 
+
+    <com.pdking.convenientmeeting.weight.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        app:leftIconVisibility="false"
+        app:leftTextVisibility="false"
+        app:titleText="便捷会议" />
+
     <LinearLayout
         android:id="@+id/ll_num_password"
         android:layout_width="match_parent"

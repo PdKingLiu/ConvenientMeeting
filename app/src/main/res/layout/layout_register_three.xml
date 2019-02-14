@@ -8,6 +8,12 @@
     android:orientation="vertical"
     tools:context=".activity.RegisterActivityThree">
 
+    <com.pdking.convenientmeeting.weight.TitleView
+        app:titleText="便捷会议"
+        app:leftTextVisibility="false"
+        android:layout_width="match_parent"
+        android:layout_height="75dp" />
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

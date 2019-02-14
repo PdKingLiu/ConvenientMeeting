@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +48,7 @@ public class RegisterActivityOne extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register_one);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         bt_Next.setEnabled(false);
         ActivityContainer.addActivity(this);
