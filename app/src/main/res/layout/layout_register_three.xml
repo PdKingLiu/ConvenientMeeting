@@ -9,10 +9,11 @@
     tools:context=".activity.RegisterActivityThree">
 
     <com.pdking.convenientmeeting.weight.TitleView
-        app:titleText="便捷会议"
-        app:leftTextVisibility="false"
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="75dp" />
+        android:layout_height="75dp"
+        app:leftTextVisibility="false"
+        app:titleText="便捷会议" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -198,13 +199,13 @@
                         android:textSize="15sp" />
 
                     <TextView
-                        android:focusable="true"
                         android:id="@+id/tv_start_get_face"
                         android:layout_width="0dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center_vertical"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
+                        android:focusable="true"
                         android:gravity="center"
                         android:text="点击开始采集"
                         android:textSize="15sp" />
@@ -230,7 +231,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:text="注册并登录" />
+                android:background="@drawable/selector_button_is_enabled"
+                android:text="注册并登录"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
         </LinearLayout>
 

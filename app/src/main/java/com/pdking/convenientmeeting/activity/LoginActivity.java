@@ -14,7 +14,11 @@ import android.widget.Button;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,9 +28,10 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * 注册按钮
-     * */
+     */
     @BindView(R.id.bt_login_register)
     Button btRegister;
+    private UserInfo userInfo;
 
 
     @Override
@@ -37,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         SystemUtil.setTitleMode(getWindow());
         ActivityContainer.addActivity(this);
         applyPermission();
+        isFirst();
     }
 
 
@@ -44,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_login_register:
-                startActivity(new Intent(this,RegisterActivityOne.class));
+                startActivity(new Intent(this, RegisterActivityOne.class));
                 break;
         }
     }
@@ -59,4 +65,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void isFirst() {
+        LitePal.getDatabase();
+        if (LitePal.findAll(UserInfo.class).size() != 0) {
+            userInfo = LitePal.findAll(UserInfo.class).get(0);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("user", userInfo);
+            startActivity(intent);
+            ActivityContainer.removeAllActivity();
+        }
+    }
 }

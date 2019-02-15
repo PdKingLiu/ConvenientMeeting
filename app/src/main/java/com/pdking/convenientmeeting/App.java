@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import com.pdking.convenientmeeting.activity.RegisterActivityThree;
 import com.pdking.convenientmeeting.common.Constant;
 
+import org.litepal.LitePal;
+
 import cn.bmob.v3.Bmob;
 
 /**
@@ -26,6 +28,7 @@ public class App extends Application {
          *
          *  */
         Bmob.initialize(this, Constant.APP_ID_Bmob);
+        LitePal.initialize(this);
         super.onCreate();
 
     }

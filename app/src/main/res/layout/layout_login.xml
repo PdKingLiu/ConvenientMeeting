@@ -19,8 +19,7 @@
         android:id="@+id/ll_num_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"
+        android:layout_centerInParent="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:orientation="vertical">
@@ -37,9 +36,7 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/ed_number_left"
                 android:drawablePadding="5dp"
-                android:drawableStart="@mipmap/ed_number_left"
                 android:hint="账号"
                 android:imeOptions="actionNext"
                 android:includeFontPadding="true"
@@ -60,9 +57,7 @@
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/ed_password_left"
                 android:drawablePadding="5dp"
-                android:drawableStart="@mipmap/ed_password_left"
                 android:hint="密码"
                 android:imeOptions="actionDone"
                 android:includeFontPadding="true"
@@ -73,15 +68,19 @@
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_num_password"
             android:orientation="vertical">
 
             <Button
+                android:textColor="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="登录" />
+                android:background="@drawable/selector_button_is_enabled"
+                android:text="登录"
+                android:textSize="18sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

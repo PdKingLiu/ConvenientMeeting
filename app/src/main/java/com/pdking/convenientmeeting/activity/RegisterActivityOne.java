@@ -18,13 +18,14 @@ import android.widget.Toast;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.weight.TitleView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
-public class RegisterActivityOne extends AppCompatActivity {
+public class RegisterActivityOne extends AppCompatActivity implements TitleView.LeftClickListener{
 
     @BindView(R.id.ed_register_phone_number)
     TextInputEditText ed_PhoneNumber;
@@ -34,6 +35,8 @@ public class RegisterActivityOne extends AppCompatActivity {
     TextInputEditText ed_Password_Again;
     @BindView(R.id.bt_register_next)
     Button bt_Next;
+    @BindView(R.id.title)
+    TitleView mTitleView;
 
     String s1 = "";
     String s2 = "";
@@ -51,6 +54,7 @@ public class RegisterActivityOne extends AppCompatActivity {
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         bt_Next.setEnabled(false);
+        mTitleView.setLeftClickListener(this);
         ActivityContainer.addActivity(this);
 
     }
@@ -116,4 +120,8 @@ public class RegisterActivityOne extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void OnLeftButtonClick() {
+        finish();
+    }
 }

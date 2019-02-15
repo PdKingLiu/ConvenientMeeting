@@ -34,6 +34,9 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.weight.TitleView;
+
+import org.litepal.LitePal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,8 +47,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
-public class RegisterActivityThree extends AppCompatActivity {
+public class RegisterActivityThree extends AppCompatActivity implements TitleView.LeftClickListener{
 
 
     private String TAG = "Lpp";
@@ -54,6 +58,7 @@ public class RegisterActivityThree extends AppCompatActivity {
     private final int CAMERA_REQUEST = 3;
     private final int FACE_REQUEST = 4;
     private final int FACE_ACTIVITY = 5;
+    private Bitmap mBitMap;
     private Uri endClipUri;
     private Uri cameraFileUri;
     private File cameraSavePath;
@@ -63,6 +68,9 @@ public class RegisterActivityThree extends AppCompatActivity {
     private String emailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\" +
             ".[a-zA-Z0-9]{2,6}$";
     private boolean[] flags = {false, false};
+
+    @BindView(R.id.title)
+    TitleView mTitleView;
 
     @BindView(R.id.civ_user_icon)
     CircleImageView userImageView;
@@ -94,7 +102,9 @@ public class RegisterActivityThree extends AppCompatActivity {
         setContentView(R.layout.layout_register_three);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
+        LitePal.getDatabase();
         ActivityContainer.addActivity(this);
+        mTitleView.setLeftClickListener(this);
         btnLogin.setEnabled(false);
         userInfo = new UserInfo();
         cameraSavePath = new File(getExternalCacheDir(), "user_icon.jpg");
@@ -222,6 +232,7 @@ public class RegisterActivityThree extends AppCompatActivity {
         if (cameraSavePath != null && cameraSavePath.exists()) {
             cameraSavePath.delete();
         }
+        userInfo.save();
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("user", userInfo);
         startActivity(intent);
@@ -392,4 +403,8 @@ public class RegisterActivityThree extends AppCompatActivity {
         startActivityForResult(intent, CLIP_REQUEST);
     }
 
+    @Override
+    public void OnLeftButtonClick() {
+        finish();
+    }
 }

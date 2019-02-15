@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.weight.TitleView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,11 +24,14 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-public class RegisterActivityTwo extends AppCompatActivity {
+public class RegisterActivityTwo extends AppCompatActivity implements TitleView.LeftClickListener{
 
     private String phoneNumber;
 
     private String password;
+
+    @BindView(R.id.title)
+    TitleView mTitleView;
 
     @BindView(R.id.tv_message_verify)
     TextView tv_Message;
@@ -69,6 +73,7 @@ public class RegisterActivityTwo extends AppCompatActivity {
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         ActivityContainer.addActivity(this);
+        mTitleView.setLeftClickListener(this);
         Message msg = new Message();
         final Message msg2 = new Message();
         phoneNumber = getIntent().getStringExtra("phone_number");
@@ -116,4 +121,8 @@ public class RegisterActivityTwo extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void OnLeftButtonClick() {
+        finish();
+    }
 }

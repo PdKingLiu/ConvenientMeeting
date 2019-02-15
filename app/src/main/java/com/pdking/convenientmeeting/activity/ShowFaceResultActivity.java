@@ -39,6 +39,7 @@ import com.pdking.convenientmeeting.utils.ImageUtil;
 import com.pdking.convenientmeeting.common.Constant;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,9 +57,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ShowFaceResultActivity extends AppCompatActivity {
+public class ShowFaceResultActivity extends AppCompatActivity implements TitleView
+        .LeftClickListener {
 
     private Uri faceUri;
+
+    @BindView(R.id.title)
+    TitleView mTitleView;
 
     @BindView(R.id.btn_ok)
     Button btnOk;
@@ -109,6 +114,7 @@ public class ShowFaceResultActivity extends AppCompatActivity {
         setContentView(R.layout.layout_show_face_result);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
+        mTitleView.setLeftClickListener(this);
         faceUri = getIntent().getParcelableExtra("uri");
         File file = new File(getExternalCacheDir(), "user_face.jpg");
         btnOk.setEnabled(false);
@@ -641,5 +647,38 @@ public class ShowFaceResultActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
+        unInitEngine();
+        super.onDestroy();
+    }
+
+    /**
+     * 销毁引擎
+     */
+    private void unInitEngine() {
+        if (faceEngine != null) {
+            faceEngineCode = faceEngine.unInit();
+            faceEngine = null;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        OnLeftButtonClick();
+    }
+
+    @Override
+    public void OnLeftButtonClick() {
+        Intent intent = new Intent();
+        intent.putExtra("status", -1);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

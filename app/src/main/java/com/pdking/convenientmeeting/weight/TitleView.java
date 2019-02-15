@@ -2,7 +2,6 @@ package com.pdking.convenientmeeting.weight;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -14,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.utils.SystemUtil;
 
 /**
  * @author liupeidong
@@ -32,19 +30,19 @@ public class TitleView extends RelativeLayout {
 
     private LinearLayout rlViewGroup;
 
-    interface LeftClickListener {
+    public interface LeftClickListener {
         void OnLeftButtonClick();
     }
 
-    interface RightClickListener {
+    public interface RightClickListener {
         void OnRightButtonClick();
     }
 
-    interface LeftTextClickListener {
+    public interface LeftTextClickListener {
         void OnLeftTextButtonClick();
     }
 
-    interface RightTextClickListener {
+    public interface RightTextClickListener {
         void OnRightTextButtonClick();
     }
 
@@ -127,7 +125,7 @@ public class TitleView extends RelativeLayout {
 
         Drawable viewGroupDrawable = typedArray.getDrawable(R.styleable.TitleView_titleBackground);
         if (viewGroupDrawable == null) {
-            viewGroupDrawable = getResources().getDrawable(R.drawable.shape_gradient);
+            viewGroupDrawable = getResources().getDrawable(R.drawable.shape_gradient_title);
         }
         rlViewGroup.setBackground(viewGroupDrawable);
 
@@ -143,7 +141,7 @@ public class TitleView extends RelativeLayout {
             leftIcon = getResources().getDrawable(R.mipmap.title_return);
         }
         String leftText = typedArray.getString(R.styleable.TitleView_leftText);
-        if (leftText == null ||leftText.equals("")) {
+        if (leftText == null || leftText.equals("")) {
             leftText = "返回";
         }
         float leftTextSize = typedArray.getDimension(R.styleable.TitleView_leftTextSize, 15);
@@ -172,7 +170,7 @@ public class TitleView extends RelativeLayout {
             rightIcon = getResources().getDrawable(R.mipmap.title_menu);
         }
         String rightText = typedArray.getString(R.styleable.TitleView_rightText);
-        if (rightText == null ||leftText.equals("")) {
+        if (rightText == null || leftText.equals("")) {
             rightText = "菜单";
         }
         float rightTextSize = typedArray.getDimension(R.styleable.TitleView_rightTextSize, 15);

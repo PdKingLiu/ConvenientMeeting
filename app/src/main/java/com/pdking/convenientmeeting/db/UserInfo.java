@@ -11,11 +11,13 @@ import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.GenderInfo;
 import com.arcsoft.face.LivenessInfo;
 
+import org.litepal.crud.LitePalSupport;
+
 /**
  * @author liupeidong
  * Created on 2019/2/7 12:19
  */
-public class UserInfo implements Parcelable{
+public class UserInfo extends LitePalSupport implements Parcelable{
 
     private String name;
 

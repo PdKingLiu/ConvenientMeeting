@@ -8,10 +8,11 @@
     tools:context=".activity.ShowFaceResultActivity">
 
     <com.pdking.convenientmeeting.weight.TitleView
-        app:titleText="便捷会议"
-        app:leftTextVisibility="false"
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="75dp" />
+        android:layout_height="75dp"
+        app:leftTextVisibility="false"
+        app:titleText="便捷会议" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,13 +25,13 @@
             android:orientation="vertical">
 
             <ImageView
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:background="@drawable/view_shape"
                 android:id="@+id/iv_face"
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/view_shape"
+                android:scaleType="fitXY" />
 
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
@@ -42,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/view_shape"
                     android:gravity="center"
-                    android:padding="10dp"
+                    android:minHeight="100dp"
                     android:text="请先激活引擎再点击按钮开始采集" />
             </android.support.v4.widget.NestedScrollView>
 
@@ -52,14 +53,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="激活引擎" />
+                android:background="@drawable/selector_button_is_enabled"
+                android:text="激活引擎"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/btn_ok"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="开始检测" />
+                android:background="@drawable/selector_button_is_enabled"
+                android:text="开始检测"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
         </LinearLayout>
 

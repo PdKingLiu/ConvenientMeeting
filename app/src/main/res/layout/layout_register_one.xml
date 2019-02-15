@@ -8,6 +8,7 @@
     tools:context=".activity.RegisterActivityOne">
 
     <com.pdking.convenientmeeting.weight.TitleView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_alignParentTop="true"
@@ -46,9 +47,7 @@
                         android:id="@+id/ed_register_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ed_register_phone_left"
                         android:drawablePadding="5dp"
-                        android:drawableStart="@mipmap/ed_register_phone_left"
                         android:hint="输入手机号"
                         android:imeOptions="actionNext"
                         android:includeFontPadding="true"
@@ -71,9 +70,7 @@
                         android:id="@+id/ed_register_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ed_password_left"
                         android:drawablePadding="5dp"
-                        android:drawableStart="@mipmap/ed_password_left"
                         android:hint="输入6~16位密码"
                         android:imeOptions="actionNext"
                         android:includeFontPadding="true"
@@ -96,9 +93,7 @@
                         android:id="@+id/ed_register_password_again"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ed_password_left"
                         android:drawablePadding="5dp"
-                        android:drawableStart="@mipmap/ed_password_left"
                         android:hint="再次输入密码"
                         android:imeOptions="actionDone"
                         android:includeFontPadding="true"
@@ -109,6 +104,9 @@
 
 
                 <Button
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/selector_button_is_enabled"
                     android:id="@+id/bt_register_next"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
