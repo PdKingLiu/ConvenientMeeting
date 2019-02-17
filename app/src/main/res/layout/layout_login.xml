@@ -96,6 +96,7 @@
                     android:textStyle="bold" />
 
                 <Button
+                    android:id="@+id/bt_login_find_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

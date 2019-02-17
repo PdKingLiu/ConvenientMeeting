@@ -1,7 +1,5 @@
 package com.pdking.convenientmeeting.activity;
 
-import android.Manifest;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,8 +13,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,13 +29,13 @@ import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.utils.IOUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -47,23 +43,21 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import de.hdodenhof.circleimageview.CircleImageView;
-import id.zelory.compressor.Compressor;
 
-public class RegisterActivityThree extends AppCompatActivity implements TitleView.LeftClickListener{
-
-
+public class RegisterActivityThree extends AppCompatActivity implements TitleView
+        .LeftClickListener {
     private String TAG = "Lpp";
     private final int ALBUM_REQUEST = 1;
     private final int CLIP_REQUEST = 2;
     private final int CAMERA_REQUEST = 3;
     private final int FACE_REQUEST = 4;
     private final int FACE_ACTIVITY = 5;
-    private Bitmap mBitMap;
     private Uri endClipUri;
     private Uri cameraFileUri;
     private File cameraSavePath;
     private Uri faceFileUri;
     private File faceSavePath;
+    private File endClipFile;
     private UserInfo userInfo;
     private String emailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\" +
             ".[a-zA-Z0-9]{2,6}$";
@@ -107,7 +101,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         mTitleView.setLeftClickListener(this);
         btnLogin.setEnabled(false);
         userInfo = new UserInfo();
-        cameraSavePath = new File(getExternalCacheDir(), "user_icon.jpg");
         userInfo.setPhoneNumber(getIntent().getStringExtra("phone_number"));
         userInfo.setPassword(getIntent().getStringExtra("password"));
         tvPhoneNumber.setText(userInfo.getPhoneNumber());
@@ -160,15 +153,17 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         dialog.setPositiveButton("确定".subSequence(0, 2), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                faceSavePath = new File(getExternalCacheDir(), "user_face.jpg");
-                Log.d(TAG, "onClick: " + 1);
+                File fileFaceDir = new File(getExternalFilesDir(null) + "/user/userFace");
+                if (!fileFaceDir.exists()) {
+                    fileFaceDir.mkdirs();
+                }
+                faceSavePath = new File(fileFaceDir, "user_face_" + userInfo.getPhoneNumber() + "" +
+                        ".jpg");
                 try {
                     if (faceSavePath.exists()) {
-                        Log.d(TAG, "onClick: " + 2);
-                        Log.d(TAG, "onClick:delete " + faceSavePath.delete());
+                        faceSavePath.delete();
                     }
-                    Log.d(TAG, "onClick:createNewFile " + faceSavePath.createNewFile());
-                    Log.d(TAG, "onClick: " + 3);
+                    faceSavePath.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -229,9 +224,9 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             e.printStackTrace();
         }
         userInfo.setIcon(bitmap);
-        if (cameraSavePath != null && cameraSavePath.exists()) {
-            cameraSavePath.delete();
-        }
+//        if (cameraSavePath != null && cameraSavePath.exists()) {
+//            cameraSavePath.delete();
+//        }
         userInfo.save();
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("user", userInfo);
@@ -248,28 +243,12 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         new AlertDialog.Builder(this).setItems(charSequence, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent;
                 switch (which) {
                     case 0:
-                        intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            cameraFileUri = FileProvider.getUriForFile(RegisterActivityThree
-                                            .this, "com.pdking.convenientmeeting.fileprovider",
-                                    cameraSavePath);
-                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        } else {
-                            cameraFileUri = Uri.fromFile(cameraSavePath);
-                        }
-                        Log.d(TAG, "onClick: " + cameraFileUri);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraFileUri);
-                        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-                        startActivityForResult(intent, CAMERA_REQUEST);
+                        goCamera();
                         break;
                     case 1:
-                        intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, ALBUM_REQUEST);
-
+                        goAlbum();
                         break;
                     case 2:
                     default:
@@ -278,6 +257,33 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             }
         }).setCancelable(true).show();
 
+    }
+
+    private void goAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, ALBUM_REQUEST);
+    }
+
+    private void goCamera() {
+        File file = new File(getExternalFilesDir(null), "/user/userIcon");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        cameraSavePath = new File(file, "user_icon_camera_" + userInfo.getPhoneNumber() + ".jpg");
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            cameraFileUri = FileProvider.getUriForFile(RegisterActivityThree
+                            .this, "com.pdking.convenientmeeting.fileprovider",
+                    cameraSavePath);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            cameraFileUri = Uri.fromFile(cameraSavePath);
+        }
+        Log.d(TAG, "onClick: " + cameraFileUri);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraFileUri);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(intent, CAMERA_REQUEST);
     }
 
 
@@ -304,9 +310,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case FACE_ACTIVITY:
-                Log.d(TAG, "onActivityResult: " + "FACE_ACTIVITY");
                 if (data != null) {
-                    Log.d(TAG, "onActivityResult: " + "FACE_ACTIVITY2");
                     int status = data.getIntExtra("status", -1);
                     switch (status) {
                         case -1:
@@ -349,24 +353,25 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 break;
             case CLIP_REQUEST:
                 if (resultCode == RESULT_OK) {
-                    if (data != null) {
-                        try {
-                            Glide.with(this).load(endClipUri).into(userImageView);
-                            userInfo.setIcon(BitmapFactory.decodeStream(getContentResolver()
-                                    .openInputStream(endClipUri)));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                    try {
+                        Glide.with(this).load(endClipUri).into(userImageView);
+//                            userInfo.setIcon(BitmapFactory.decodeStream(getContentResolver()
+//                                    .openInputStream(endClipUri)));
+                        File f = new File(getExternalFilesDir(null) + "/user/userIcon");
+                        if (!f.exists()) {
+                            f.mkdirs();
                         }
+                        File file = new File(f, "user_icon_clip_" + userInfo.getPhoneNumber()
+                                + ".jpg");
+                        IOUtil.copyFile(endClipFile, file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 break;
             case CAMERA_REQUEST:
                 if (resultCode == RESULT_OK) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        goClip(cameraFileUri);
-                    } else {
-                        goClip(cameraFileUri);
-                    }
+                    goClip(cameraFileUri);
                 }
                 break;
             default:
@@ -377,13 +382,15 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     private void goFaceResult(Uri faceFileUri) {
         Intent intent = new Intent(this, ShowFaceResultActivity.class);
-        intent.putExtra("uri", faceFileUri);
+        intent.putExtra("phone", userInfo.getPhoneNumber());
         startActivityForResult(intent, FACE_ACTIVITY);
     }
 
     private void goClip(Uri data) {
-        endClipUri = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory()
-                .getPath() + "/" + System.currentTimeMillis() + ".jpg");
+        String filePath = Environment.getExternalStorageDirectory().getPath() + "/" +
+                "meeting_user_icon_catch" + ".jpg";
+        endClipFile = new File(filePath);
+        endClipUri = Uri.parse("file:///" + filePath);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         // 调用系统中自带的图片剪裁
@@ -406,5 +413,14 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
     @Override
     public void OnLeftButtonClick() {
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        endClipUri = null;
+        if (endClipFile.exists()) {
+            endClipFile.delete();
+        }
+        super.onDestroy();
     }
 }

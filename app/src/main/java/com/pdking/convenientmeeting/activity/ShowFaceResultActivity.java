@@ -60,8 +60,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ShowFaceResultActivity extends AppCompatActivity implements TitleView
         .LeftClickListener {
 
-    private Uri faceUri;
-
     @BindView(R.id.title)
     TitleView mTitleView;
 
@@ -115,8 +113,8 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         mTitleView.setLeftClickListener(this);
-        faceUri = getIntent().getParcelableExtra("uri");
-        File file = new File(getExternalCacheDir(), "user_face.jpg");
+        File file = new File(getExternalFilesDir(null) + "/user/userFace", "user_face_" +
+                getIntent().getStringExtra("phone") + ".jpg");
         btnOk.setEnabled(false);
         try {
             mBitmap = new Compressor(this).compressToBitmap(file);
@@ -198,7 +196,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                 if (flag) {
                     finish();
                 } else {
-                    startRecognition(faceUri, view);
+                    startRecognition( view);
                 }
                 break;
             case R.id.btn_start:
@@ -207,7 +205,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         }
     }
 
-    private void startRecognition(Uri faceUri, final View view) {
+    private void startRecognition( final View view) {
         view.setClickable(false);
         if (progressDialog == null || progressDialog.isShowing()) {
             return;

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="75dp"
         app:leftTextVisibility="false"
-        app:titleText="便捷会议" />
+        app:titleText="信息采集" />
 
     <ScrollView
         android:layout_width="match_parent"

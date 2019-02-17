@@ -47,7 +47,25 @@ public class UserInfo extends LitePalSupport implements Parcelable{
 
     }
 
-    public UserInfo(Parcel in) {
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", sex='" + sex + '\'' +
+                ", email='" + email + '\'' +
+                ", icon=" + icon +
+                ", faceInfo=" + faceInfo +
+                ", ageInfo=" + ageInfo +
+                ", genderInfo=" + genderInfo +
+                ", face3DAngle=" + face3DAngle +
+                ", livenessInfo=" + livenessInfo +
+                ", faceFeature=" + faceFeature +
+                '}';
+    }
+
+    protected UserInfo(Parcel in) {
         name = in.readString();
         phoneNumber = in.readString();
         password = in.readString();
@@ -165,6 +183,7 @@ public class UserInfo extends LitePalSupport implements Parcelable{
     public Bitmap getIcon() {
         return icon;
     }
+
 
     @Override
     public int describeContents() {
