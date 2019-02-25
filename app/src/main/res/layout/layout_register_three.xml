@@ -11,7 +11,7 @@
     <com.pdking.convenientmeeting.weight.TitleView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="65dp"
         app:leftTextVisibility="false"
         app:titleText="注册" />
 
@@ -38,8 +38,8 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/civ_user_icon"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:src="@mipmap/user_default_icon" />
 
                     <TextView
@@ -47,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="7dp"
-                        android:text="点击更换头像"
+                        android:text="点击更换"
                         android:textStyle="normal" />
 
                 </LinearLayout>

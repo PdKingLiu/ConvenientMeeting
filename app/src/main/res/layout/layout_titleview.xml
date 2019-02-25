@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_viewGroup"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="65dp"
     android:background="@drawable/shape_gradient_title"
     android:orientation="vertical">
 
@@ -13,7 +13,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="40dp">
 
         <LinearLayout
             android:id="@+id/ll_left"
@@ -25,8 +25,8 @@
 
             <Button
                 android:id="@+id/btn_return"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:layout_gravity="center_vertical"
                 android:background="@mipmap/title_return" />
 
@@ -71,8 +71,8 @@
 
             <Button
                 android:id="@+id/btn_menu"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:layout_gravity="center_vertical"
                 android:background="@mipmap/title_menu" />
 

@@ -53,19 +53,22 @@
             android:name="cn.bmob.v3.util.BmobContentProvider"
             android:authorities="com.pdking.convenientmeeting.BmobContentProvider" />
 
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.LoginActivity">
+        </activity>
         <activity android:name=".activity.RegisterActivityOne" />
         <activity android:name=".activity.RegisterActivityTwo" />
-        <activity android:name=".activity.RegisterActivityThree" />
+        <activity android:name=".activity.RegisterActivityThree">
+        </activity>
         <activity android:name=".activity.ShowFaceResultActivity" />
-        <activity android:name=".activity.FindPasswordActivity" />
+        <activity android:name=".activity.FindPasswordActivity" >
+        </activity>
         <activity android:name=".activity.FindPasswordTwoActivity"></activity>
     </application>
 

@@ -6,10 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.ParcelableSpan;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -35,14 +34,15 @@ import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.VersionInfo;
 import com.bumptech.glide.Glide;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.utils.ImageUtil;
 import com.pdking.convenientmeeting.common.Constant;
 import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.utils.ImageUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import butterknife.BindView;
@@ -99,6 +99,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         VersionInfo versionInfo = new VersionInfo();
         faceEngine.getVersion(versionInfo);
         Log.i(TAG, "initEngine: init: " + faceEngineCode + "  version:" + versionInfo);
+
 
         if (faceEngineCode != ErrorInfo.MOK) {
             Toast.makeText(this, "引擎初始化失败，错误码为 " + faceEngineCode, Toast.LENGTH_SHORT).show();
@@ -586,6 +587,14 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                     userInfo.setGenderInfo(genderInfoList.get(0));
                     intent.putExtra("user", userInfo);
                     setResult(RESULT_OK, intent);
+                    String s = android.util.Base64.encodeToString(faceFeatures[0].getFeatureData(), android.util
+                            .Base64.DEFAULT);
+                    Log.d(TAG, "Base64: "+s);
+                    String s2 = new String(faceFeatures[0].getFeatureData());
+                    Log.d(TAG, "byteToString: " + s2);
+                    byte[] bytes = android.util.Base64.decode(s2, android.util.Base64.DEFAULT);
+                    String s3 = new String(bytes);
+                    Log.d(TAG, "byteBYBase: " + s3);
                     btnOkSetText("确定");
                 }
             }

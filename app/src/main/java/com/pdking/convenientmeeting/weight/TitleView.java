@@ -201,4 +201,43 @@ public class TitleView extends RelativeLayout {
         this(context, attrs);
     }
 
+    public Button getBtnReturnText() {
+        return btnReturnText;
+    }
+
+    public Button getBtnMenuText() {
+        return btnMenuText;
+    }
+
+    public Button getBtnReturn() {
+        return btnReturn;
+    }
+
+    public Button getBtnMenu() {
+        return btnMenu;
+    }
+
+    public TextView getTvTitle() {
+        return tvTitle;
+    }
+
+    public LeftClickListener getLeftClickListener() {
+        return leftClickListener;
+    }
+
+    public RightClickListener getRightClickListener() {
+        return rightClickListener;
+    }
+
+    public LeftTextClickListener getLeftTextClickListener() {
+        return leftTextClickListener;
+    }
+
+    public RightTextClickListener getRightTextClickListener() {
+        return rightTextClickListener;
+    }
+
+    public LinearLayout getRlViewGroup() {
+        return rlViewGroup;
+    }
 }

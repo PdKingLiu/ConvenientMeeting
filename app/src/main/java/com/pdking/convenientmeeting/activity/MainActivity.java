@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
@@ -147,5 +148,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public Window getWindow() {
+        return super.getWindow();
     }
 }
