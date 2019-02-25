@@ -20,15 +20,14 @@ import com.pdking.convenientmeeting.R;
  */
 public class TitleView extends RelativeLayout {
 
-    private Button btnReturnText, btnMenuText, btnReturn, btnMenu;
+    private LinearLayout layoutLeft,layoutRight;
     private TextView tvTitle;
 
     private LeftClickListener leftClickListener;
     private RightClickListener rightClickListener;
-    private LeftTextClickListener leftTextClickListener;
-    private RightTextClickListener rightTextClickListener;
 
     private LinearLayout rlViewGroup;
+    private Button btnReturn,btnReturnText,btnMenuText,btnMenu;
 
     public interface LeftClickListener {
         void OnLeftButtonClick();
@@ -36,14 +35,6 @@ public class TitleView extends RelativeLayout {
 
     public interface RightClickListener {
         void OnRightButtonClick();
-    }
-
-    public interface LeftTextClickListener {
-        void OnLeftTextButtonClick();
-    }
-
-    public interface RightTextClickListener {
-        void OnRightTextButtonClick();
     }
 
     public void setLeftClickListener(LeftClickListener leftClickListener) {
@@ -54,14 +45,6 @@ public class TitleView extends RelativeLayout {
         this.rightClickListener = rightClickListener;
     }
 
-
-    public void setLeftTextClickListener(LeftTextClickListener leftTextClickListener) {
-        this.leftTextClickListener = leftTextClickListener;
-    }
-
-    public void setRightTextClickListener(RightTextClickListener rightTextClickListener) {
-        this.rightTextClickListener = rightTextClickListener;
-    }
 
     public TitleView(Context context) {
         super(context, null);
@@ -76,7 +59,7 @@ public class TitleView extends RelativeLayout {
     }
 
     private void onButtonClick() {
-        btnReturn.setOnClickListener(new OnClickListener() {
+        layoutLeft.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (leftClickListener != null) {
@@ -84,27 +67,11 @@ public class TitleView extends RelativeLayout {
                 }
             }
         });
-        btnMenu.setOnClickListener(new OnClickListener() {
+        layoutRight.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (rightClickListener != null) {
                     rightClickListener.OnRightButtonClick();
-                }
-            }
-        });
-        btnMenuText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (btnMenuText != null) {
-                    leftTextClickListener.OnLeftTextButtonClick();
-                }
-            }
-        });
-        btnReturnText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (rightTextClickListener != null) {
-                    rightTextClickListener.OnRightTextButtonClick();
                 }
             }
         });
@@ -113,6 +80,8 @@ public class TitleView extends RelativeLayout {
 
     private void initView() {
         rlViewGroup = findViewById(R.id.rl_viewGroup);
+        layoutLeft = findViewById(R.id.ll_left);
+        layoutRight = findViewById(R.id.ll_right);
         btnMenuText = findViewById(R.id.tv_menu);
         btnReturnText = findViewById(R.id.tv_return);
         tvTitle = findViewById(R.id.tv_title);
@@ -201,43 +170,11 @@ public class TitleView extends RelativeLayout {
         this(context, attrs);
     }
 
-    public Button getBtnReturnText() {
-        return btnReturnText;
+    public LinearLayout getLayoutLeft() {
+        return layoutLeft;
     }
 
-    public Button getBtnMenuText() {
-        return btnMenuText;
-    }
-
-    public Button getBtnReturn() {
-        return btnReturn;
-    }
-
-    public Button getBtnMenu() {
-        return btnMenu;
-    }
-
-    public TextView getTvTitle() {
-        return tvTitle;
-    }
-
-    public LeftClickListener getLeftClickListener() {
-        return leftClickListener;
-    }
-
-    public RightClickListener getRightClickListener() {
-        return rightClickListener;
-    }
-
-    public LeftTextClickListener getLeftTextClickListener() {
-        return leftTextClickListener;
-    }
-
-    public RightTextClickListener getRightTextClickListener() {
-        return rightTextClickListener;
-    }
-
-    public LinearLayout getRlViewGroup() {
-        return rlViewGroup;
+    public LinearLayout getLayoutRight() {
+        return layoutRight;
     }
 }

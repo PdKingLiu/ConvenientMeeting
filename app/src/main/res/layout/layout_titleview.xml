@@ -2,32 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_viewGroup"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="70dp"
     android:background="@drawable/shape_gradient_title"
     android:orientation="vertical">
 
     <View
-        android:background="@android:color/transparent"
         android:layout_width="match_parent"
-        android:layout_height="25dp" />
+        android:layout_height="25dp"
+        android:background="@android:color/transparent" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="45dp">
 
         <LinearLayout
             android:id="@+id/ll_left"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
 
             <Button
                 android:id="@+id/btn_return"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginRight="5dp"
                 android:background="@mipmap/title_return" />
 
             <Button
@@ -48,7 +49,7 @@
             android:layout_centerInParent="true"
             android:text="标题"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="19sp" />
 
 
         <LinearLayout
@@ -56,8 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingRight="10dp">
 
 
             <Button
@@ -70,11 +71,13 @@
                 android:textSize="15sp" />
 
             <Button
+                android:layout_marginLeft="5dp"
                 android:id="@+id/btn_menu"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_gravity="center_vertical"
-                android:background="@mipmap/title_menu" />
+                android:background="@mipmap/title_menu"
+                android:gravity="center" />
 
 
         </LinearLayout>

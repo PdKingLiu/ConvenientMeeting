@@ -7,27 +7,79 @@
     android:orientation="vertical">
 
 
-    <com.pdking.convenientmeeting.weight.TitleView
-        android:id="@+id/title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        app:leftIconVisibility="false"
-        app:leftTextVisibility="false"
-        app:rightIcon="@mipmap/pop_menu_more"
-        app:rightIconVisibility="true"
-        app:titleText="便捷会议" />
+        android:layout_height="70dp"
+        android:background="@drawable/shape_gradient_title"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@android:color/transparent">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tl_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:tabIndicatorHeight="4dp"
+                app:tabIndicatorColor="#87CEEB"
+                android:layout_centerInParent="true"
+                app:tabGravity="center"
+                app:tabTextColor="@android:color/white">
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="会议室" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="历史" />
+
+            </android.support.design.widget.TabLayout>
 
 
-    <TextView
+            <LinearLayout
+                android:background="@android:color/transparent"
+                android:id="@+id/ll_pop"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_alignParentRight="true"
+                android:padding="10dp">
+
+                <Button
+                    android:clickable="false"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@mipmap/pop_menu_more" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+    <android.support.v4.view.ViewPager
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="1000dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="@string/string_bnv_meeting"
-        android:textStyle="bold"
-        tools:ignore="NewApi" />
+        android:layout_height="0dp">
+
+    </android.support.v4.view.ViewPager>
 
 
 </LinearLayout>
