@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
