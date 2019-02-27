@@ -52,6 +52,7 @@ dependencies {
     /*CircleImageView*/
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-20'
 
     implementation 'com.haozhang.libary:android-slanted-textview:1.2'
 

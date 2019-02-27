@@ -81,9 +81,9 @@ public class MeetingFragment extends Fragment {
 
     private void initPagerAndTabLayout() {
         fragmentList = new ArrayList<>();
-        fragmentList.add(MeetingHistoryFragment.newInstance());
         fragmentList.add(MeetingMineFragment.newInstance());
         fragmentList.add(MeetingRoomFragment.newInstance());
+        fragmentList.add(MeetingHistoryFragment.newInstance());
         pagerAdapter = new FragmentPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getItem(int i) {
@@ -103,7 +103,7 @@ public class MeetingFragment extends Fragment {
             if (i == 1) {
                 tab.select();
                 tab.getCustomView().findViewById(R.id.tv_tab).setSelected(true);
-                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(20);
+                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(21);
                 ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTypeface(Typeface
                         .defaultFromStyle(Typeface.BOLD));
             }
@@ -137,13 +137,13 @@ public class MeetingFragment extends Fragment {
         if (b) {
             if (tab != null) {
                 tab.select();
-                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(20);
+                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(21);
                 ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTypeface(Typeface
                         .defaultFromStyle(Typeface.BOLD));
             }
         } else {
             if (tab != null) {
-                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(19);
+                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(20);
                 ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTypeface(Typeface
                         .defaultFromStyle(Typeface.NORMAL));
             }
@@ -154,8 +154,8 @@ public class MeetingFragment extends Fragment {
         final WindowManager.LayoutParams wl = getActivity().getWindow().getAttributes();
         mPopMenu = new PopMenu(getContext());
         ArrayList<PopMenuItem> items = new ArrayList<>();
-        items.add(new PopMenuItem(0, R.drawable.ic_pop_menu_sign, "会议签到"));
-        items.add(new PopMenuItem(1, R.drawable.ic_pop_menu_book, "预定会议室"));
+        items.add(new PopMenuItem(0, R.mipmap.pop_menu_scan, "扫一扫"));
+        items.add(new PopMenuItem(1, R.mipmap.pop_menu_book, "预定会议室"));
 
         mPopMenu.addItems(items);
         mPopMenu.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {

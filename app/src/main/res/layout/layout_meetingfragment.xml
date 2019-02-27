@@ -27,9 +27,11 @@
                 android:id="@+id/tl_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 app:tabIndicatorHeight="0dp"
                 app:tabIndicatorColor="#08b9fd"
                 android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
                 app:tabGravity="center"
                 app:tabTextColor="@android:color/white">
 
@@ -56,13 +58,14 @@
                 android:id="@+id/ll_pop"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
+                android:layout_gravity="center_vertical"
                 android:layout_alignParentRight="true"
                 android:padding="10dp">
 
                 <Button
                     android:clickable="false"
-                    android:layout_width="23dp"
-                    android:layout_height="23dp"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
                     android:layout_gravity="center_vertical"
                     android:background="@mipmap/pop_menu_more" />
 
