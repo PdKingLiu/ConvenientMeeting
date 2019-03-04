@@ -23,6 +23,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
@@ -63,6 +65,7 @@ dependencies {
 
     implementation 'org.litepal.android:java:3.0.0'
 
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

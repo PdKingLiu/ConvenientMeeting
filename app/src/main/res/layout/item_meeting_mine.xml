@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:id="@+id/ll_root"
+    android:orientation="vertical"
+    android:paddingBottom="3dp"
+    android:paddingLeft="8dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:paddingBottom="3dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_meeting_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="会议名称"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_user_kind"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/shape_history_meeting_user_kind_master"
+                    android:gravity="center"
+                    android:text="参与者"
+                    android:textColor="@android:color/white"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="2dp">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/history_meeting_people_sum" />
+
+                <TextView
+                    android:id="@+id/tv_people_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:minWidth="60dp"
+                    android:text="20人"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="30dp"
+                    android:src="@mipmap/history_meeting_master" />
+
+                <TextView
+                    android:id="@+id/tv_meeting_master"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:minWidth="60dp"
+                    android:text="刘沛栋"
+                    android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="2dp">
+
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/history_meeting_place" />
+
+                <TextView
+                    android:id="@+id/tv_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:minWidth="60dp"
+                    android:text="FZ155"
+                    android:textSize="14sp" />
+
+
+                <ImageView
+                    android:layout_width="17dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="30dp"
+                    android:src="@mipmap/history_meeting_time_sum" />
+
+                <TextView
+                    android:id="@+id/tv_meeting_time_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="90分钟"
+                    android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="2dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/history_meeting_time" />
+
+                <TextView
+                    android:id="@+id/tv_meeting_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:minWidth="60dp"
+                    android:text="19:30:00 - 20:00:00"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <com.haozhang.lib.SlantedTextView
+            android:id="@+id/stv_status"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:gravity="center"
+            app:slantedBackgroundColor="@android:color/holo_green_dark"
+            app:slantedLength="40dp"
+            app:slantedMode="right"
+            app:slantedText="未使用"
+            app:slantedTextColor="@android:color/white"
+            app:slantedTextSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingTop="8dp">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/history_meeting_content" />
+
+            <TextView
+                android:id="@+id/tv_meeting_introduce"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="25dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:minWidth="60dp"
+                android:singleLine="true"
+                android:text="此次会议是于资是关于资是关于是关于资是关于资是关于资题"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/btn_more"
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
+
+            <Button
+                android:clickable="false"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/item_more" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#f8f8f8" />
+
+</LinearLayout>

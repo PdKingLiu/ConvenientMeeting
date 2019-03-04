@@ -1,11 +1,8 @@
 package com.pdking.convenientmeeting.adapter;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +17,8 @@ import java.util.List;
  * @author liupeidong
  * Created on 2019/2/27 18:31
  */
-public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAdapter.ViewHolder> implements View.OnClickListener {
+public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAdapter.ViewHolder>
+        implements View.OnClickListener {
 
     private List<MeetingBean> meetingBeanList;
 
@@ -41,7 +39,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
-                .item_meeting_history_meeting, viewGroup, false);
+                .item_meeting_history, viewGroup, false);
         view.setOnClickListener(this);
         return new ViewHolder(view);
     }
@@ -49,7 +47,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         MeetingBean meetingBean = meetingBeanList.get(i);
-        viewHolder.setDate(meetingBean,i);
+        viewHolder.setDate(meetingBean, i);
     }
 
     @Override
@@ -59,7 +57,9 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
 
     @Override
     public void onClick(View v) {
-        mListener.onItemClick(v,(int) v.getTag());
+        if (mListener != null) {
+            mListener.onItemClick(v, (int) v.getTag());
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

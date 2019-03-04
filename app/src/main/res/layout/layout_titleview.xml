@@ -29,14 +29,16 @@
                 android:layout_height="23dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="5dp"
-                android:background="@mipmap/title_return" />
+                android:background="@mipmap/title_return"
+                android:clickable="false" />
 
             <Button
                 android:id="@+id/tv_return"
                 android:layout_width="40dp"
-                android:layout_height="25dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
+                android:clickable="false"
                 android:text="返回"
                 android:textSize="15sp" />
 
@@ -64,19 +66,21 @@
             <Button
                 android:id="@+id/tv_menu"
                 android:layout_width="40dp"
-                android:layout_height="25dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
+                android:clickable="false"
                 android:text="菜单"
                 android:textSize="15sp" />
 
             <Button
-                android:layout_marginLeft="5dp"
                 android:id="@+id/btn_menu"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
                 android:background="@mipmap/title_menu"
+                android:clickable="false"
                 android:gravity="center" />
 
 

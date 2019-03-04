@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.fragment;
 
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +20,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.BookRoomActivity;
+import com.pdking.convenientmeeting.activity.ScanQRActivity;
+import com.pdking.convenientmeeting.activity.ScanResultActivity;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
 
@@ -170,10 +176,17 @@ public class MeetingFragment extends Fragment {
             public void selected(View view, PopMenuItem item, int position) {
                 switch (item.id) {
                     case 0:
-                        Toast.makeText(getContext(), "0", Toast.LENGTH_SHORT).show();
+                        IntentIntegrator.forSupportFragment(MeetingFragment.this)
+                                .setCaptureActivity(ScanQRActivity.class)
+                                .setPrompt("")
+                                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)// 扫码的类型,
+                                // 可选：一维码，二维码，一/二维码
+                                .setCameraId(0)// 选择摄像头,可使用前置或者后置
+                                .setBeepEnabled(true)// 是否开启声音,扫完码之后会"哔"的一声
+                                .initiateScan();// 初始化扫码
                         break;
                     case 1:
-                        Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getContext(), BookRoomActivity.class));
                         break;
                 }
             }
@@ -192,4 +205,18 @@ public class MeetingFragment extends Fragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                Toast.makeText(getContext(), "" + result.getContents(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), ScanResultActivity.class);
+                intent.putExtra("data", result.getContents());
+                startActivity(intent);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }

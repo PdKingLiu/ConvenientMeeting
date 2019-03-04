@@ -58,6 +58,12 @@ public class TitleView extends RelativeLayout {
         onButtonClick();
     }
 
+    public void setRightTextSize(float size) {
+        if (btnMenuText != null) {
+            btnMenuText.setTextSize(size);
+        }
+    }
+
     private void onButtonClick() {
         layoutLeft.setOnClickListener(new OnClickListener() {
             @Override

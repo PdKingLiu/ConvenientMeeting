@@ -1,16 +1,24 @@
 package com.pdking.convenientmeeting.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
@@ -45,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
         initFragment();
+        applyPermission();
         bottomNavigationViewListener();
     }
 
@@ -154,5 +163,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public Window getWindow() {
         return super.getWindow();
+    }
+
+    private void applyPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager
+                .PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new
+                    String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission
+                    .CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission
+                    .WRITE_EXTERNAL_STORAGE}, 1);
+        }
     }
 }

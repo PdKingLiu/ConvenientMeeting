@@ -3,6 +3,7 @@ package com.pdking.convenientmeeting.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
@@ -30,4 +31,5 @@ public class SystemUtil {
             window.setStatusBarColor(Color.TRANSPARENT);
         }
     }
+
 }
