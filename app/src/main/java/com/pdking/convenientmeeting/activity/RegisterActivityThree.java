@@ -99,7 +99,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         LitePal.getDatabase();
         ActivityContainer.addActivity(this);
         mTitleView.setLeftClickListener(this);
-        btnLogin.setEnabled(false);
+//        btnLogin.setEnabled(false);
         userInfo = new UserInfo();
         userInfo.setPhoneNumber(getIntent().getStringExtra("phone_number"));
         userInfo.setPassword(getIntent().getStringExtra("password"));
@@ -229,7 +229,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 //        }
         userInfo.save();
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("user", userInfo);
+//        intent.putExtra("user", userInfo);
         startActivity(intent);
         ActivityContainer.removeAllActivity();
 
@@ -417,10 +417,10 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     @Override
     protected void onDestroy() {
-        endClipUri = null;
-        if (endClipFile.exists()) {
-            endClipFile.delete();
-        }
+//        endClipUri = null;
+//        if (endClipFile.exists()) {
+//            endClipFile.delete();
+//        }
         super.onDestroy();
     }
 }

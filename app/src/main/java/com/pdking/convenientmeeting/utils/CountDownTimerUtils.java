@@ -2,7 +2,6 @@ package com.pdking.convenientmeeting.utils;
 
 import android.os.CountDownTimer;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * @author liupeidong

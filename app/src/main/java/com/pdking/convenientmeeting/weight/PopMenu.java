@@ -125,6 +125,14 @@ public class PopMenu {
         mListView.setBackground(gd);
     }
 
+    public void setCornerVisible(boolean flag) {
+        if (flag) {
+            setCorner(R.mipmap.ic_pop_menu_up_icon);
+        } else {
+            cornerIcon.setVisibility(View.GONE);
+        }
+    }
+
     /**
      * 设置下角图标
      *
@@ -185,6 +193,10 @@ public class PopMenu {
      */
     public void showAsDropDown(View parent) {
         mPopupWindow.showAsDropDown(parent);
+    }
+
+    public void showAsDropDown(View anchor, int xoff, int yoff, int gravity) {
+        mPopupWindow.showAsDropDown(anchor, xoff, yoff, gravity);
     }
 
     /**

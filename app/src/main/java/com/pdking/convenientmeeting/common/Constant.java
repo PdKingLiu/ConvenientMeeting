@@ -12,6 +12,5 @@ public class Constant {
 
 
     /* Bmob AppID */
-
     public static final String APP_ID_Bmob = "4527189a38e9393bebbaaf3940982580";
 }

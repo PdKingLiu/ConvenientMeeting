@@ -47,7 +47,7 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
         setContentView(R.layout.layout_find_password);
         ButterKnife.bind(this);
         SystemUtil.setTitleMode(getWindow());
-        bt_Next.setEnabled(false);
+//        bt_Next.setEnabled(false);
         mTitleView.setLeftClickListener(this);
         ActivityContainer.addActivity(this);
     }

@@ -77,13 +77,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void isFirst() {
         LitePal.getDatabase();
-        if (LitePal.findAll(UserInfo.class).size() != 0) {
-            userInfo = LitePal.findAll(UserInfo.class).get(0);
-            Log.d("Lpp", "isFirst: "+userInfo);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("user", userInfo);
-            startActivity(intent);
-            ActivityContainer.removeAllActivity();
-        }
+//        if (LitePal.findAll(UserInfo.class).size() != 0) {
+//            userInfo = LitePal.findAll(UserInfo.class).get(0);
+//            Log.d("Lpp", "isFirst: "+userInfo);
+//            Intent intent = new Intent(this, MainActivity.class);
+//            intent.putExtra("user", userInfo);
+//            startActivity(intent);
+//            ActivityContainer.removeAllActivity();
+//        }
     }
 }

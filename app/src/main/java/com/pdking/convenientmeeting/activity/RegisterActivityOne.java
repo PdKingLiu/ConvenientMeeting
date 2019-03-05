@@ -53,7 +53,7 @@ public class RegisterActivityOne extends AppCompatActivity implements TitleView.
         setContentView(R.layout.layout_register_one);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
-        bt_Next.setEnabled(false);
+//        bt_Next.setEnabled(false);
         mTitleView.setLeftClickListener(this);
         ActivityContainer.addActivity(this);
 
