@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
 import com.pdking.convenientmeeting.db.MeetingRoomBean;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -72,7 +74,7 @@ public class MeetingRoomFragment extends Fragment {
         roomAdapter.setItemClickListener(new MeetingRoomAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getContext(), "" + position, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), MeetingRoomDetailsActivity.class));
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
