@@ -53,13 +53,13 @@
             android:name="cn.bmob.v3.util.BmobContentProvider"
             android:authorities="com.pdking.convenientmeeting.BmobContentProvider" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter></activity>
-        <activity android:name=".activity.LoginActivity">
+            </intent-filter>
         </activity>
         <activity android:name=".activity.RegisterActivityOne" />
         <activity android:name=".activity.RegisterActivityTwo" />

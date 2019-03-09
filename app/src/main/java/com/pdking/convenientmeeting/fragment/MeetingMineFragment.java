@@ -1,6 +1,5 @@
 package com.pdking.convenientmeeting.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +14,8 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.activity.BookRoomActivity;
-import com.pdking.convenientmeeting.activity.ScanQRActivity;
 import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
-import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
-import com.pdking.convenientmeeting.db.MeetingRoomBean;
 import com.pdking.convenientmeeting.db.MineMeetingBean;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
@@ -70,8 +63,8 @@ public class MeetingMineFragment extends Fragment {
         final WindowManager.LayoutParams wl = getActivity().getWindow().getAttributes();
         mPopMenu = new PopMenu(getContext());
         ArrayList<PopMenuItem> items = new ArrayList<>();
-        items.add(new PopMenuItem(0, R.mipmap.pop_menu_scan, "请假"));
-        items.add(new PopMenuItem(1, R.mipmap.pop_menu_book, "查看详情"));
+        items.add(new PopMenuItem(0, R.mipmap.item_leave, "请假"));
+        items.add(new PopMenuItem(1, R.mipmap.item_detail, "查看详情"));
         mPopMenu.setCornerVisible(false);
         mPopMenu.addItems(items);
         mPopMenu.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -119,8 +112,9 @@ public class MeetingMineFragment extends Fragment {
 //                } else {
 //                    mPopMenu.showAsDropDown(view);
 //                }
-                mPopMenu.getmPopupWindow().showAtLocation(view, Gravity.TOP | Gravity.LEFT, a[0],
-                        a[1]);
+//                mPopMenu.getmPopupWindow().showAtLocation(view, Gravity.TOP | Gravity.LEFT, a[0],
+//                        a[1]);
+                mPopMenu.getmPopupWindow().showAsDropDown(view);
                 WindowManager.LayoutParams wl = getActivity().getWindow().getAttributes();
                 getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 wl.alpha = 0.6f;

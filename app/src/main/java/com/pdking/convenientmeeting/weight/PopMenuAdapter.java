@@ -62,7 +62,11 @@ public class PopMenuAdapter extends BaseAdapter {
         }
         ViewHolder holder = (ViewHolder) convertView.getTag();
         PopMenuItem item = items.get(position);
-        holder.icon.setImageResource(item.getResId());
+        if (item.getResId() == 0) {
+            holder.icon.setVisibility(View.GONE);
+        } else {
+            holder.icon.setImageResource(item.getResId());
+        }
         holder.text.setText(item.getText());
         if (position == items.size() - 1) {
             holder.view.setVisibility(View.GONE);

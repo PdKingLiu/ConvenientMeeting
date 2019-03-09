@@ -6,5 +6,9 @@
     <color name="color_bnv_click">#1EACF7</color>
     <color name="color_bnv_not_click">#6B777C</color>
     <color name="color_bnv_up_view">#D8DEE0</color>
+    <color name="pie_blue">#8cebff</color>
+    <color name="pie_green">#c5ff8c</color>
+    <color name="pie_orange">#ffd28c</color>
+    <color name="pie_yellow">#fff78c</color>
 
 </resources>

@@ -26,6 +26,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:padding="2dp"
             android:id="@+id/tv_user_kind"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
