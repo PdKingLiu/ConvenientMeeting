@@ -10,5 +10,7 @@
     <color name="pie_green">#c5ff8c</color>
     <color name="pie_orange">#ffd28c</color>
     <color name="pie_yellow">#fff78c</color>
+    <color name="color_gray_background">#f8f8f8</color>
+    <color name="color_view_line">#d2d2d2</color>
 
 </resources>
