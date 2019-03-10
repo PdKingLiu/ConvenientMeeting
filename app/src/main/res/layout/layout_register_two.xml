@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="10dp"
-                android:text="验证码等信息" />
+                android:text="正在发送" />
 
             <TextView
                 android:id="@+id/tv_phone_number"

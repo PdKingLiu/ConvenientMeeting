@@ -1,33 +1,41 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.SMSJudgeStatusBean;
+import com.pdking.convenientmeeting.db.SMSSendStatusBean;
 import com.pdking.convenientmeeting.utils.CountDownTimerUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import cn.bmob.v3.BmobSMS;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
-import cn.bmob.v3.listener.UpdateListener;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-public class RegisterActivityTwo extends AppCompatActivity implements TitleView.LeftClickListener{
+public class RegisterActivityTwo extends AppCompatActivity implements TitleView.LeftClickListener {
 
     private String phoneNumber;
 
@@ -59,15 +67,35 @@ public class RegisterActivityTwo extends AppCompatActivity implements TitleView.
                 final Message msg2 = new Message();
                 mCountDownTimerUtils = new CountDownTimerUtils(bt_Verify, 60000, 1000);
                 mCountDownTimerUtils.start();
-                BmobSMS.requestSMSCode(phoneNumber, "", new QueryListener<Integer>() {
+                OkHttpClient client = new OkHttpClient();
+                FormBody.Builder formBody = new FormBody.Builder();
+                formBody.add(Api.SMSSendBody[0], phoneNumber);
+                Request request = new Request.Builder()
+                        .url(Api.SMSSendApi)
+                        .header(Api.SMSSendHeader[0], Api.SMSSendHeader[1])
+                        .post(formBody.build())
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
                     @Override
-                    public void done(Integer smsId, BmobException e) {
-                        if (e == null) {
+                    public void onFailure(Call call, IOException e) {
+                        msg2.what = 3;
+                        msg2.obj = "发送验证码失败";
+                        mHandler.sendMessage(msg2);
+                        Log.d("Lpp", "onFailure: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        SMSSendStatusBean smsSendStatusBean = new Gson().fromJson(response.body()
+                                        .string(),
+                                SMSSendStatusBean
+                                        .class);
+                        if (smsSendStatusBean.status == 0) {
                             msg2.what = 2;
                             mHandler.sendMessage(msg2);
                         } else {
                             msg2.what = 3;
-                            msg2.obj = e.getMessage();
+                            msg2.obj = "发送验证码失败";
                             mHandler.sendMessage(msg2);
                         }
                     }
@@ -114,15 +142,34 @@ public class RegisterActivityTwo extends AppCompatActivity implements TitleView.
         mHandler.sendMessage(msg);
         mCountDownTimerUtils = new CountDownTimerUtils(bt_Verify, 60000, 1000);
         mCountDownTimerUtils.start();
-        BmobSMS.requestSMSCode(phoneNumber, "", new QueryListener<Integer>() {
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add(Api.SMSSendBody[0], phoneNumber);
+        Request request = new Request.Builder()
+                .url(Api.SMSSendApi)
+                .post(formBody.build())
+                .header(Api.SMSSendHeader[0], Api.SMSSendHeader[1])
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void done(Integer smsId, BmobException e) {
-                if (e == null) {
+            public void onFailure(Call call, IOException e) {
+                msg2.what = 3;
+                msg2.obj = "发送验证码失败";
+                mHandler.sendMessage(msg2);
+                Log.d("Lpp", "onFailure: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                SMSSendStatusBean smsSendStatusBean = new Gson().fromJson(response.body().string
+                        (), SMSSendStatusBean.class);
+                Log.d("Lpp", "onResponse: " + smsSendStatusBean.data);
+                if (smsSendStatusBean.status == 0) {
                     msg2.what = 2;
                     mHandler.sendMessage(msg2);
                 } else {
                     msg2.what = 3;
-                    msg2.obj = e.getMessage();
+                    msg2.obj = "发送验证码失败";
                     mHandler.sendMessage(msg2);
                 }
             }
@@ -134,24 +181,35 @@ public class RegisterActivityTwo extends AppCompatActivity implements TitleView.
         if (s.length() == 6) {
             if (!verifyFlag) {
                 Toast.makeText(this, "验证失败", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(RegisterActivityTwo.this,
-                        RegisterActivityThree.class);
-                intent.putExtra("phone_number", phoneNumber);
-                intent.putExtra("password", password);
-                startActivity(intent);
             } else {
-                BmobSMS.verifySmsCode(phoneNumber, s.toString(), new UpdateListener() {
+                OkHttpClient client = new OkHttpClient();
+                FormBody.Builder formBody = new FormBody.Builder();
+                formBody.add(Api.SMSVerificationBody[0], phoneNumber);
+                formBody.add(Api.SMSVerificationBody[1], s.toString());
+                final Request request = new Request.Builder()
+                        .header(Api.SMSVerificationHeader[0], Api.SMSVerificationHeader[1])
+                        .url(Api.SMSVerificationApi)
+                        .post(formBody.build())
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
                     @Override
-                    public void done(BmobException e) {
-                        if (e == null) {
+                    public void onFailure(Call call, IOException e) {
+                        setToast("验证失败");
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        SMSJudgeStatusBean statusBean = new Gson().fromJson(response.body()
+                                .string(), SMSJudgeStatusBean.class);
+                        if (statusBean.status == 0) {
+                            setToast("验证成功");
                             Intent intent = new Intent(RegisterActivityTwo.this,
                                     RegisterActivityThree.class);
                             intent.putExtra("phone_number", phoneNumber);
                             intent.putExtra("password", password);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(RegisterActivityTwo.this, "验证码错误", Toast.LENGTH_SHORT)
-                                    .show();
+                            setToast("验证码错误");
                         }
                     }
                 });
@@ -162,5 +220,14 @@ public class RegisterActivityTwo extends AppCompatActivity implements TitleView.
     @Override
     public void OnLeftButtonClick() {
         finish();
+    }
+
+    public void setToast(final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(RegisterActivityTwo.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
