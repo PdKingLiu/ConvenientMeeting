@@ -1,15 +1,9 @@
 package com.pdking.convenientmeeting.db;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.arcsoft.face.AgeInfo;
-import com.arcsoft.face.Face3DAngle;
-import com.arcsoft.face.FaceFeature;
-import com.arcsoft.face.FaceInfo;
-import com.arcsoft.face.GenderInfo;
-import com.arcsoft.face.LivenessInfo;
+import com.google.gson.annotations.SerializedName;
 
 import org.litepal.crud.LitePalSupport;
 
@@ -18,60 +12,165 @@ import org.litepal.crud.LitePalSupport;
  * Created on 2019/2/7 12:19
  */
 public class UserInfo extends LitePalSupport implements Parcelable{
-
-    private String name;
-
-    private String phoneNumber;
-
-    private String password;
-
-    private String sex;
-
-    private String email;
-
-    private Bitmap icon;
-
-    private FaceInfo faceInfo;
-
-    private AgeInfo ageInfo;
-
-    private GenderInfo genderInfo;
-
-    private Face3DAngle face3DAngle;
-
-    private LivenessInfo livenessInfo;
-
-    private FaceFeature faceFeature;
-
-    public UserInfo() {
-
-    }
+    @SerializedName("id")
+    public int id;
+    @SerializedName("username")
+    public String username;
+    @SerializedName("password")
+    public String password;
+    @SerializedName("sex")
+    public String sex;
+    @SerializedName("role")
+    public int role;
+    @SerializedName("phone")
+    public String phone;
+    @SerializedName("email")
+    public String email;
+    @SerializedName("avatarUrl")
+    public String avatarUrl;
+    @SerializedName("faceUrl")
+    public String faceUrl;
+    @SerializedName("createTime")
+    public long createTime;
+    @SerializedName("updateTime")
+    public long updateTime;
+    @SerializedName("faceData")
+    public String faceData;
 
     @Override
     public String toString() {
         return "UserInfo{" +
-                "name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", sex='" + sex + '\'' +
+                ", role=" + role +
+                ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", icon=" + icon +
-                ", faceInfo=" + faceInfo +
-                ", ageInfo=" + ageInfo +
-                ", genderInfo=" + genderInfo +
-                ", face3DAngle=" + face3DAngle +
-                ", livenessInfo=" + livenessInfo +
-                ", faceFeature=" + faceFeature +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", faceUrl='" + faceUrl + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", faceData='" + faceData + '\'' +
                 '}';
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void setFaceUrl(String faceUrl) {
+        this.faceUrl = faceUrl;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public void setFaceData(String faceData) {
+        this.faceData = faceData;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public String getFaceUrl() {
+        return faceUrl;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public String getFaceData() {
+        return faceData;
+    }
+
+    public static Creator<UserInfo> getCREATOR() {
+        return CREATOR;
+    }
+
+    public UserInfo() {
+    }
+
     protected UserInfo(Parcel in) {
-        name = in.readString();
-        phoneNumber = in.readString();
+        id = in.readInt();
+        username = in.readString();
         password = in.readString();
         sex = in.readString();
+        role = in.readInt();
+        phone = in.readString();
         email = in.readString();
-        icon = in.readParcelable(Bitmap.class.getClassLoader());
+        avatarUrl = in.readString();
+        faceUrl = in.readString();
+        createTime = in.readLong();
+        updateTime = in.readLong();
+        faceData = in.readString();
     }
 
     public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
@@ -86,105 +185,6 @@ public class UserInfo extends LitePalSupport implements Parcelable{
         }
     };
 
-    public void setFaceInfo(FaceInfo faceInfo) {
-        this.faceInfo = faceInfo;
-    }
-
-    public void setAgeInfo(AgeInfo ageInfo) {
-        this.ageInfo = ageInfo;
-    }
-
-    public void setGenderInfo(GenderInfo genderInfo) {
-        this.genderInfo = genderInfo;
-    }
-
-    public void setFace3DAngle(Face3DAngle face3DAngle) {
-        this.face3DAngle = face3DAngle;
-    }
-
-    public void setLivenessInfo(LivenessInfo livenessInfo) {
-        this.livenessInfo = livenessInfo;
-    }
-
-    public void setFaceFeature(FaceFeature faceFeature) {
-        this.faceFeature = faceFeature;
-    }
-
-    public FaceInfo getFaceInfo() {
-        return faceInfo;
-    }
-
-    public AgeInfo getAgeInfo() {
-        return ageInfo;
-    }
-
-    public GenderInfo getGenderInfo() {
-        return genderInfo;
-    }
-
-    public Face3DAngle getFace3DAngle() {
-        return face3DAngle;
-    }
-
-    public LivenessInfo getLivenessInfo() {
-        return livenessInfo;
-    }
-
-    public FaceFeature getFaceFeature() {
-        return faceFeature;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-
-        return name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setIcon(Bitmap icon) {
-        this.icon = icon;
-    }
-
-    public String getPhoneNumber() {
-
-        return phoneNumber;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Bitmap getIcon() {
-        return icon;
-    }
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -192,11 +192,17 @@ public class UserInfo extends LitePalSupport implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(phoneNumber);
+        dest.writeInt(id);
+        dest.writeString(username);
         dest.writeString(password);
         dest.writeString(sex);
+        dest.writeInt(role);
+        dest.writeString(phone);
         dest.writeString(email);
-        dest.writeParcelable(icon, flags);
+        dest.writeString(avatarUrl);
+        dest.writeString(faceUrl);
+        dest.writeLong(createTime);
+        dest.writeLong(updateTime);
+        dest.writeString(faceData);
     }
 }

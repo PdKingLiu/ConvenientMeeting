@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,14 +23,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.IOUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -35,7 +42,9 @@ import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -43,6 +52,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RegisterActivityThree extends AppCompatActivity implements TitleView
         .LeftClickListener {
@@ -53,11 +70,13 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
     private final int FACE_REQUEST = 4;
     private final int FACE_ACTIVITY = 5;
     private Uri endClipUri;
-    private Uri cameraFileUri;
-    private File cameraSavePath;
     private Uri faceFileUri;
+    private Uri cameraFileUri;
+
+    private File cameraSavePath;
     private File faceSavePath;
     private File endClipFile;
+
     private UserInfo userInfo;
     private String emailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\" +
             ".[a-zA-Z0-9]{2,6}$";
@@ -90,20 +109,30 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
     @BindView(R.id.stv_status_get_face)
     SlantedTextView stvGetFaceStatus;
 
+    AlertDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register_three);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
+        applyPermission();
+        endClipUri = null;
         LitePal.getDatabase();
         ActivityContainer.addActivity(this);
         mTitleView.setLeftClickListener(this);
-//        btnLogin.setEnabled(false);
+        btnLogin.setEnabled(false);
+        dialog = new AlertDialog.Builder(this)
+                .setView(new ProgressBar(this))
+                .setCancelable(false)
+                .create();
         userInfo = new UserInfo();
-        userInfo.setPhoneNumber(getIntent().getStringExtra("phone_number"));
-        userInfo.setPassword(getIntent().getStringExtra("password"));
-        tvPhoneNumber.setText(userInfo.getPhoneNumber());
+//        userInfo.setPhone(getIntent().getStringExtra("phone_number"));
+//        userInfo.setPassword(getIntent().getStringExtra("password"));
+        userInfo.setPhone("15829217780");
+        userInfo.setPassword("111111");
+        tvPhoneNumber.setText(userInfo.getPhone());
     }
 
     @OnTextChanged(R.id.ed_register_user_name)
@@ -142,7 +171,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
     }
 
     private void startGetFace() {
-
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setNegativeButton("取消".subSequence(0, 2), new DialogInterface.OnClickListener() {
             @Override
@@ -157,7 +185,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 if (!fileFaceDir.exists()) {
                     fileFaceDir.mkdirs();
                 }
-                faceSavePath = new File(fileFaceDir, "user_face_" + userInfo.getPhoneNumber() + "" +
+                faceSavePath = new File(fileFaceDir, "user_face_" + userInfo.getPhone() + "" +
                         ".jpg");
                 try {
                     if (faceSavePath.exists()) {
@@ -189,6 +217,17 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     }
 
+    private void applyPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager
+                .PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new
+                    String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission
+                    .CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission
+                    .WRITE_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
     private void startLogin() {
         switch (etUserEmail.getText().toString()) {
             case "":
@@ -211,28 +250,101 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 userInfo.setSex("女");
                 break;
         }
-        userInfo.setName(etUserName.getText().toString());
+        userInfo.setUsername(etUserName.getText().toString());
         userInfo.setEmail(etUserEmail.getText().toString());
-        Bitmap bitmap = null;
-        try {
-            if (endClipUri != null) {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), endClipUri);
-            } else {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.id.civ_user_icon);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (cameraSavePath != null && cameraSavePath.exists()) {
+            cameraSavePath.delete();
         }
-        userInfo.setIcon(bitmap);
-//        if (cameraSavePath != null && cameraSavePath.exists()) {
-//            cameraSavePath.delete();
-//        }
-        userInfo.save();
-        Intent intent = new Intent(this, MainActivity.class);
-//        intent.putExtra("user", userInfo);
-        startActivity(intent);
-        ActivityContainer.removeAllActivity();
+        requestRegister(userInfo);
 
+    }
+
+    private void requestRegister(final UserInfo userInfo) {
+        File iconFile = null;
+        try {
+            if (endClipUri == null) {
+                File f = new File(getExternalFilesDir(null) + "/user/userIcon");
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.user_default_icon);
+                iconFile = new File(f, "user_icon_clip_" + userInfo.getPhone()
+                        + ".jpg");
+                if (iconFile.exists()) {
+                    iconFile.delete();
+                }
+                iconFile.createNewFile();
+                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new
+                        FileOutputStream(iconFile));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bufferedOutputStream);
+                bufferedOutputStream.flush();
+                bufferedOutputStream.close();
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "requestRegister: " + e.getMessage());
+        }
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody multipartBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(Api.RegisterBody[0], userInfo.getUsername())
+                .addFormDataPart(Api.RegisterBody[1], userInfo.getPassword())
+                .addFormDataPart(Api.RegisterBody[2], userInfo.getSex())
+                .addFormDataPart(Api.RegisterBody[3], userInfo.getPhone())
+                .addFormDataPart(Api.RegisterBody[4], userInfo.getFaceData())
+                .addFormDataPart(Api.RegisterBody[5], userInfo.getEmail())
+                .addFormDataPart(Api.RegisterBody[6], iconFile.getName(), RequestBody.create
+                        (MediaType.parse("image/jpeg"), iconFile))
+                .addFormDataPart(Api.RegisterBody[7], faceSavePath.getName(), RequestBody.create
+                        (MediaType.parse("image/jpeg"), faceSavePath))
+                .build();
+        Request request = new Request.Builder()
+                .url(Api.RegisterApi)
+                .post(multipartBody)
+                .header(Api.RegisterHeader[0], Api.RegisterHeader[1])
+                .build();
+        showDialog();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                hideDialog();
+                Log.d(TAG, "onFailure: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                Log.d(TAG, "onResponse: " + string);
+                hideDialog();
+//                RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
+                userInfo.save();
+                Intent intent = new Intent(RegisterActivityThree.this, MainActivity.class);
+                intent.putExtra("user", userInfo);
+                startActivity(intent);
+                ActivityContainer.removeAllActivity();
+            }
+        });
+    }
+
+    private void hideDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.hide();
+                }
+            }
+        });
+    }
+
+    private void showDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog != null && !dialog.isShowing()) {
+                    dialog.show();
+                }
+            }
+        });
     }
 
     /**
@@ -270,7 +382,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         if (!file.exists()) {
             file.mkdirs();
         }
-        cameraSavePath = new File(file, "user_icon_camera_" + userInfo.getPhoneNumber() + ".jpg");
+        cameraSavePath = new File(file, "user_icon_camera_" + userInfo.getPhone() + ".jpg");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             cameraFileUri = FileProvider.getUriForFile(RegisterActivityThree
@@ -328,13 +440,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                             stvGetFaceStatus.setSlantedBackgroundColor(0xff669900);
                             flags[1] = true;
                             UserInfo userInfoTem = data.getParcelableExtra("user");
-                            Log.d(TAG, "onActivityResult:userInfoTem " + userInfoTem);
-                            userInfo.setGenderInfo(userInfoTem.getGenderInfo());
-                            userInfo.setLivenessInfo(userInfoTem.getLivenessInfo());
-                            userInfo.setFaceInfo(userInfoTem.getFaceInfo());
-                            userInfo.setFace3DAngle(userInfoTem.getFace3DAngle());
-                            userInfo.setAgeInfo(userInfoTem.getAgeInfo());
-                            userInfo.setFaceFeature(userInfoTem.getFaceFeature());
+                            userInfo.setFaceData(userInfoTem.getFaceData());
                             changeButtonStatus();
                             break;
                     }
@@ -355,13 +461,13 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 if (resultCode == RESULT_OK) {
                     try {
                         Glide.with(this).load(endClipUri).into(userImageView);
-//                            userInfo.setIcon(BitmapFactory.decodeStream(getContentResolver()
-//                                    .openInputStream(endClipUri)));
+                            /*userInfo.setIcon(BitmapFactory.decodeStream(getContentResolver()
+                                    .openInputStream(endClipUri)));*/
                         File f = new File(getExternalFilesDir(null) + "/user/userIcon");
                         if (!f.exists()) {
                             f.mkdirs();
                         }
-                        File file = new File(f, "user_icon_clip_" + userInfo.getPhoneNumber()
+                        File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
                                 + ".jpg");
                         IOUtil.copyFile(endClipFile, file);
                     } catch (Exception e) {
@@ -382,7 +488,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     private void goFaceResult(Uri faceFileUri) {
         Intent intent = new Intent(this, ShowFaceResultActivity.class);
-        intent.putExtra("phone", userInfo.getPhoneNumber());
+        intent.putExtra("phone", userInfo.getPhone());
         startActivityForResult(intent, FACE_ACTIVITY);
     }
 
@@ -417,10 +523,14 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     @Override
     protected void onDestroy() {
-//        endClipUri = null;
-//        if (endClipFile.exists()) {
-//            endClipFile.delete();
-//        }
+        endClipUri = null;
+        if (endClipFile != null && endClipFile.exists()) {
+            endClipFile.delete();
+        }
+        if (dialog != null && dialog.isShowing()) {
+            dialog.hide();
+            dialog.hide();
+        }
         super.onDestroy();
     }
 }

@@ -11,12 +11,22 @@ public class Api {
 
     public static String[] SMSSendHeader = {"Content-Type", "application/x-www-form-urlencoded"};
 
-    public static String []SMSSendBody = {"phoneNumber"};
+    public static String[] SMSSendBody = {"phoneNumber"};
 
-    public static String SMSVerificationApi = "http://www.shidongxuan.top/smartMeeting_Web/phone/judgeCode.do";
+    public static String SMSVerificationApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/phone/judgeCode.do";
 
-    public static String[] SMSVerificationHeader = {"Content-Type", "application/x-www-form-urlencoded"};
+    public static String[] SMSVerificationHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
 
-    public static String []SMSVerificationBody = {"phoneNumber","code"};
+    public static String[] SMSVerificationBody = {"phoneNumber", "code"};
+
+    public static String RegisterApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/user/register.do";
+
+    public static String[] RegisterHeader = {"Content-Type", "multipart/form-data"};
+
+    public static String[] RegisterBody = {"username", "password", "sex", "phone", "faceData",
+            "email", "avatar", "face"};
 
 }

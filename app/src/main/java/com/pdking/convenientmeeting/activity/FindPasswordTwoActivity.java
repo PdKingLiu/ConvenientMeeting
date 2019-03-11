@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.SMSJudgeStatusBean;
+import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.SMSSendStatusBean;
 import com.pdking.convenientmeeting.utils.CountDownTimerUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -210,8 +210,8 @@ public class FindPasswordTwoActivity extends AppCompatActivity implements TitleV
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        SMSJudgeStatusBean statusBean = new Gson().fromJson(response.body()
-                                .string(), SMSJudgeStatusBean.class);
+                        RequestReturnBean statusBean = new Gson().fromJson(response.body()
+                                .string(), RequestReturnBean.class);
                         if (statusBean.status == 0) {
                             setToast("验证成功");
                             Intent intent = new Intent(FindPasswordTwoActivity.this,

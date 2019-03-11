@@ -579,22 +579,10 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                     Intent intent = new Intent();
                     intent.putExtra("status", 1);
                     userInfo = new UserInfo();
-                    userInfo.setAgeInfo(ageInfoList.get(0));
-                    userInfo.setFace3DAngle(face3DAngleList.get(0));
-                    userInfo.setFaceFeature(faceFeatures[0]);
-                    userInfo.setFaceInfo(faceInfoList.get(0));
-                    userInfo.setLivenessInfo(livenessInfoList.get(0));
-                    userInfo.setGenderInfo(genderInfoList.get(0));
+                    userInfo.setFaceData(android.util.Base64.encodeToString(faceFeatures[0].getFeatureData(), android.util
+                            .Base64.DEFAULT));
                     intent.putExtra("user", userInfo);
                     setResult(RESULT_OK, intent);
-                    String s = android.util.Base64.encodeToString(faceFeatures[0].getFeatureData(), android.util
-                            .Base64.DEFAULT);
-                    Log.d(TAG, "Base64: "+s);
-                    String s2 = new String(faceFeatures[0].getFeatureData());
-                    Log.d(TAG, "byteToString: " + s2);
-                    byte[] bytes = android.util.Base64.decode(s2, android.util.Base64.DEFAULT);
-                    String s3 = new String(bytes);
-                    Log.d(TAG, "byteBYBase: " + s3);
                     btnOkSetText("确定");
                 }
             }
