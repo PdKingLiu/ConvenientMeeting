@@ -52,6 +52,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -261,6 +262,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     private void requestRegister(final UserInfo userInfo) {
         File iconFile = null;
+        File faceSavePath2 = null;
         try {
             if (endClipUri == null) {
                 File f = new File(getExternalFilesDir(null) + "/user/userIcon");
@@ -279,6 +281,8 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bufferedOutputStream);
                 bufferedOutputStream.flush();
                 bufferedOutputStream.close();
+                faceSavePath2 = new Compressor(this).compressToFile(faceSavePath);
+                Log.d(TAG, "requestRegister: " + faceSavePath.length() + "-" + faceSavePath2.length());
             }
         } catch (Exception e) {
             Log.d(TAG, "requestRegister: " + e.getMessage());
@@ -294,8 +298,8 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 .addFormDataPart(Api.RegisterBody[5], userInfo.getEmail())
                 .addFormDataPart(Api.RegisterBody[6], iconFile.getName(), RequestBody.create
                         (MediaType.parse("image/jpeg"), iconFile))
-                .addFormDataPart(Api.RegisterBody[7], faceSavePath.getName(), RequestBody.create
-                        (MediaType.parse("image/jpeg"), faceSavePath))
+                .addFormDataPart(Api.RegisterBody[7], faceSavePath2.getName(), RequestBody.create
+                        (MediaType.parse("image/jpeg"), faceSavePath2))
                 .build();
         Request request = new Request.Builder()
                 .url(Api.RegisterApi)
