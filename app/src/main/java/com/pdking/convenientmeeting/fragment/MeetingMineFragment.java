@@ -39,6 +39,16 @@ public class MeetingMineFragment extends Fragment {
     public MeetingMineFragment() {
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     public static MeetingMineFragment newInstance() {
         if (meetingMineFragment == null) {
             meetingMineFragment = new MeetingMineFragment();
@@ -57,6 +67,10 @@ public class MeetingMineFragment extends Fragment {
         initList();
         initMenu();
         initRecyclerAndFlush();
+    }
+
+    public SmartRefreshLayout getRefreshLayout() {
+        return refreshLayout;
     }
 
     private void initMenu() {

@@ -1,20 +1,14 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +26,6 @@ import com.pdking.convenientmeeting.utils.PermissionUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import org.litepal.LitePal;
-import org.litepal.crud.LitePalSupport;
 
 import java.io.IOException;
 
@@ -45,7 +38,6 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
@@ -75,15 +67,15 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.layout_login);
         ButterKnife.bind(this);
         SystemUtil.setTitleMode(getWindow());
+        LitePal.getDatabase();
         btLogin.setEnabled(false);
         dialog = new AlertDialog.Builder(this)
                 .setView(new ProgressBar(this))
                 .create();
         ActivityContainer.addActivity(this);
         PermissionUtil.applyPermission(this);
-        isFirst();
+        changeText();
     }
-
 
     @OnClick({R.id.bt_login_register, R.id.bt_login_find_password, R.id.btn_login})
     void onClick(View view) {
@@ -153,9 +145,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String message = response.body().string();
-                Log.d("Lpp", "onResponse: " + message);
+//                Log.d("Lpp", "onResponse: " + message);
                 LoginBean loginBean = new Gson().fromJson(message, LoginBean.class);
-                Log.d("Lpp", "onResponse: " + loginBean);
+//                Log.d("Lpp", "onResponse: " + loginBean);
                 if (loginBean != null && loginBean.status == 1) {
                     showToast("账号或密码错误");
                 } else {
@@ -163,6 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                     UserAccount account = new UserAccount();
                     account.setPhone(phone);
                     account.setPassword(password);
+                    account.save();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("userBean", loginBean);
                     startActivity(intent);
@@ -226,15 +219,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void isFirst() {
-        LitePal.getDatabase();
-//        if (LitePal.findAll(UserInfo.class).size() != 0) {
-//            userInfo = LitePal.findAll(UserInfo.class).get(0);
-//            Log.d("Lpp", "isFirst: "+userInfo);
-//            Intent intent = new Intent(this, MainActivity.class);
-//            intent.putExtra("user", userInfo);
-//            startActivity(intent);
-//            ActivityContainer.removeAllActivity();
-//        }
+    public void changeText() {
+        if (LitePal.findAll(UserAccount.class).size() != 0) {
+            UserAccount account = LitePal.findAll(UserAccount.class).get(0);
+            edPhone.setText(account.getPhone());
+            edPassword.setText(account.getPassword());
+        }
     }
 }

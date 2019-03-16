@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,8 @@ public class MeetingFragment extends Fragment {
 
     private FragmentPagerAdapter pagerAdapter;
 
+    private boolean[] isFirst = {true, false, true};
+
     public static MeetingFragment getINSTANCE() {
         if (INSTANCE == null) {
             INSTANCE = new MeetingFragment();
@@ -76,6 +79,8 @@ public class MeetingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+
 
 
     @Override
@@ -131,6 +136,49 @@ public class MeetingFragment extends Fragment {
 
             }
         });
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                loadFirstDate(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+    }
+
+    private void loadFirstDate(int i) {
+        switch (i) {
+            case 0:
+                if (isFirst[0]) {
+                    ((MeetingMineFragment) fragmentList.get(0)).getRefreshLayout()
+                            .autoRefresh();
+                    isFirst[0] = false;
+                }
+                break;
+            case 1:
+                if (isFirst[1]) {
+                    ((MeetingRoomFragment) fragmentList.get(1)).getRefreshLayout()
+                            .autoRefresh();
+                    isFirst[1] = false;
+                }
+                break;
+            case 2:
+                if (isFirst[2]) {
+                    ((MeetingHistoryFragment) fragmentList.get(2)).getRefreshLayout()
+                            .autoRefresh();
+                    isFirst[2] = false;
+                }
+                break;
+        }
     }
 
     private void initView(View mView) {

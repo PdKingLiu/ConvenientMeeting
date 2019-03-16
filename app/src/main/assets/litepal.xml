@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
-    <dbname value="userInfo" />
+    <dbname value="userInfo"/>
 
-    <version value="1" />
+    <version value="1"/>
 
     <list>
-        <mapping class="com.pdking.convenientmeeting.db.UserInfo" />
-        <mapping class="com.pdking.convenientmeeting.db.UserToken" />
-        <mapping class="com.pdking.convenientmeeting.db.UserAccount" />
+        <mapping class="com.pdking.convenientmeeting.db.UserInfo"></mapping>
+        <mapping class="com.pdking.convenientmeeting.db.UserToken"></mapping>
+        <mapping class="com.pdking.convenientmeeting.db.UserAccount"></mapping>
     </list>
 
 </litepal>
