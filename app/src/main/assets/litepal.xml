@@ -6,6 +6,8 @@
 
     <list>
         <mapping class="com.pdking.convenientmeeting.db.UserInfo" />
+        <mapping class="com.pdking.convenientmeeting.db.UserToken" />
+        <mapping class="com.pdking.convenientmeeting.db.UserAccount" />
     </list>
 
 </litepal>

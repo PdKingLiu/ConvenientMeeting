@@ -3,8 +3,8 @@
     package="com.pdking.convenientmeeting">
 
     <!-- 人脸识别需要得权限 -->
-    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE" /> -->
-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
+    <!-- <uses-PermissionUtil android:name="android.PermissionUtil.READ_PHONE_STATE" /> -->
+    <!-- <uses-PermissionUtil android:name="android.PermissionUtil.INTERNET" /> -->
 
 
     <!-- Bmob需要的权限 -->
@@ -26,7 +26,7 @@
     <!-- 相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- 写入SD卡的权限：如果你希望保存相机拍照后的照片 -->
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+    <!-- <uses-PermissionUtil android:name="android.PermissionUtil.WRITE_EXTERNAL_STORAGE" /> -->
     <!-- 读取SD卡的权限:打开相册选取图片所必须的权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -52,15 +52,15 @@
 
         <activity android:name=".activity.MainActivity"></activity>
         <activity android:name=".activity.LoginActivity">
-        </activity>
-        <activity android:name=".activity.RegisterActivityOne" />
-        <activity android:name=".activity.RegisterActivityTwo" />
-        <activity android:name=".activity.RegisterActivityThree" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter></activity>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.RegisterActivityOne" />
+        <activity android:name=".activity.RegisterActivityTwo" />
+        <activity android:name=".activity.RegisterActivityThree" ></activity>
         <activity android:name=".activity.ShowFaceResultActivity" />
         <activity android:name=".activity.FindPasswordActivity" />
         <activity android:name=".activity.FindPasswordTwoActivity" />

@@ -33,7 +33,7 @@
             app:hintEnabled="true">
 
             <android.support.design.widget.TextInputEditText
-
+                android:id="@+id/ed_input_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="5dp"
@@ -55,6 +55,7 @@
             app:passwordToggleTintMode="multiply">
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/ed_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="5dp"
@@ -68,18 +69,19 @@
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_num_password"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
             <Button
-                android:textColor="@android:color/white"
+                android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_button_is_enabled"
                 android:text="登录"
+                android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
             <RelativeLayout

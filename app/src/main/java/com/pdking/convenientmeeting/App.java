@@ -1,6 +1,10 @@
 package com.pdking.convenientmeeting;
 
+import android.Manifest;
 import android.app.Application;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.pdking.convenientmeeting.common.Constant;
 

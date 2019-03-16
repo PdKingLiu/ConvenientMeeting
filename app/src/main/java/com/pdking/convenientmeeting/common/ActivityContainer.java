@@ -18,8 +18,10 @@ public class ActivityContainer {
     }
 
     public static void removeAllActivity() {
-        for (Activity activity:activities) {
-            activity.finish();
+        for (Activity activity : activities) {
+            if (activity != null && !activity.isFinishing()) {
+                activity.finish();
+            }
         }
     }
 

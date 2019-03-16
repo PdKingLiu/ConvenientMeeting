@@ -29,4 +29,10 @@ public class Api {
     public static String[] RegisterBody = {"username", "password", "sex", "phone", "faceData",
             "email", "avatar", "face"};
 
+    public static String[] LoginHeader = {"Content-Type", "application/x-www-form-urlencoded"};
+
+    public static String[] LoginBody = {"phone", "password"};
+
+    public static String LoginApi = "http://www.shidongxuan.top/smartMeeting_Web/user/login.do";
+
 }

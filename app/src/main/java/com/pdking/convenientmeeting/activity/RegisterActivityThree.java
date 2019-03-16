@@ -269,7 +269,8 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 if (!f.exists()) {
                     f.mkdirs();
                 }
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.user_default_icon);
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap
+                        .user_default_icon);
                 iconFile = new File(f, "user_icon_clip_" + userInfo.getPhone()
                         + ".jpg");
                 if (iconFile.exists()) {
@@ -281,12 +282,23 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bufferedOutputStream);
                 bufferedOutputStream.flush();
                 bufferedOutputStream.close();
-                faceSavePath2 = new Compressor(this).compressToFile(faceSavePath);
-                Log.d(TAG, "requestRegister: " + faceSavePath.length() + "-" + faceSavePath2.length());
+
+
+            } else {
+                /* iconFile = new Compressor(this).compressToFile(endClipFile);*/
+                iconFile = endClipFile;
             }
+
+            faceSavePath2 = new Compressor(this).compressToFile(faceSavePath);
+            Log.d(TAG, "requestRegister: iconFile" + endClipFile == null ? endClipFile.length() +
+                    "" : "null" + "-" + iconFile.length());
+            Log.d(TAG, "requestRegister: faceSavePath" + faceSavePath.length() + "-" +
+                    faceSavePath2.length());
         } catch (Exception e) {
             Log.d(TAG, "requestRegister: " + e.getMessage());
         }
+
+
         OkHttpClient client = new OkHttpClient();
         MultipartBody multipartBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -319,7 +331,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 String string = response.body().string();
                 Log.d(TAG, "onResponse: " + string);
                 hideDialog();
-//                RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
+                RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
                 userInfo.save();
                 Intent intent = new Intent(RegisterActivityThree.this, MainActivity.class);
                 intent.putExtra("user", userInfo);
@@ -464,7 +476,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             case CLIP_REQUEST:
                 if (resultCode == RESULT_OK) {
                     try {
-                        Glide.with(this).load(endClipUri).into(userImageView);
+                        Glide.with(this).load(endClipFile).into(userImageView);
                             /*userInfo.setIcon(BitmapFactory.decodeStream(getContentResolver()
                                     .openInputStream(endClipUri)));*/
                         File f = new File(getExternalFilesDir(null) + "/user/userIcon");
@@ -473,6 +485,9 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                         }
                         File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
                                 + ".jpg");
+                        if (file.exists()) {
+                            file.delete();
+                        }
                         IOUtil.copyFile(endClipFile, file);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -500,6 +515,9 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         String filePath = Environment.getExternalStorageDirectory().getPath() + "/" +
                 "meeting_user_icon_catch" + ".jpg";
         endClipFile = new File(filePath);
+        if (endClipFile.exists()) {
+            endClipFile.delete();
+        }
         endClipUri = Uri.parse("file:///" + filePath);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -531,9 +549,11 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         if (endClipFile != null && endClipFile.exists()) {
             endClipFile.delete();
         }
-        if (dialog != null && dialog.isShowing()) {
-            dialog.hide();
-            dialog.hide();
+        if (dialog != null) {
+            if (dialog.isShowing()) {
+                dialog.hide();
+            }
+            dialog.dismiss();
         }
         super.onDestroy();
     }
