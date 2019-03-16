@@ -8,6 +8,7 @@
         <mapping class="com.pdking.convenientmeeting.db.UserInfo"></mapping>
         <mapping class="com.pdking.convenientmeeting.db.UserToken"></mapping>
         <mapping class="com.pdking.convenientmeeting.db.UserAccount"></mapping>
+        <mapping class="com.pdking.convenientmeeting.db.LoginBean"></mapping>
     </list>
 
 </litepal>

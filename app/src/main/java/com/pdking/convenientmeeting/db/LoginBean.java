@@ -5,11 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.litepal.crud.LitePalSupport;
+
 /**
  * @author liupeidong
  * Created on 2019/3/16 10:35
  */
-public class LoginBean implements Parcelable{
+public class LoginBean extends LitePalSupport implements Parcelable{
     @SerializedName("status")
     public int status;
     @SerializedName("msg")

@@ -26,6 +26,8 @@ import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
@@ -72,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.layout_main);
         SystemUtil.setTitleMode(getWindow());
         applyPermission();
+        LitePal.getDatabase();
         ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
         bottomNavigationViewListener();
         initFragment();
         initUser();
     }
-
 
 
     private void initUser() {
@@ -112,16 +114,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(Call call, IOException e) {
                         hideProgressBar();
                         Log.d("Lpp", "onFailure: " + e.getMessage());
-                        showToast("登录失败");
+                        showToast("连接登录失败,请重新登录");
+                        finish();
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         hideProgressBar();
                         String message = response.body().string();
-//                        Log.d("Lpp", "onResponse: " + message);
                         loginBean = new Gson().fromJson(message, LoginBean.class);
-//                        Log.d("Lpp", "onResponse: " + loginBean);
                         if (loginBean != null && loginBean.status == 1) {
                             showToast("密码错误,请重新登录");
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -138,7 +139,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDate() {
-//        mMeetingFragment.autoRefresh(2);
+        LitePal.deleteAll(UserToken.class);
+        LitePal.deleteAll(UserInfo.class);
+        loginBean.data.save();
+        UserToken token = new UserToken();
+        token.setToken(loginBean.msg);
+        token.save();
     }
 
 

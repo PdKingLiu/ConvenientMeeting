@@ -35,4 +35,9 @@ public class Api {
 
     public static String LoginApi = "http://www.shidongxuan.top/smartMeeting_Web/user/login.do";
 
+    public static String GetUserInfoApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/user/getOneByPhone.do";
+
+    public static String[] GetUserInfoBody = {"phone"};
+
 }

@@ -26,6 +26,7 @@
                     android:background="#f8f8f8" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_user_icon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center_horizontal"
@@ -35,15 +36,17 @@
                     app:civ_border_width="2dp" />
 
                 <RelativeLayout
+                    android:id="@+id/rl_user_data"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="right"
                     android:layout_marginTop="25dp">
 
                     <ImageView
-                        android:layout_width="25dp"
+                        android:layout_width="29dp"
                         android:layout_height="25dp"
                         android:layout_centerInParent="true"
+                        android:focusable="false"
                         android:src="@mipmap/icon_mine_mine" />
 
                 </RelativeLayout>
@@ -89,10 +92,10 @@
                         android:text="企业认证" />
 
                     <ImageView
-                        android:layout_marginLeft="5dp"
                         android:layout_width="40dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
                         android:src="@mipmap/icon_mine_no_authentication" />
 
                 </LinearLayout>

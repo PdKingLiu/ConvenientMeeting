@@ -168,8 +168,15 @@ public class TitleView extends RelativeLayout {
         btnMenuText.setText(rightText);
         btnMenuText.setTextColor(rightTextColor);
         btnMenuText.setTextSize(rightTextSize);
-
         typedArray.recycle();
+    }
+
+    public void setRightMenuTextVisible(boolean visible) {
+        if (visible) {
+            btnMenuText.setVisibility(View.VISIBLE);
+        } else {
+            btnMenuText.setVisibility(View.GONE);
+        }
     }
 
     public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
