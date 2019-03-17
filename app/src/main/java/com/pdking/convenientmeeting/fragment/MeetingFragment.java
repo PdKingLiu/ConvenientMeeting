@@ -155,6 +155,8 @@ public class MeetingFragment extends Fragment {
 
     }
 
+
+
     private void loadFirstDate(int i) {
         switch (i) {
             case 0:

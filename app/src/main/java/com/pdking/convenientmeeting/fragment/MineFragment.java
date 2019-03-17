@@ -10,13 +10,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.MainActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
+import com.pdking.convenientmeeting.db.UserInfo;
+
+import org.litepal.LitePal;
+
+import java.io.File;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * @author liupeidong
@@ -29,6 +41,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlUserData;
 
     private CircleImageView civUserIcon;
+
+    private UserInfo userInfo;
+
+    private File iconFile;
+
+    private TextView tvUserEmail;
+
+    final private int UPDATE_USER_DATA = 1;
 
     public static MineFragment getINSTANCE() {
         if (INSTANCE == null) {
@@ -49,6 +69,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private void initView(View view) {
         rlUserData = view.findViewById(R.id.rl_user_data);
         civUserIcon = view.findViewById(R.id.civ_user_icon);
+        tvUserEmail = view.findViewById(R.id.tv_user_email);
         initListener();
     }
 
@@ -63,8 +84,53 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.rl_user_data:
             case R.id.civ_user_icon:
-                startActivity(new Intent(getContext(), ModificationUserDataActivity.class));
+                ((MainActivity)getActivity()).startActivityForResult(new Intent(getActivity(), ModificationUserDataActivity
+                        .class), UPDATE_USER_DATA);
                 break;
+        }
+    }
+
+/*    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("Lpp", "onActivityResult: " + "MineFragment"+requestCode+data);
+        switch (requestCode) {
+            case UPDATE_USER_DATA:
+                if (resultCode == RESULT_OK && data != null) {
+                    int status = data.getIntExtra("status", -1);
+                    if (status != -1) {
+                        Log.d("Lpp", "UPDATE_USER_DATA: "+status);
+                        userInfo = LitePal.findAll(UserInfo.class).get(0);
+                        Glide.with(this)
+                                .load(iconFile)
+                                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
+                                        .NONE).skipMemoryCache(true))
+                                .into(civUserIcon);
+                        tvUserEmail.setText("邮箱：" + userInfo.email);
+                    }
+                }
+        }
+    }*/
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        iconFile = new File(getContext().getExternalFilesDir(null) + "/user/userIcon",
+                "user_icon_clip_" + userInfo.getPhone() + ".jpg");
+        if (iconFile.exists()) {
+            Log.d("Lpp", "civUserIcon:file ");
+            Glide.with(this)
+                    .load(iconFile)
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
+                            .NONE).skipMemoryCache(true))
+                    .into(civUserIcon);
+        } else {
+            Log.d("Lpp", "civUserIcon:avatarUrl ");
+            Glide.with(this)
+                    .load(userInfo.avatarUrl)
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
+                            .NONE).skipMemoryCache(true))
+                    .into(civUserIcon);
         }
     }
 }

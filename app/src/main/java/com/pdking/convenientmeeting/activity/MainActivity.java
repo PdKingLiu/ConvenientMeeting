@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -314,6 +315,14 @@ public class MainActivity extends AppCompatActivity {
                 dialog.hide();
             }
             dialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Log.d("Lpp", "onActivityResult: " + "Main"+(requestCode)+resultCode+data);
+        switch (requestCode) {
+            case 1:
         }
     }
 }

@@ -68,6 +68,9 @@ public class ModificationUserDataActivity extends AppCompatActivity {
 
     private UserToken token;
 
+    private boolean iconUpdateFlag = false;
+    private boolean iconUpdateFlag2 = false;
+
     private final int ALBUM_REQUEST = 1;
     private final int CLIP_REQUEST = 2;
     private final int CAMERA_REQUEST = 3;
@@ -172,16 +175,7 @@ public class ModificationUserDataActivity extends AppCompatActivity {
                                         .NONE).skipMemoryCache(true))
                                 .into(civUserIcon);
                         updateFlag[2] = true;
-                        File f = new File(getExternalFilesDir(null) + "/user/userIcon");
-                        if (!f.exists()) {
-                            f.mkdirs();
-                        }
-                        File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
-                                + ".jpg");
-                        if (file.exists()) {
-                            file.delete();
-                        }
-                        IOUtil.copyFile(clipFile, file);
+                        iconUpdateFlag2 = true;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -326,7 +320,7 @@ public class ModificationUserDataActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: "+msg);
+                Log.d("Lpp", "onResponse: " + msg);
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 1) {
                     hideProgressBar();
@@ -371,9 +365,14 @@ public class ModificationUserDataActivity extends AppCompatActivity {
                     LitePal.deleteAll(UserInfo.class);
                     userInfo = dataBean.data;
                     dataBean.data.save();
-                    Log.d("Lpp", "onResponse: "+dataBean.data);
-                    setResult(1);
+                    Log.d("Lpp", "onResponse: " + dataBean.data);
+                    Intent intent = new Intent();
+                    intent.putExtra("status", userInfo);
+                    Log.d("Lpp", "onResponse: " + 1);
+                    setResult(RESULT_OK, intent);
+                    Log.d("Lpp", "onResponse: " + 2);
                     showToast("修改成功");
+                    iconUpdateFlag = true;
                 }
             }
         });
@@ -414,8 +413,8 @@ public class ModificationUserDataActivity extends AppCompatActivity {
     private void requestUserData() {
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         token = LitePal.findAll(UserToken.class).get(0);
-        Log.d("Lpp", "userToken: "+token);
-        Log.d("Lpp", "userInfo: "+userInfo);
+        Log.d("Lpp", "userToken: " + token);
+        Log.d("Lpp", "userInfo: " + userInfo);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
         body.add(Api.GetUserInfoBody[0], userInfo.getPhone());
@@ -523,11 +522,35 @@ public class ModificationUserDataActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d("Lpp", "onDestroy: ");
         if (dialog != null) {
             if (dialog.isShowing()) {
                 dialog.hide();
             }
             dialog.dismiss();
+        }
+        if (iconUpdateFlag2 && iconUpdateFlag) {
+            try {
+                File f = new File(getExternalFilesDir(null) + "/user/userIcon");
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
+                        + ".jpg");
+                if (file.exists()) {
+                    file.delete();
+                }
+                IOUtil.copyFile(clipFile, file);
+                if (cameraFile != null && cameraFile.exists()) {
+                    cameraFile.delete();
+                }
+                if (clipFile != null && clipFile.exists()) {
+                    clipFile.delete();
+                }
+            } catch (IOException e) {
+                e.getMessage();
+                Log.d("Lpp", "e.getMessage(): " + e.getMessage());
+            }
         }
         super.onDestroy();
     }
