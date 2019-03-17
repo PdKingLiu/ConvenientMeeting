@@ -8,6 +8,15 @@
     android:orientation="vertical"
     tools:context=".activity.ModificationUserDataActivity">
 
+    <TextView
+        android:id="@+id/tv_net_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="加载好像出了点问题呢...\n\n点击重新加载"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <com.pdking.convenientmeeting.weight.TitleView
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -17,20 +26,11 @@
         app:rightTextVisibility="true"
         app:titleText="我的资料" />
 
-    <TextView
-        android:id="@+id/tv_net_error"
-        android:visibility="gone"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:text="加载好像出了点问题呢...\n\n点击重新加载"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_data_view"
-        android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,8 +87,6 @@
                         android:textSize="15sp" />
 
                     <TextView
-                        android:text="刘沛栋"
-                        android:textColor="@android:color/black"
                         android:id="@+id/ed_modification_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -96,6 +94,7 @@
                         android:layout_marginStart="10dp"
                         android:background="@null"
                         android:maxLength="10"
+                        android:text="刘沛栋"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -114,15 +113,29 @@
                         android:text="性  别"
                         android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/tv_modification_sex"
-                        android:layout_width="match_parent"
+                    <RadioGroup
+                        android:id="@+id/rg_sex"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="10dp"
-                        android:text="男"
-                        android:textColor="@android:color/black"
-                        android:textSize="15sp" />
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/male"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="男"
+                            android:textSize="15sp" />
+
+                        <RadioButton
+                            android:id="@+id/femle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="女"
+                            android:textSize="15sp" />
+
+                    </RadioGroup>
 
 
                 </LinearLayout>
@@ -147,7 +160,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_margin="10dp"
                         android:text="手机号"
-                        android:textColor="@android:color/black"
                         android:textSize="15sp" />
 
 

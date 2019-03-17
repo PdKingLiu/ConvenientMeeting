@@ -13,7 +13,7 @@ import org.litepal.crud.LitePalSupport;
  */
 public class UserInfo extends LitePalSupport implements Parcelable{
     @SerializedName("id")
-    public int id;
+    public int userId;
     @SerializedName("username")
     public String username;
     @SerializedName("password")
@@ -40,7 +40,7 @@ public class UserInfo extends LitePalSupport implements Parcelable{
     @Override
     public String toString() {
         return "UserInfo{" +
-                "id=" + id +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", sex='" + sex + '\'' +
@@ -55,8 +55,8 @@ public class UserInfo extends LitePalSupport implements Parcelable{
                 '}';
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int userId) {
+        this.userId = userId;
     }
 
     public void setUsername(String username) {
@@ -103,8 +103,8 @@ public class UserInfo extends LitePalSupport implements Parcelable{
         this.faceData = faceData;
     }
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
     public String getUsername() {
@@ -159,7 +159,7 @@ public class UserInfo extends LitePalSupport implements Parcelable{
     }
 
     protected UserInfo(Parcel in) {
-        id = in.readInt();
+        userId = in.readInt();
         username = in.readString();
         password = in.readString();
         sex = in.readString();
@@ -192,7 +192,7 @@ public class UserInfo extends LitePalSupport implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeInt(userId);
         dest.writeString(username);
         dest.writeString(password);
         dest.writeString(sex);

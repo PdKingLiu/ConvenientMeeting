@@ -66,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
     private AlertDialog dialog;
 
-    private LoginBean loginBean;
+    private UserToken userToken;
+
+    private UserInfo userInfo;
+
+    private LoginBean loginInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initUser() {
-        loginBean = getIntent().getParcelableExtra("userBean");
-        if (loginBean == null) {
+        userInfo = getIntent().getParcelableExtra("userInfo");
+        userToken = getIntent().getParcelableExtra("userToken");
+        if (userInfo == null) {
             List<UserAccount> accountList = LitePal.findAll(UserAccount.class);
             UserAccount account;
             if (accountList == null || accountList.size() == 0) {
@@ -122,12 +127,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call call, Response response) throws IOException {
                         hideProgressBar();
                         String message = response.body().string();
-                        loginBean = new Gson().fromJson(message, LoginBean.class);
-                        if (loginBean != null && loginBean.status == 1) {
+                        loginInfo = new Gson().fromJson(message, LoginBean.class);
+                        if (loginInfo != null && loginInfo.status == 1) {
                             showToast("密码错误,请重新登录");
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             finish();
                         } else {
+                            userToken = new UserToken(loginInfo.msg);
+                            userInfo = loginInfo.data;
                             loadDate();
                         }
                     }
@@ -141,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
     private void loadDate() {
         LitePal.deleteAll(UserToken.class);
         LitePal.deleteAll(UserInfo.class);
-        loginBean.data.save();
-        UserToken token = new UserToken();
-        token.setToken(loginBean.msg);
-        token.save();
+        Log.d(TAG, "userToken: "+userToken);
+        Log.d(TAG, "userInfo: "+userInfo);
+        userToken.save();
+        userInfo.save();
     }
 
 

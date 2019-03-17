@@ -22,6 +22,7 @@ import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.PermissionUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 
@@ -137,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
-                Log.d("Lpp", "onFailure: " + e.getMessage());
+                Log.d("Lpp", "登录失败: " + e.getMessage());
                 showToast("登录失败");
             }
 
@@ -145,9 +146,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String message = response.body().string();
-//                Log.d("Lpp", "onResponse: " + message);
                 LoginBean loginBean = new Gson().fromJson(message, LoginBean.class);
-//                Log.d("Lpp", "onResponse: " + loginBean);
                 if (loginBean != null && loginBean.status == 1) {
                     showToast("账号或密码错误");
                 } else {
@@ -156,8 +155,20 @@ public class LoginActivity extends AppCompatActivity {
                     account.setPhone(phone);
                     account.setPassword(password);
                     account.save();
+
+                    LitePal.deleteAll(UserToken.class);
+                    UserToken userToken = new UserToken();
+                    userToken.setToken(loginBean.msg);
+                    userToken.save();
+
+                    LitePal.deleteAll(UserInfo.class);
+                    UserInfo userInfo = new UserInfo();
+                    userInfo = loginBean.data;
+                    userInfo.save();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("userBean", loginBean);
+                    intent.putExtra("userInfo", userInfo);
+                    intent.putExtra("userToken", userToken);
                     startActivity(intent);
                     ActivityContainer.removeAllActivity();
                 }

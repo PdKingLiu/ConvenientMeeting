@@ -40,4 +40,12 @@ public class Api {
 
     public static String[] GetUserInfoBody = {"phone"};
 
+    public static String UpDateUserInfoApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/user/update.do";
+
+    public static String[] UpDateUserInfoHeader = {"Content-Type", "multipart/form-data"};
+
+    public static String[] UpDateUserInfoBody = {"id", "phone", "password", "email", "sex",
+            "avatar"};
+
 }

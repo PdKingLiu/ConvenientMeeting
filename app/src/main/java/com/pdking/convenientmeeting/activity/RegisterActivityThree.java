@@ -29,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
@@ -245,10 +247,10 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         }
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.male:
-                userInfo.setSex("男");
+                userInfo.setSex("man");
                 break;
             default:
-                userInfo.setSex("女");
+                userInfo.setSex("woman");
                 break;
         }
         userInfo.setUsername(etUserName.getText().toString());
@@ -476,7 +478,12 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             case CLIP_REQUEST:
                 if (resultCode == RESULT_OK) {
                     try {
-                        Glide.with(this).load(endClipFile).into(userImageView);
+                        Log.d(TAG, "endClipFile.length " + endClipFile.length());
+                        Glide.with(this)
+                                .load(endClipFile)
+                                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
+                                        .NONE).skipMemoryCache(true))
+                                .into(userImageView);
                             /*userInfo.setIcon(BitmapFactory.decodeStream(getContentResolver()
                                     .openInputStream(endClipUri)));*/
                         File f = new File(getExternalFilesDir(null) + "/user/userIcon");
@@ -526,11 +533,11 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
         intent.putExtra("crop", "true");
         // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
+        intent.putExtra("aspectX", 500);
+        intent.putExtra("aspectY", 500);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 150);
-        intent.putExtra("outputY", 150);
+        intent.putExtra("outputX", 500);
+        intent.putExtra("outputY", 500);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, endClipUri);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("noFaceDetection", true);
