@@ -141,13 +141,13 @@ public class MeetingMineFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishLoadMore(3000);
+                refreshLayout.finishLoadMore();
             }
         });
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh(3000);
+                refreshLayout.finishRefresh();
             }
         });
     }
@@ -158,6 +158,15 @@ public class MeetingMineFragment extends Fragment {
             MineMeetingBean mineMeetingBean = new MineMeetingBean();
             beanList.add(mineMeetingBean);
         }
+    }
+
+    public void autoRefresh() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.autoRefresh();
+            }
+        });
     }
 
     @Override

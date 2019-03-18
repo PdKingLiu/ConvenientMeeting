@@ -35,7 +35,7 @@ public class MeetingHistoryFragment extends Fragment {
 
     RecyclerView mRecyclerView;
 
-    SmartRefreshLayout mSmartRefreshLayout;
+    SmartRefreshLayout refreshLayout;
 
     private List<MeetingBean> meetingBeanList;
 
@@ -45,6 +45,14 @@ public class MeetingHistoryFragment extends Fragment {
     public MeetingHistoryFragment() {
     }
 
+    public void autoRefresh() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.autoRefresh();
+            }
+        });
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -53,10 +61,6 @@ public class MeetingHistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    public SmartRefreshLayout getRefreshLayout() {
-        return mSmartRefreshLayout;
     }
 
     public static MeetingHistoryFragment newInstance() {
@@ -88,19 +92,19 @@ public class MeetingHistoryFragment extends Fragment {
     }
 
     private void initFlush() {
-        mSmartRefreshLayout.setEnableAutoLoadMore(false);
-        mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+        refreshLayout.setEnableAutoLoadMore(false);
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 loadMore();
-                mSmartRefreshLayout.finishLoadMore();
+                refreshLayout.finishLoadMore();
             }
         });
-        mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 refresh();
-                mSmartRefreshLayout.finishRefresh();
+                refreshLayout.finishRefresh();
             }
         });
     }
@@ -184,7 +188,7 @@ public class MeetingHistoryFragment extends Fragment {
     }
 
     private void initView(View view) {
-        mSmartRefreshLayout = view.findViewById(R.id.srl_flush);
+        refreshLayout = view.findViewById(R.id.srl_flush);
         mRecyclerView = view.findViewById(R.id.rv_history);
     }
 

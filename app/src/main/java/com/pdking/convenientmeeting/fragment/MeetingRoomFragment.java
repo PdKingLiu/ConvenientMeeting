@@ -38,7 +38,6 @@ public class MeetingRoomFragment extends Fragment {
     private RecyclerView recyclerView;
     private MeetingRoomAdapter roomAdapter;
     private List<MeetingRoomBean> roomBeanList;
-    private boolean isFirst = true;
 
     @Override
     public void onStart() {
@@ -48,10 +47,6 @@ public class MeetingRoomFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (isFirst) {
-            refreshLayout.autoRefresh();
-            isFirst = false;
-        }
     }
 
     public MeetingRoomFragment() {
@@ -109,6 +104,15 @@ public class MeetingRoomFragment extends Fragment {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 refreshLayout.finishLoadMore();
+            }
+        });
+    }
+
+    public void autoRefresh() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.autoRefresh();
             }
         });
     }

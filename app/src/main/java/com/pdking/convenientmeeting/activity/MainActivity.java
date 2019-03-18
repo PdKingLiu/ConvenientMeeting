@@ -31,6 +31,7 @@ import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
+import com.pdking.convenientmeeting.fragment.MeetingRoomFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             finish();
                         } else {
+                            showToast("登录成功");
                             userToken = new UserToken(loginInfo.msg);
                             userInfo = loginInfo.data;
                             loadDate();
@@ -154,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
         LitePal.deleteAll(UserInfo.class);
         userToken.save();
         userInfo.save();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof MeetingRoomFragment) {
+                ((MeetingRoomFragment) fragment).autoRefresh();
+            }
+        }
     }
 
 

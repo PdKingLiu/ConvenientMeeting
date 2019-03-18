@@ -158,22 +158,19 @@ public class MeetingFragment extends Fragment {
         switch (i) {
             case 0:
                 if (isFirst[0]) {
-                    ((MeetingMineFragment) fragmentList.get(0)).getRefreshLayout()
-                            .autoRefresh();
+                    ((MeetingMineFragment) fragmentList.get(0)).autoRefresh();
                     isFirst[0] = false;
                 }
                 break;
             case 1:
                 if (isFirst[1]) {
-                    ((MeetingRoomFragment) fragmentList.get(1)).getRefreshLayout()
-                            .autoRefresh();
+                    ((MeetingRoomFragment) fragmentList.get(1)).autoRefresh();
                     isFirst[1] = false;
                 }
                 break;
             case 2:
                 if (isFirst[2]) {
-                    ((MeetingHistoryFragment) fragmentList.get(2)).getRefreshLayout()
-                            .autoRefresh();
+                    ((MeetingHistoryFragment) fragmentList.get(2)).autoRefresh();
                     isFirst[2] = false;
                 }
                 break;
