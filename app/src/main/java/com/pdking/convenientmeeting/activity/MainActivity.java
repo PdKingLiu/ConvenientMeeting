@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -51,6 +52,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = "Lpp";
+
+    final private int UPDATE_USER_DATA = 1;
 
     @BindView(R.id.bnv)
     BottomNavigationView mBottomNavigationView;
@@ -149,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
     private void loadDate() {
         LitePal.deleteAll(UserToken.class);
         LitePal.deleteAll(UserInfo.class);
-        Log.d(TAG, "userToken: "+userToken);
-        Log.d(TAG, "userInfo: "+userInfo);
         userToken.save();
         userInfo.save();
     }
@@ -291,11 +292,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    @Override
-    public Window getWindow() {
-        return super.getWindow();
-    }
-
     private void applyPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA) != PackageManager
@@ -320,9 +316,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Log.d("Lpp", "onActivityResult: " + "Main"+(requestCode)+resultCode+data);
         switch (requestCode) {
-            case 1:
+            case UPDATE_USER_DATA:
+                if (resultCode == RESULT_OK && data != null) {
+                    List<Fragment> fragments = getSupportFragmentManager().getFragments();
+                    for (Fragment f : fragments) {
+                        if (f instanceof MineFragment) {
+                            ((MineFragment) f).onActivityResult(requestCode, resultCode, data);
+                        }
+                        if (f instanceof RecordFragment) {
+                            ((RecordFragment) f).onActivityResult(requestCode, resultCode, data);
+                        }
+                    }
+                }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.pdking.convenientmeeting.fragment;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -19,25 +25,45 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
+import com.pdking.convenientmeeting.db.UserInfo;
 
+import org.litepal.LitePal;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * @author liupeidong
  * Created on 2019/1/30 17:52
  */
-public class RecordFragment extends Fragment {
+public class RecordFragment extends Fragment implements View.OnClickListener {
+
+    final private int UPDATE_USER_DATA = 1;
 
     private View mView;
 
     private PieChart pieChart;
+
+    private CircleImageView civUserIcon;
+
+    private UserInfo userInfo;
+
+    private File iconFile;
+
+    private LinearLayout llUserData;
 
     private static RecordFragment INSTANCE = null;
 
@@ -107,9 +133,84 @@ public class RecordFragment extends Fragment {
         pieChart.setEntryLabelTextSize(12f);
     }
 
-    private void initView(View mView) {
-        pieChart = mView.findViewById(R.id.pie_chart);
+    private void initView(View view) {
+        pieChart = view.findViewById(R.id.pie_chart);
+        civUserIcon = view.findViewById(R.id.civ_user_icon);
+        llUserData = view.findViewById(R.id.ll_user_data);
+        llUserData.setOnClickListener(this);
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case UPDATE_USER_DATA:
+                if (resultCode == RESULT_OK && data != null) {
+                    int status = data.getIntExtra("status", -1);
+                    if (status == 1) {
+                        changeFragmentUI();
+                    }
+                }
+        }
+    }
+
+    private void changeFragmentUI() {
+        final UserInfo info = LitePal.findAll(UserInfo.class).get(0);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                boolean flag = false;
+                if (!info.avatarUrl.equals(userInfo.avatarUrl)) {
+                    try {
+                        Bitmap bitmap = new Compressor(getContext()).compressToBitmap(iconFile);
+                        civUserIcon.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    flag = true;
+                }
+                if (flag) {
+                    userInfo = info;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadUserData();
+    }
+
+    private void loadUserData() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        iconFile = new File(getContext().getExternalFilesDir(null) + "/user/userIcon",
+                "user_icon_clip_" + userInfo.getPhone() + ".jpg");
+        if (iconFile.exists()) {
+            Log.d("Lpp", "civUserIcon:file ");
+            Glide.with(this)
+                    .load(iconFile)
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
+                            .NONE).skipMemoryCache(true))
+                    .into(civUserIcon);
+        } else {
+            Log.d("Lpp", "civUserIcon:avatarUrl ");
+            Glide.with(this)
+                    .load(userInfo.avatarUrl)
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
+                            .NONE).skipMemoryCache(true))
+                    .into(civUserIcon);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_user_data:
+                startActivityForResult(new Intent(getContext(), ModificationUserDataActivity
+                        .class), UPDATE_USER_DATA);
+                break;
+
+        }
+    }
 }

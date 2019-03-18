@@ -56,7 +56,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ModificationUserDataActivity extends AppCompatActivity {
+public class ModificationUserDataActivity extends AppCompatActivity implements TitleView
+        .LeftClickListener, TitleView.RightClickListener
+
+{
 
     private AlertDialog dialog;
 
@@ -70,6 +73,7 @@ public class ModificationUserDataActivity extends AppCompatActivity {
 
     private boolean iconUpdateFlag = false;
     private boolean iconUpdateFlag2 = false;
+    private boolean haveUpdateOnce = false;
 
     private final int ALBUM_REQUEST = 1;
     private final int CLIP_REQUEST = 2;
@@ -187,7 +191,6 @@ public class ModificationUserDataActivity extends AppCompatActivity {
                 }
                 break;
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void goClip(Uri data) {
@@ -205,11 +208,11 @@ public class ModificationUserDataActivity extends AppCompatActivity {
         // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
         intent.putExtra("crop", "true");
         // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 600);
-        intent.putExtra("aspectY", 600);
+        intent.putExtra("aspectX", 400);
+        intent.putExtra("aspectY", 400);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 600);
-        intent.putExtra("outputY", 600);
+        intent.putExtra("outputX", 400);
+        intent.putExtra("outputY", 400);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, clipUri);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("noFaceDetection", true);
@@ -239,24 +242,9 @@ public class ModificationUserDataActivity extends AppCompatActivity {
                         finish();
                     }
                 }).create();
-        title.setRightClickListener(new TitleView.RightClickListener() {
-            @Override
-            public void OnRightButtonClick() {
-                saveUserData();
-            }
-        });
+        title.setRightClickListener(this);
         title.setRightTextSize(18f);
-        title.setLeftClickListener(new TitleView.LeftClickListener() {
-            @Override
-            public void OnLeftButtonClick() {
-                if (isHaveChange()) {
-                    dialogLeave.show();
-                } else {
-                    setResult(-1);
-                    finish();
-                }
-            }
-        });
+        title.setLeftClickListener(this);
         requestUserData();
     }
 
@@ -365,18 +353,43 @@ public class ModificationUserDataActivity extends AppCompatActivity {
                     LitePal.deleteAll(UserInfo.class);
                     userInfo = dataBean.data;
                     dataBean.data.save();
-                    Log.d("Lpp", "onResponse: " + dataBean.data);
                     Intent intent = new Intent();
-                    intent.putExtra("status", userInfo);
-                    Log.d("Lpp", "onResponse: " + 1);
+                    intent.putExtra("status", 1);
                     setResult(RESULT_OK, intent);
-                    Log.d("Lpp", "onResponse: " + 2);
                     showToast("修改成功");
                     iconUpdateFlag = true;
+                    haveUpdateOnce = true;
+                    saveNewIcon();
                 }
             }
         });
 
+    }
+
+    private void saveNewIcon() {
+        if (iconUpdateFlag2 && iconUpdateFlag) {
+            try {
+                File f = new File(getExternalFilesDir(null) + "/user/userIcon");
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
+                        + ".jpg");
+                if (file.exists()) {
+                    file.delete();
+                }
+                IOUtil.copyFile(clipFile, file);
+                if (cameraFile != null && cameraFile.exists()) {
+                    cameraFile.delete();
+                }
+                if (clipFile != null && clipFile.exists()) {
+                    clipFile.delete();
+                }
+            } catch (IOException e) {
+                e.getMessage();
+                Log.d("Lpp", "e.getMessage(): " + e.getMessage());
+            }
+        }
     }
 
     private boolean isHaveChange() {
@@ -402,19 +415,12 @@ public class ModificationUserDataActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (isHaveChange()) {
-            dialogLeave.show();
-        } else {
-            setResult(-1);
-            finish();
-        }
+        OnLeftButtonClick();
     }
 
     private void requestUserData() {
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         token = LitePal.findAll(UserToken.class).get(0);
-        Log.d("Lpp", "userToken: " + token);
-        Log.d("Lpp", "userInfo: " + userInfo);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
         body.add(Api.GetUserInfoBody[0], userInfo.getPhone());
@@ -522,36 +528,26 @@ public class ModificationUserDataActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d("Lpp", "onDestroy: ");
         if (dialog != null) {
             if (dialog.isShowing()) {
                 dialog.hide();
             }
             dialog.dismiss();
         }
-        if (iconUpdateFlag2 && iconUpdateFlag) {
-            try {
-                File f = new File(getExternalFilesDir(null) + "/user/userIcon");
-                if (!f.exists()) {
-                    f.mkdirs();
-                }
-                File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
-                        + ".jpg");
-                if (file.exists()) {
-                    file.delete();
-                }
-                IOUtil.copyFile(clipFile, file);
-                if (cameraFile != null && cameraFile.exists()) {
-                    cameraFile.delete();
-                }
-                if (clipFile != null && clipFile.exists()) {
-                    clipFile.delete();
-                }
-            } catch (IOException e) {
-                e.getMessage();
-                Log.d("Lpp", "e.getMessage(): " + e.getMessage());
-            }
-        }
         super.onDestroy();
+    }
+
+    @Override
+    public void OnLeftButtonClick() {
+        if (isHaveChange()) {
+            dialogLeave.show();
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void OnRightButtonClick() {
+        saveUserData();
     }
 }

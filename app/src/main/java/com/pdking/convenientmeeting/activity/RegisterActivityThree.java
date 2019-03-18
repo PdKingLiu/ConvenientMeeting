@@ -131,10 +131,8 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 .setCancelable(false)
                 .create();
         userInfo = new UserInfo();
-//        userInfo.setPhone(getIntent().getStringExtra("phone_number"));
-//        userInfo.setPassword(getIntent().getStringExtra("password"));
-        userInfo.setPhone("15829217780");
-        userInfo.setPassword("111111");
+        userInfo.setPhone(getIntent().getStringExtra("phone_number"));
+        userInfo.setPassword(getIntent().getStringExtra("password"));
         tvPhoneNumber.setText(userInfo.getPhone());
     }
 
@@ -438,6 +436,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Log.d(TAG, "onActivityResult: " + requestCode + resultCode + data);
         switch (requestCode) {
             case FACE_ACTIVITY:
                 if (data != null) {
@@ -533,11 +532,11 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
         intent.putExtra("crop", "true");
         // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 500);
-        intent.putExtra("aspectY", 500);
+        intent.putExtra("aspectX", 400);
+        intent.putExtra("aspectY", 400);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 500);
-        intent.putExtra("outputY", 500);
+        intent.putExtra("outputX", 400);
+        intent.putExtra("outputY", 400);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, endClipUri);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("noFaceDetection", true);
