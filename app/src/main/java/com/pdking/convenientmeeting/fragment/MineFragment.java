@@ -18,6 +18,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
+import com.pdking.convenientmeeting.activity.SettingAndSafetyActivity;
+import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
 
 import org.litepal.LitePal;
@@ -39,6 +41,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private static MineFragment INSTANCE = null;
 
     private RelativeLayout rlUserData;
+
+    private RelativeLayout rlSettingSafety;
 
     private CircleImageView civUserIcon;
 
@@ -70,12 +74,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         rlUserData = view.findViewById(R.id.rl_user_data);
         civUserIcon = view.findViewById(R.id.civ_user_icon);
         tvUserEmail = view.findViewById(R.id.tv_user_email);
+        rlSettingSafety = view.findViewById(R.id.rl_setting_safety);
         initListener();
     }
 
     private void initListener() {
         rlUserData.setOnClickListener(this);
         civUserIcon.setOnClickListener(this);
+        rlSettingSafety.setOnClickListener(this);
     }
 
     @Override
@@ -84,8 +90,12 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             case R.id.rl_user_data:
             case R.id.civ_user_icon:
                 getActivity().startActivityForResult(new Intent(getContext(),
-                        ModificationUserDataActivity
-                                .class), UPDATE_USER_DATA);
+                        ModificationUserDataActivity.class), UPDATE_USER_DATA);
+                break;
+            case R.id.rl_setting_safety:
+                ActivityContainer.addActivity(getActivity());
+                getActivity().startActivity(new Intent(getContext(), SettingAndSafetyActivity
+                        .class));
                 break;
         }
     }
@@ -109,8 +119,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 boolean flag[] = {false, false};
+                Log.d("Lpp", "info.email: "+info.email);
+                Log.d("Lpp", "userInfo.email: "+userInfo.email);
                 if (!info.email.equals(userInfo.email)) {
-                    tvUserEmail.setText("邮箱：" + userInfo.email);
+                    tvUserEmail.setText("邮箱：" + info.email);
                     flag[0] = true;
                 }
                 if (!info.avatarUrl.equals(userInfo.avatarUrl)) {

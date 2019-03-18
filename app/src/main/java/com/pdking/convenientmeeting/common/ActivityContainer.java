@@ -11,10 +11,16 @@ import java.util.List;
  */
 public class ActivityContainer {
 
-    private static List<Activity> activities = new ArrayList<>();
+    private static ArrayList<Activity> activities = new ArrayList<>();
 
     public static void addActivity(Activity activity) {
         activities.add(activity);
+    }
+
+    public static void removeAppointActivity(Activity activity) {
+        if (activity != null && !activity.isFinishing()) {
+            activities.remove(activity);
+        }
     }
 
     public static void removeAllActivity() {

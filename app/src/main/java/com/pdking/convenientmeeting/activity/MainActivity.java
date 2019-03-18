@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                             showToast("登录成功");
                             userToken = new UserToken(loginInfo.msg);
                             userInfo = loginInfo.data;
+                            ActivityContainer.removeAllActivity();
                             loadDate();
                         }
                     }
