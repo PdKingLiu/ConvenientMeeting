@@ -18,7 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
-import com.pdking.convenientmeeting.activity.SettingAndSafetyActivity;
+import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
 
@@ -94,7 +94,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rl_setting_safety:
                 ActivityContainer.addActivity(getActivity());
-                getActivity().startActivity(new Intent(getContext(), SettingAndSafetyActivity
+                getActivity().startActivity(new Intent(getContext(), AccountAndSafetyActivity
                         .class));
                 break;
         }

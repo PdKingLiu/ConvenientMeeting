@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".activity.SettingAndSafetyActivity">
+    tools:context=".activity.AccountAndSafetyActivity">
 
     <com.pdking.convenientmeeting.weight.TitleView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         app:leftTextVisibility="false"
-        app:titleText="设置与安全">
+        app:titleText="账号与安全">
 
     </com.pdking.convenientmeeting.weight.TitleView>
 
@@ -77,6 +77,39 @@
             </LinearLayout>
 
             <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_right_gray" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_out_login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:text="退出登录"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:visibility="gone"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentRight="true"

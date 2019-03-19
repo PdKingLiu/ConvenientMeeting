@@ -15,19 +15,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingAndSafetyActivity extends AppCompatActivity {
+public class AccountAndSafetyActivity extends AppCompatActivity {
 
     @BindView(R.id.rl_update_phone)
     RelativeLayout rlUpdatePhone;
     @BindView(R.id.rl_update_password)
     RelativeLayout rlUpdatePassword;
+    @BindView(R.id.rl_out_login)
+    RelativeLayout rlOutLogin;
     @BindView(R.id.title)
     TitleView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_setting_and_safety);
+        setContentView(R.layout.layout_account_and_safety);
         ActivityContainer.addActivity(this);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
@@ -39,7 +41,7 @@ public class SettingAndSafetyActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.rl_update_password, R.id.rl_update_phone})
+    @OnClick({R.id.rl_update_password, R.id.rl_update_phone, R.id.rl_out_login})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_update_password:
@@ -47,6 +49,10 @@ public class SettingAndSafetyActivity extends AppCompatActivity {
                 break;
             case R.id.rl_update_phone:
                 startActivity(new Intent(this, UpdatePhoneActivity.class));
+                break;
+            case R.id.rl_out_login:
+                startActivity(new Intent(this, LoginActivity.class));
+                ActivityContainer.removeAllActivity();
                 break;
         }
     }

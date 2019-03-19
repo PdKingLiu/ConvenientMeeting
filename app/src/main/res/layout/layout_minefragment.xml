@@ -202,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
-                        android:text="设置与安全"
+                        android:text="账号与安全"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
                 </LinearLayout>

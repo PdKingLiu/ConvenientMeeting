@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof MeetingRoomFragment) {
+                Log.d(TAG, "loadDate: ");
                 ((MeetingRoomFragment) fragment).autoRefresh();
             }
         }
