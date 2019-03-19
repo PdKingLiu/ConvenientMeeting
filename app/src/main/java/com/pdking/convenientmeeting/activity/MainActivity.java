@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         hideProgressBar();
                         Log.d("Lpp", "onFailure: " + e.getMessage());
                         showToast("连接登录失败,请重新登录");
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
                     }
 

@@ -45,7 +45,14 @@ public class Api {
 
     public static String[] UpDateUserInfoHeader = {"Content-Type", "multipart/form-data"};
 
-    public static String[] UpDateUserInfoBody = {"id", "phone", "password", "email", "sex",
-            "avatar"};
+    public static String[] UpDateUserInfoBody = {"id", "phone", "email", "sex", "avatar"};
+
+    public static String UpDateUserPasswordApi = "http://www.shidongxuan.top/smartMeeting_Web/user/updatePassword.do";
+
+    public static String[] UpDateUserPasswordHeader = {"Content-Type", "application/x-www-form-urlencoded"};
+
+    public static String[] UpDateUserPasswordBody = {"userId", "oldPassword", "newPassword" };
+
+
 
 }

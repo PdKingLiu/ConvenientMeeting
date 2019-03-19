@@ -101,10 +101,6 @@ public class UpdatePasswordActivity extends AppCompatActivity {
             showToast("请输入正确位数的密码（6~16位）");
             return;
         }
-        if (!oldPassword.equals(newPassword)) {
-            showToast("两次密码不一致");
-            return;
-        }
         dialog = new AlertDialog.Builder(this)
                 .setView(new ProgressBar(this))
                 .setCancelable(false)
@@ -116,16 +112,14 @@ public class UpdatePasswordActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.UpDateUserInfoBody[0], userInfo.getUserId() + "");
-        body.add(Api.UpDateUserInfoBody[1], userInfo.getPhone());
-        body.add(Api.UpDateUserInfoBody[2], newPassword);
-        body.add(Api.UpDateUserInfoBody[3], userInfo.getEmail());
-        body.add(Api.UpDateUserInfoBody[4], userInfo.getSex());
+        body.add(Api.UpDateUserPasswordBody[0], userInfo.getUserId() + "");
+        body.add(Api.UpDateUserPasswordBody[1], oldPassword);
+        body.add(Api.UpDateUserPasswordBody[2], newPassword);
         Request request = new Request.Builder()
-                .header(Api.UpDateUserInfoHeader[0], Api.UpDateUserInfoHeader[1])
+                .header(Api.UpDateUserPasswordHeader[0], Api.UpDateUserPasswordHeader[1])
                 .addHeader("token", userToken.getToken())
                 .post(body.build())
-                .url(Api.UpDateUserInfoApi)
+                .url(Api.UpDateUserPasswordApi)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override

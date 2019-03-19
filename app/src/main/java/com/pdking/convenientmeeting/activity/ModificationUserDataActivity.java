@@ -233,7 +233,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                 .setCancelable(false)
                 .create();
         dialogLeave = new AlertDialog.Builder(ModificationUserDataActivity.this)
-                .setCancelable(true)
+                .setCancelable(false)
                 .setTitle("退出将不会做任何保存，确定要退出吗？")
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -283,11 +283,10 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         MultipartBody.Builder body = new MultipartBody.Builder();
         body.addFormDataPart(Api.UpDateUserInfoBody[0], userInfo.getUserId() + "");
         body.addFormDataPart(Api.UpDateUserInfoBody[1], userInfo.getPhone() + "");
-        body.addFormDataPart(Api.UpDateUserInfoBody[2], "");
-        body.addFormDataPart(Api.UpDateUserInfoBody[3], email);
-        body.addFormDataPart(Api.UpDateUserInfoBody[4], sex);
+        body.addFormDataPart(Api.UpDateUserInfoBody[2], email);
+        body.addFormDataPart(Api.UpDateUserInfoBody[3], sex);
         if (updateFlag[2]) {
-            body.addFormDataPart(Api.UpDateUserInfoBody[5], clipFile.getName(), RequestBody.create
+            body.addFormDataPart(Api.UpDateUserInfoBody[4], clipFile.getName(), RequestBody.create
                     (MediaType.parse("image/jpeg"), clipFile));
         }
         final Request request = new Request.Builder()
@@ -442,6 +441,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
                 dataBean = new Gson().fromJson(msg, UserDataBean.class);
                 if (dataBean.status == 1) {
                     setErrorPage(true);
