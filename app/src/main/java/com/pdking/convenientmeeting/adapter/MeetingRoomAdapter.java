@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.MeetingRoomBean;
+import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 
 import java.util.List;
 
@@ -23,9 +25,9 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
         implements View.OnClickListener {
 
     private Context mContext;
-    private List<MeetingRoomBean> meetingRoomBeanList;
+    private List<OneMeetingRoomMessage> roomMessageList;
     private OnItemClickListener itemClickListener;
-
+    static int i = 1;
 
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -43,9 +45,9 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
     }
 
 
-    public MeetingRoomAdapter(Context mContext, List<MeetingRoomBean> meetingRoomBeanList) {
+    public MeetingRoomAdapter(Context mContext, List<OneMeetingRoomMessage> roomMessageList) {
         this.mContext = mContext;
-        this.meetingRoomBeanList = meetingRoomBeanList;
+        this.roomMessageList = roomMessageList;
     }
 
     @NonNull
@@ -59,13 +61,13 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        MeetingRoomBean meetingRoomBean = meetingRoomBeanList.get(i);
-        viewHolder.setDate(meetingRoomBean, i);
+        OneMeetingRoomMessage oneMeetingRoomMessage = roomMessageList.get(i);
+        viewHolder.setDate(oneMeetingRoomMessage, i);
     }
 
     @Override
     public int getItemCount() {
-        return meetingRoomBeanList.size();
+        return roomMessageList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -88,13 +90,27 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
             line = itemView.findViewById(R.id.view_line);
         }
 
-        void setDate(MeetingRoomBean meetingRoomBean, int i) {
+        void setDate(OneMeetingRoomMessage oneMeetingRoomMessage, int i) {
             view.setTag(i);
-            if (i == meetingRoomBeanList.size() - 1) {
+            if (i == roomMessageList.size() - 1) {
                 line.setVisibility(View.GONE);
             } else {
                 line.setVisibility(View.VISIBLE);
             }
+            tvRoomName.setText(oneMeetingRoomMessage.roomNumber);
+            switch (oneMeetingRoomMessage.status) {
+                case 1:
+                    stvStatus.setText("空闲");
+                    stvStatus.setSlantedBackgroundColor(Color.GREEN);
+                case 2:
+                    stvStatus.setText("使用中");
+                    stvStatus.setSlantedBackgroundColor(Color.RED);
+                case 3:
+                    stvStatus.setText("空闲");
+                    stvStatus.setSlantedBackgroundColor(Color.LTGRAY);
+            }
+            tvRank.setText("使用榜第 " + i++ + " 名");
+            tvPeopleSum.setText("可容纳人数" + oneMeetingRoomMessage.content + "人");
         }
     }
 

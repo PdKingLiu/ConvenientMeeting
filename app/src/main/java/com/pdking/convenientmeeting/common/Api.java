@@ -53,6 +53,8 @@ public class Api {
 
     public static String[] UpDateUserPasswordBody = {"userId", "oldPassword", "newPassword" };
 
+    public static String GetMeetingRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/room/getAllRooms.do";
+
 
 
 }

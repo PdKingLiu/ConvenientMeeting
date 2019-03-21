@@ -8,6 +8,15 @@
     android:orientation="vertical"
     tools:context=".activity.ModificationUserDataActivity">
 
+    <com.pdking.convenientmeeting.weight.TitleView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:leftTextVisibility="false"
+        app:rightText="保存"
+        app:rightTextVisibility="true"
+        app:titleText="我的资料" />
+
     <TextView
         android:id="@+id/tv_net_error"
         android:layout_width="match_parent"
@@ -17,14 +26,6 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <com.pdking.convenientmeeting.weight.TitleView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        app:leftTextVisibility="false"
-        app:rightText="保存"
-        app:rightTextVisibility="true"
-        app:titleText="我的资料" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_data_view"

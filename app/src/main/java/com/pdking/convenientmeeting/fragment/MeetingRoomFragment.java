@@ -1,43 +1,61 @@
 package com.pdking.convenientmeeting.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.AllMeetingRoomMessageBean;
 import com.pdking.convenientmeeting.db.MeetingRoomBean;
+import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.litepal.LitePal;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-public class MeetingRoomFragment extends Fragment {
+public class MeetingRoomFragment extends Fragment implements View.OnClickListener {
 
     private static MeetingRoomFragment meetingRoomFragment;
 
     private SmartRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private MeetingRoomAdapter roomAdapter;
-    private List<MeetingRoomBean> roomBeanList;
+    private RelativeLayout rlHaveNothing;
+    private List<OneMeetingRoomMessage> roomMessageList;
+    private AllMeetingRoomMessageBean roomMessageBean;
+
+    private UserInfo userInfo;
+    private UserToken userToken;
 
     @Override
     public void onStart() {
@@ -71,20 +89,28 @@ public class MeetingRoomFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initList();
+        initDataAndList();
         initRecycleViewAndRefresh();
     }
 
-    private void initList() {
-        roomBeanList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            MeetingRoomBean meetingRoomBean = new MeetingRoomBean();
-            roomBeanList.add(meetingRoomBean);
+    private void initDataAndList() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
+
+        roomMessageList = LitePal.findAll(OneMeetingRoomMessage.class);
+
+        if (roomMessageList.size() == 0) {
+            rlHaveNothing.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            rlHaveNothing.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void initRecycleViewAndRefresh() {
-        roomAdapter = new MeetingRoomAdapter(getContext(), roomBeanList);
+        roomAdapter = new MeetingRoomAdapter(getContext(), roomMessageList);
         roomAdapter.setItemClickListener(new MeetingRoomAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -97,13 +123,83 @@ public class MeetingRoomFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh();
+                requestRefresh();
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishLoadMore();
+                requestLoadMore();
+            }
+        });
+    }
+
+    private void requestLoadMore() {
+        refreshLayout.finishLoadMore();
+        AllMeetingRoomMessageBean bean;
+    }
+
+    private void requestRefresh() {
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder body = new FormBody.Builder();
+        Request request = new Request.Builder()
+                .header("token", userToken.getToken())
+                .url(Api.GetMeetingRoomApi)
+                .post(body.build())
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                refreshLayout.finishRefresh(2000, false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+                roomMessageBean = new Gson().fromJson(msg, AllMeetingRoomMessageBean.class);
+                if (roomMessageBean.status == 0) {
+                    refreshLayout.finishRefresh(2000, true);
+                    roomMessageList.clear();
+                    roomMessageList.addAll(roomMessageBean.data);
+                    Log.d("Lpp", "onResponse: " + roomMessageList.size());
+                    LitePal.deleteAll(OneMeetingRoomMessage.class);
+                    LitePal.saveAll(roomMessageList);
+                    notifyDataChanged();
+                } else {
+                    refreshLayout.finishRefresh(2000, false);
+                }
+            }
+        });
+    }
+
+    private void notifyDataChanged() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (roomAdapter != null && roomMessageList != null) {
+                    if (roomMessageList.size() == 0) {
+                        rlHaveNothing.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        rlHaveNothing.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        Log.d("Lpp", "run: ");
+                        roomAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    rlHaveNothing.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void showToast(final String text) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -129,5 +225,20 @@ public class MeetingRoomFragment extends Fragment {
     private void initView(View view) {
         refreshLayout = view.findViewById(R.id.srl_flush);
         recyclerView = view.findViewById(R.id.rv_room);
+        rlHaveNothing = view.findViewById(R.id.rl_have_nothing);
+        initListener();
+    }
+
+    private void initListener() {
+        rlHaveNothing.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_have_nothing:
+                refreshLayout.autoRefresh();
+                break;
+        }
     }
 }

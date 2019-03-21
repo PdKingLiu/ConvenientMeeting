@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "Main onCreate: ");
         setContentView(R.layout.layout_main);
         SystemUtil.setTitleMode(getWindow());
         applyPermission();
@@ -93,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initUser() {
+        dialog = new AlertDialog.Builder(this)
+                .setView(new ProgressBar(this))
+                .setCancelable(false)
+                .create();
         userInfo = getIntent().getParcelableExtra("userInfo");
         userToken = getIntent().getParcelableExtra("userToken");
         if (userInfo == null) {
@@ -102,10 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             } else {
-                dialog = new AlertDialog.Builder(this)
-                        .setView(new ProgressBar(this))
-                        .setCancelable(false)
-                        .create();
                 account = accountList.get(0);
                 final String phone = account.getPhone();
                 final String password = account.getPassword();
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof MeetingRoomFragment) {
-                Log.d(TAG, "loadDate: ");
+                Log.d(TAG, "loadDate: MeetingRoomFragment");
                 ((MeetingRoomFragment) fragment).autoRefresh();
             }
         }
@@ -317,6 +318,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            fragment = null;
+        }
         if (dialog != null) {
             if (dialog.isShowing()) {
                 dialog.hide();
