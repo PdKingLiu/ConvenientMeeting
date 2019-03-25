@@ -29,68 +29,72 @@
             <ImageView
                 android:id="@+id/iv_room_text_background"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
+                android:background="@android:color/holo_green_dark"
                 android:src="@mipmap/room_background" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="200dp"
-                android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/room_icon"
+                    android:layout_width="120dp"
+                    android:layout_height="200dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="20dp"
+                    android:src="@mipmap/room_icon2" />
 
                 <LinearLayout
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/room_icon"
+                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="vertical">
+
 
                     <TextView
+                        android:textStyle="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="fz155"
-                        android:textColor="@android:color/black"
+                        android:text="FZ155"
+                        android:textColor="@android:color/white"
                         android:textSize="20sp" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
 
                     <TextView
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="状态：未使用"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textColor="#515151"
+                        android:textSize="16sp" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
 
                     <TextView
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="可容纳人数：50"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textColor="#515151"
+                        android:textSize="16sp" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp" android:layout_height="wrap_content"
                         android:text="最近一次使用：2小时前"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textColor="#515151"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </FrameLayout>
 
@@ -98,42 +102,42 @@
     </RelativeLayout>
 
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tl_tab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="#08b9fd"
-        app:tabIndicatorHeight="4dp"
-        app:tabTextColor="#08b9fd">
-
-        <android.support.design.widget.TabItem
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tl_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="前天" />
+            android:layout_gravity="center_vertical"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="#08b9fd"
+            app:tabIndicatorHeight="4dp"
+            app:tabTextColor="#08b9fd">
 
-        <android.support.design.widget.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="昨天" />
+            <android.support.design.widget.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="前天" />
 
-        <android.support.design.widget.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="今天" />
+            <android.support.design.widget.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="昨天" />
 
-        <android.support.design.widget.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="明天" />
+            <android.support.design.widget.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="今天" />
 
-        <android.support.design.widget.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="后天" />
+            <android.support.design.widget.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="明天" />
 
-    </android.support.design.widget.TabLayout>
+            <android.support.design.widget.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="后天" />
+
+        </android.support.design.widget.TabLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
