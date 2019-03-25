@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +63,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
 
 {
 
-    private AlertDialog dialog;
+    private ProgressDialog dialog;
 
     private AlertDialog dialogLeave;
 
@@ -79,6 +81,9 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
     private final int CLIP_REQUEST = 2;
     private final int CAMERA_REQUEST = 3;
 
+    public boolean error = false;
+
+
     private Uri clipUri;
     private Uri cameraUri;
 
@@ -86,7 +91,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
     private File cameraFile;
 
     @BindView(R.id.tv_net_error)
-    TextView tvNetError;
+    RelativeLayout tvNetError;
     @BindView(R.id.title)
     TitleView title;
     @BindView(R.id.nsv_data_view)
@@ -228,10 +233,14 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         LitePal.getDatabase();
-        dialog = new AlertDialog.Builder(this)
-                .setView(new ProgressBar(this))
-                .setCancelable(false)
-                .create();
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("正在保存...");
+        dialog.setTitle("保存中");
+        dialog.setCancelable(false);
+
+        title.setLeftClickListener(this);
+        title.setRightClickListener(this);
+        title.setRightTextSize(18f);
         dialogLeave = new AlertDialog.Builder(ModificationUserDataActivity.this)
                 .setCancelable(false)
                 .setTitle("退出将不会做任何保存，确定要退出吗？")
@@ -242,9 +251,6 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                         finish();
                     }
                 }).create();
-        title.setRightClickListener(this);
-        title.setRightTextSize(18f);
-        title.setLeftClickListener(this);
         requestUserData();
     }
 
@@ -414,6 +420,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
 
     @Override
     public void onBackPressed() {
+        Log.d("Lpp", "onBackPressed: ");
         OnLeftButtonClick();
     }
 
@@ -482,10 +489,14 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
             @Override
             public void run() {
                 if (isError) {
+                    error = true;
+                    title.setLeftMenuTextVisible(false);
                     title.setRightMenuTextVisible(false);
                     tvNetError.setVisibility(View.VISIBLE);
                     nsvDataView.setVisibility(View.GONE);
                 } else {
+                    error = false;
+                    title.setLeftMenuTextVisible(true);
                     title.setRightMenuTextVisible(true);
                     tvNetError.setVisibility(View.GONE);
                     nsvDataView.setVisibility(View.VISIBLE);
@@ -539,6 +550,12 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
 
     @Override
     public void OnLeftButtonClick() {
+        Log.d("Lpp", "onBackPressed: ");
+        if (error) {
+            finish();
+            Log.d("Lpp", "onBackPressed: ");
+            return;
+        }
         if (isHaveChange()) {
             dialogLeave.show();
         } else {

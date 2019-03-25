@@ -1,45 +1,61 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.RequestReturnBean;
+import com.pdking.convenientmeeting.db.SMSSendStatusBean;
+import com.pdking.convenientmeeting.utils.CountDownTimerUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class FindPasswordActivity extends AppCompatActivity implements TitleView.LeftClickListener {
 
-    @BindView(R.id.ed_find_phone_number)
-    TextInputEditText ed_PhoneNumber;
-    @BindView(R.id.ed_find_password)
-    TextInputEditText ed_Password;
-    @BindView(R.id.ed_find_password_again)
-    TextInputEditText ed_Password_Again;
-    @BindView(R.id.bt_find_next)
-    Button bt_Next;
+    @BindView(R.id.ed_phone)
+    EditText edPhoneNumber;
+    @BindView(R.id.ed_new_password)
+    EditText edNewPassword;
+    @BindView(R.id.ed_new_password_again)
+    EditText edNewPasswordAgain;
+    @BindView(R.id.tv_phone_send_status)
+    TextView tvCodeSendStatus;
+    @BindView(R.id.btn_phone_send_code)
+    Button btnSendCode;
+    @BindView(R.id.ed_phone_code)
+    EditText edPhoneCode;
     @BindView(R.id.title)
-    TitleView mTitleView;
+    TitleView title;
+    @BindView(R.id.btn_start_find)
+    Button btnStart;
 
-    String s1 = "";
-    String s2 = "";
-    String s3 = "";
+    private CountDownTimerUtils timerUtils;
 
-    boolean flag1 = false;
-    boolean flag2 = false;
-    boolean flag3 = false;
+    private boolean flag[] = {false, false, false, false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +63,8 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
         setContentView(R.layout.layout_find_password);
         ButterKnife.bind(this);
         SystemUtil.setTitleMode(getWindow());
-//        bt_Next.setEnabled(false);
-        mTitleView.setLeftClickListener(this);
-        ActivityContainer.addActivity(this);
+        title.setLeftClickListener(this);
+        btnStart.setEnabled(false);
     }
 
     @Override
@@ -58,78 +73,164 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
     }
 
 
-    @OnClick(R.id.bt_find_next)
+    @OnClick({R.id.btn_phone_send_code, R.id.btn_start_find})
     void onClick(View view) {
         switch (view.getId()) {
-            case R.id.bt_find_next:
-                enterFindTwo();
+            case R.id.btn_start_find:
+                startFind();
+                break;
+            case R.id.btn_phone_send_code:
+                if (edPhoneNumber.getText().toString().length() != 11) {
+                    Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                sendPhoneCode(edPhoneNumber.getText().toString(), btnSendCode, tvCodeSendStatus);
                 break;
         }
     }
 
-    @OnTextChanged(R.id.ed_find_phone_number)
+    private void startSendPhoneCode() {
+
+    }
+
+    @OnTextChanged(R.id.ed_phone)
     void onPhoneNumberTextChanged(CharSequence s) {
         if (s.length() == 11) {
-            flag1 = true;
+            flag[0] = true;
         } else {
-            flag1 = false;
+            flag[0] = false;
         }
         setButtonStatus();
     }
 
     private void setButtonStatus() {
-        if (flag1 && flag2 && flag3) {
-            bt_Next.setEnabled(true);
+        if (flag[0] && flag[1] && flag[2] && flag[3]) {
+            btnStart.setEnabled(true);
         } else {
-            bt_Next.setEnabled(false);
+            btnStart.setEnabled(false);
         }
     }
 
-    @OnTextChanged(R.id.ed_find_password)
+    @OnTextChanged(R.id.ed_new_password)
     void onPasswordTextChanged(CharSequence s) {
         if (s.length() >= 6 && s.length() <= 16) {
-            flag2 = true;
+            flag[1] = true;
         } else {
-            flag2 = false;
+            flag[1] = false;
         }
         setButtonStatus();
     }
 
-    @OnTextChanged(R.id.ed_find_password_again)
+    @OnTextChanged(R.id.ed_new_password_again)
     void onPasswordAgainTextChanged(CharSequence s) {
         if (s.length() >= 6 && s.length() <= 16) {
-            flag3 = true;
+            flag[2] = true;
         } else {
-            flag3 = false;
+            flag[2] = false;
         }
         setButtonStatus();
     }
 
-
-    void enterFindTwo() {
-        s1 = ed_PhoneNumber.getText().toString();
-        s2 = ed_Password.getText().toString();
-        s3 = ed_Password_Again.getText().toString();
-        if (!s2.equals(s3)) {
-            Toast.makeText(this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+    @OnTextChanged(R.id.ed_phone_code)
+    void onCodeTextTextChanged(CharSequence s) {
+        if (s.length() == 6) {
+            flag[3] = true;
         } else {
-            if (confirmPhoneNumber()) {
-                Intent intent = new Intent(this, FindPasswordTwoActivity.class);
-                intent.putExtra("phone_number", s1);
-                intent.putExtra("password", s2);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "账号不存在", Toast.LENGTH_SHORT).show();
-            }
+            flag[3] = false;
         }
+        setButtonStatus();
     }
 
-    /**
-     * 确保账号存在
-     * */
-    private boolean confirmPhoneNumber() {
-        return true;
+    private void startFind() {
+        String phone = edPhoneNumber.getText().toString();
+        String password = edNewPassword.getText().toString();
+        String passwordAgain = edNewPasswordAgain.getText().toString();
+        String code = edPhoneCode.getText().toString();
+        if (!password.equals(passwordAgain)) {
+            Toast.makeText(this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.FindPasswordBody[0], code);
+        body.add(Api.FindPasswordBody[1], phone);
+        body.add(Api.FindPasswordBody[2], password);
+        final Request request = new Request.Builder()
+                .url(Api.FindPasswordApi)
+                .header(Api.FindPasswordHeader[0], Api.FindPasswordHeader[1])
+                .post(body.build())
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("Lpp", "onFailure: " + e.getMessage());
+                showToast("修改失败");
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+                RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
+                if (bean.status == 1) {
+                    showToast("修改失败，验证码或其他其他信息有误");
+                } else {
+                    showToast("修改成功，请重新登录");
+                    startActivity(new Intent(FindPasswordActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }
+        });
     }
 
+    private void showToast(final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(FindPasswordActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void changSendStatus(final String text, final TextView textView) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(text);
+            }
+        });
+    }
+
+    private void sendPhoneCode(String phone, Button btnSendCode, final TextView tvSendStatus) {
+        changSendStatus("发送中", tvSendStatus);
+        timerUtils = new CountDownTimerUtils(btnSendCode, 60000, 1000);
+        timerUtils.start();
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add(Api.SMSSendBody[0], phone);
+        Request request = new Request.Builder()
+                .url(Api.SMSSendApi)
+                .post(formBody.build())
+                .header(Api.SMSSendHeader[0], Api.SMSSendHeader[1])
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                changSendStatus("发送验证码失败", tvSendStatus);
+                Log.d("Lpp", "onFailure: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                SMSSendStatusBean smsSendStatusBean = new Gson().fromJson(response.body().string
+                        (), SMSSendStatusBean.class);
+                Log.d("Lpp", "onResponse: " + smsSendStatusBean.data);
+                if (smsSendStatusBean.status == 0) {
+                    changSendStatus("发送成功", tvSendStatus);
+                } else {
+                    changSendStatus("发送验证码失败", tvSendStatus);
+                }
+            }
+        });
+    }
 }

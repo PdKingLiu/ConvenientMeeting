@@ -63,7 +63,6 @@
         <activity android:name=".activity.RegisterActivityThree" />
         <activity android:name=".activity.ShowFaceResultActivity" />
         <activity android:name=".activity.FindPasswordActivity" />
-        <activity android:name=".activity.FindPasswordTwoActivity" />
         <activity android:name=".activity.ScanQRActivity" />
         <activity android:name=".activity.ScanResultActivity" />
         <activity android:name=".activity.BookRoomActivity" />

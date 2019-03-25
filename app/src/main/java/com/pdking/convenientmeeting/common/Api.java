@@ -55,6 +55,10 @@ public class Api {
 
     public static String GetMeetingRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/room/getAllRooms.do";
 
+    public static String FindPasswordApi = "http://www.shidongxuan.top/smartMeeting_Web/user/forgetPassword.do";
 
+    public static String[] FindPasswordHeader = {"Content-Type", "application/x-www-form-urlencoded"};
+
+    public static String[] FindPasswordBody = {"code", "phoneNumber", "newPassword" };
 
 }

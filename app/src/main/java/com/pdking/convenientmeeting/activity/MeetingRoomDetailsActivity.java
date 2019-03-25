@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -9,9 +10,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.fragment.DayMeetingListFragment;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -24,6 +28,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class MeetingRoomDetailsActivity extends AppCompatActivity {
 
@@ -33,6 +40,8 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     TabLayout tlTab;
     @BindView(R.id.title)
     TitleView titleView;
+    @BindView(R.id.iv_room_text_background)
+    ImageView ivRoomTextBackground;
     private FragmentPagerAdapter fragmentPagerAdapter;
     private List<DayMeetingListFragment> fragmentList;
     private String[] titles = {"前天", "昨天", "今天", "明天", "后天"};
@@ -49,6 +58,9 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     }
 
     private void init() {
+        Glide.with(this).load(R.mipmap.room_background)
+                .apply(bitmapTransform(new BlurTransformation(18, 3)))
+                .into(ivRoomTextBackground);
         final WindowManager.LayoutParams wl =  getWindow().getAttributes();
         mPopMenu = new PopMenu(this);
         ArrayList<PopMenuItem> items = new ArrayList<>();

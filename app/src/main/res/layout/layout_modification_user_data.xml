@@ -17,13 +17,11 @@
         app:rightTextVisibility="true"
         app:titleText="我的资料" />
 
-    <TextView
+    <include
         android:id="@+id/tv_net_error"
+        layout="@layout/item_load_failure"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="加载好像出了点问题呢...\n\n点击重新加载"
-        android:textStyle="bold"
         android:visibility="gone" />
 
 

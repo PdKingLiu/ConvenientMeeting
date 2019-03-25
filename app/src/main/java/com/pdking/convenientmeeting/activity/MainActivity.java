@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MineFragment mMineFragment;
 
-    private AlertDialog dialog;
+    private ProgressDialog dialog;
 
     private UserToken userToken;
 
@@ -92,12 +93,11 @@ public class MainActivity extends AppCompatActivity {
         initUser();
     }
 
-
     private void initUser() {
-        dialog = new AlertDialog.Builder(this)
-                .setView(new ProgressBar(this))
-                .setCancelable(false)
-                .create();
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("正在加载...");
+        dialog.setTitle("加载中");
+        dialog.setCancelable(false);
         userInfo = getIntent().getParcelableExtra("userInfo");
         userToken = getIntent().getParcelableExtra("userToken");
         if (userInfo == null) {

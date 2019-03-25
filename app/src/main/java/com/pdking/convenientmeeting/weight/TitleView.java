@@ -173,9 +173,17 @@ public class TitleView extends RelativeLayout {
 
     public void setRightMenuTextVisible(boolean visible) {
         if (visible) {
-            btnMenuText.setVisibility(View.VISIBLE);
+            layoutRight.setVisibility(View.VISIBLE);
         } else {
-            btnMenuText.setVisibility(View.GONE);
+            layoutRight.setVisibility(View.GONE);
+        }
+    }
+
+    public void setLeftMenuTextVisible(boolean visible) {
+        if (visible) {
+            layoutLeft.setVisibility(View.VISIBLE);
+        } else {
+            layoutLeft.setVisibility(View.GONE);
         }
     }
 
