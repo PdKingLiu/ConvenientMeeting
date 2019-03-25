@@ -1,9 +1,11 @@
 package com.pdking.convenientmeeting.activity;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,22 +20,40 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.adapter.MeetingListAdapter;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
+import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.DayMeetingListFragment;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
 import com.pdking.convenientmeeting.weight.TitleView;
 
+import org.litepal.LitePal;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.BlurTransformation;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static androidx.annotation.Dimension.DP;
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
@@ -48,10 +68,31 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     TitleView titleView;
     @BindView(R.id.iv_room_text_background)
     ImageView ivRoomTextBackground;
+    @BindView(R.id.tv_room_name)
+    TextView tvRoomName;
+    @BindView(R.id.tv_room_status)
+    TextView tvRoomStatus;
+    @BindView(R.id.rv_room_capacity)
+    TextView tvRoomCapacity;
+    @BindView(R.id.tv_recent_time)
+    TextView tvRoomRecentTime;
+
     private FragmentPagerAdapter fragmentPagerAdapter;
     private List<DayMeetingListFragment> fragmentList;
     private String[] titles = {"前天", "昨天", "今天", "明天", "后天"};
     private PopMenu mPopMenu;
+    private String roomNumber;
+    private int meetingId;
+    private ProgressDialog dialog;
+    private UserToken userToken;
+    private OneMeetingRoomMessageBean meetingRoomMessageBean;
+    private List<MeetingMessage> allMeetingList;
+    private List<MeetingMessage> beforeYesterdayMeetingList;
+    private List<MeetingMessage> yesterdayMeetingList;
+    private List<MeetingMessage> todayMeetingList;
+    private List<MeetingMessage> tomorrowMeetingList;
+    private List<MeetingMessage> afterTomorrowMeetingList;
+    private Bitmap newBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,31 +100,186 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.layout_meeting_room_details);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
+        roomNumber = getIntent().getStringExtra("roomNumber");
+        meetingId = getIntent().getIntExtra("meetingId", -1);
+        titleView.setTitleText(roomNumber);
+        tvRoomName.setText(roomNumber);
+        dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setTitle("加载中");
+        dialog.setMessage("正在加载...");
+        showProgressBar();
         init();
         initPagerAndTab();
+        requestData();
+    }
+
+    private void requestData() {
+        userToken = LitePal.findAll(UserToken.class).get(0);
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.GetOneMeetingRoomMessageBody[0], meetingId + "");
+        Request request = new Request.Builder()
+                .url(Api.GetOneMeetingRoomMessageApi)
+                .header("token", userToken.getToken())
+                .post(body.build())
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                hideProgressBar();
+                showToast("加载失败，请重新尝试");
+                Log.d("Lpp", "加载失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                hideProgressBar();
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+                meetingRoomMessageBean = new Gson().fromJson(msg, OneMeetingRoomMessageBean.class);
+                if (meetingRoomMessageBean.status == 1) {
+                    showToast("加载失败，请重新尝试");
+                } else {
+                    allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
+                    Log.d("Lpp", "onResponse: " + allMeetingList.size());
+                    initListAndMeetingRecyclerView();
+                }
+            }
+        });
+    }
+
+    private void changeTextViewText(final TextView tv, final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv.setText(text);
+            }
+        });
+    }
+
+    private void initListAndMeetingRecyclerView() {
+        switch (meetingRoomMessageBean.data.status) {
+            case 1:
+                changeTextViewText(tvRoomStatus, "状态：空闲");
+                break;
+            case 2:
+                changeTextViewText(tvRoomStatus, "状态：正在使用");
+                break;
+            case 3:
+                changeTextViewText(tvRoomStatus, "状态：维护");
+                break;
+        }
+        changeTextViewText(tvRoomCapacity, "可容纳人数" + meetingRoomMessageBean.data.content);
+        changeTextViewText(tvRoomRecentTime, "最近一次使用：昨天");
+        beforeYesterdayMeetingList = new ArrayList<>();
+        yesterdayMeetingList = new ArrayList<>();
+        todayMeetingList = new ArrayList<>();
+        tomorrowMeetingList = new ArrayList<>();
+        afterTomorrowMeetingList = new ArrayList<>();
+        for (MeetingMessage meeting : allMeetingList) {
+            int data = getRelativeData(meeting.startTime);
+            switch (data) {
+                case -2:
+                    beforeYesterdayMeetingList.add(meeting);
+                    break;
+                case -1:
+                    yesterdayMeetingList.add(meeting);
+                    break;
+                case 0:
+                    todayMeetingList.add(meeting);
+                    break;
+                case 1:
+                    tomorrowMeetingList.add(meeting);
+                    break;
+                case 2:
+                    afterTomorrowMeetingList.add(meeting);
+                    break;
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            DayMeetingListFragment fragment = fragmentList.get(i);
+            switch (i) {
+                case 0:
+                    fragment.setList(beforeYesterdayMeetingList);
+                    break;
+                case 1:
+                    fragment.setList(yesterdayMeetingList);
+                    break;
+                case 2:
+                    fragment.setList(todayMeetingList);
+                    break;
+                case 3:
+                    fragment.setList(tomorrowMeetingList);
+                    break;
+                case 4:
+                    fragment.setList(afterTomorrowMeetingList);
+                    break;
+            }
+        }
+    }
+
+    private int getRelativeData(long startTime) {
+        int today;
+        int startDay;
+        Calendar cale = Calendar.getInstance();
+        cale.setTime(new Date(System.currentTimeMillis()));
+        today = cale.get(Calendar.DAY_OF_YEAR);
+        cale.setTime(new Date(startTime));
+        startDay = cale.get(Calendar.DAY_OF_YEAR);
+        return startDay - today;
+    }
+
+
+    private void showToast(final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MeetingRoomDetailsActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void hideProgressBar() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog != null) {
+                    dialog.hide();
+                }
+            }
+        });
+    }
+
+    private void showProgressBar() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog != null) {
+                    dialog.show();
+                }
+            }
+        });
     }
 
     public Bitmap zoomImg() {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.room_background);
         float newHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f,
-                getResources().getDisplayMetrics())+2;
-        Log.d("Lpp", "zoomImg: " + newHeight);
+                getResources().getDisplayMetrics()) + 2;
         WindowManager manager = this.getWindowManager();
         DisplayMetrics outMetrics = new DisplayMetrics();
         manager.getDefaultDisplay().getMetrics(outMetrics);
         int newWidth = outMetrics.widthPixels;
-        // 获得图片的宽高
         int width = bm.getWidth();
         int height = bm.getHeight();
-        // 计算缩放比例
         float scaleWidth = ((float) newWidth) / width;
         float scaleHeight = ((float) newHeight) / height;
-        // 取得想要缩放的matrix参数
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
-        // 得到新的图片www.2cto.com
-        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
-        return newbm;
+        newBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+        bm.recycle();
+        bm = null;
+        return newBitmap;
     }
 
     private void init() {
@@ -164,4 +360,21 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         tlTab.setupWithViewPager(vpDayList);
         tlTab.getTabAt(2).select();
     }
+
+
+    @Override
+    public void onDestroy() {
+        if (dialog != null) {
+            if (dialog.isShowing()) {
+                dialog.hide();
+            }
+            dialog.dismiss();
+        }
+        if (newBitmap != null) {
+            newBitmap.recycle();
+            newBitmap = null;
+        }
+        super.onDestroy();
+    }
+
 }

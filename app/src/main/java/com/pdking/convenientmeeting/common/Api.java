@@ -47,18 +47,28 @@ public class Api {
 
     public static String[] UpDateUserInfoBody = {"id", "phone", "email", "sex", "avatar"};
 
-    public static String UpDateUserPasswordApi = "http://www.shidongxuan.top/smartMeeting_Web/user/updatePassword.do";
+    public static String UpDateUserPasswordApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/user/updatePassword.do";
 
-    public static String[] UpDateUserPasswordHeader = {"Content-Type", "application/x-www-form-urlencoded"};
+    public static String[] UpDateUserPasswordHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
 
-    public static String[] UpDateUserPasswordBody = {"userId", "oldPassword", "newPassword" };
+    public static String[] UpDateUserPasswordBody = {"userId", "oldPassword", "newPassword"};
 
-    public static String GetMeetingRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/room/getAllRooms.do";
+    public static String GetMeetingRoomApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/room/getAllRooms.do";
 
-    public static String FindPasswordApi = "http://www.shidongxuan.top/smartMeeting_Web/user/forgetPassword.do";
+    public static String FindPasswordApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/user/forgetPassword.do";
 
-    public static String[] FindPasswordHeader = {"Content-Type", "application/x-www-form-urlencoded"};
+    public static String[] FindPasswordHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
 
-    public static String[] FindPasswordBody = {"code", "phoneNumber", "newPassword" };
+    public static String[] FindPasswordBody = {"code", "phoneNumber", "newPassword"};
+
+    public static String GetOneMeetingRoomMessageApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/room/getRoomById.do";
+
+    public static String[] GetOneMeetingRoomMessageBody = {"roomId"};
 
 }

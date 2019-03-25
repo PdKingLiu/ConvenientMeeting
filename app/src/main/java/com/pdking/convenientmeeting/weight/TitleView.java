@@ -20,14 +20,14 @@ import com.pdking.convenientmeeting.R;
  */
 public class TitleView extends RelativeLayout {
 
-    private LinearLayout layoutLeft,layoutRight;
+    private LinearLayout layoutLeft, layoutRight;
     private TextView tvTitle;
 
     private LeftClickListener leftClickListener;
     private RightClickListener rightClickListener;
 
     private LinearLayout rlViewGroup;
-    private Button btnReturn,btnReturnText,btnMenuText,btnMenu;
+    private Button btnReturn, btnReturnText, btnMenuText, btnMenu;
 
     public interface LeftClickListener {
         void OnLeftButtonClick();
@@ -45,6 +45,9 @@ public class TitleView extends RelativeLayout {
         this.rightClickListener = rightClickListener;
     }
 
+    public void setTitleText(String title) {
+        tvTitle.setText(title);
+    }
 
     public TitleView(Context context) {
         super(context, null);

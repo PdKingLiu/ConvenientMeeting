@@ -46,49 +46,54 @@
                     android:src="@mipmap/room_icon2" />
 
                 <LinearLayout
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/room_icon"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/room_icon"
                     android:orientation="vertical">
 
 
                     <TextView
-                        android:textStyle="bold"
+                        android:id="@+id/tv_room_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="FZ155"
                         android:textColor="@android:color/white"
-                        android:textSize="20sp" />
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
 
                     <TextView
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="10dp"
+                        android:id="@+id/tv_room_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
                         android:text="状态：未使用"
                         android:textColor="#515151"
                         android:textSize="16sp" />
 
 
                     <TextView
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="10dp"
+                        android:id="@+id/rv_room_capacity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="可容纳人数：50"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:text="可容纳人数："
                         android:textColor="#515151"
                         android:textSize="16sp" />
 
 
                     <TextView
+                        android:id="@+id/tv_recent_time"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginTop="10dp" android:layout_height="wrap_content"
-                        android:text="最近一次使用：2小时前"
+                        android:layout_marginTop="10dp"
+                        android:text="最近一次使用："
                         android:textColor="#515151"
                         android:textSize="16sp" />
 
@@ -101,48 +106,58 @@
 
     </RelativeLayout>
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="#08b9fd"
+        app:tabIndicatorHeight="4dp"
+        app:tabTextColor="#08b9fd">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tl_tab"
+        <android.support.design.widget.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="#08b9fd"
-            app:tabIndicatorHeight="4dp"
-            app:tabTextColor="#08b9fd">
+            android:text="前天" />
 
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="前天" />
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="昨天" />
 
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="昨天" />
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="今天" />
 
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="今天" />
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="明天" />
 
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="明天" />
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="后天" />
 
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="后天" />
+    </android.support.design.widget.TabLayout>
 
-        </android.support.design.widget.TabLayout>
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:clickable="true"
+            android:src="@mipmap/meeting_book"
+            app:backgroundTint="#08b9fd"
+            app:elevation="8dp"
+            app:pressedTranslationZ="20dp"
+            app:useCompatPadding="true" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_day_list"
@@ -151,6 +166,6 @@
 
         </android.support.v4.view.ViewPager>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

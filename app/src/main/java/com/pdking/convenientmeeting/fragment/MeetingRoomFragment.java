@@ -46,14 +46,12 @@ import okhttp3.Response;
 public class MeetingRoomFragment extends Fragment implements View.OnClickListener {
 
     private static MeetingRoomFragment meetingRoomFragment;
-
     private SmartRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private MeetingRoomAdapter roomAdapter;
     private RelativeLayout rlHaveNothing;
     private List<OneMeetingRoomMessage> roomMessageList;
     private AllMeetingRoomMessageBean roomMessageBean;
-
     private UserInfo userInfo;
     private UserToken userToken;
 
@@ -96,7 +94,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     private void initDataAndList() {
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         userToken = LitePal.findAll(UserToken.class).get(0);
-
         roomMessageList = LitePal.findAll(OneMeetingRoomMessage.class);
 
         if (roomMessageList.size() == 0) {
@@ -114,7 +111,11 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         roomAdapter.setItemClickListener(new MeetingRoomAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(getContext(), MeetingRoomDetailsActivity.class));
+                OneMeetingRoomMessage meetingRoomMessage = roomMessageList.get(position);
+                Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
+                intent.putExtra("meetingId", meetingRoomMessage.meetingRoomId);
+                intent.putExtra("roomNumber", meetingRoomMessage.roomNumber);
+                startActivity(intent);
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -158,7 +159,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                 String msg = response.body().string();
                 Log.d("Lpp", "onResponse: " + msg);
                 roomMessageBean = new Gson().fromJson(msg, AllMeetingRoomMessageBean.class);
-                if (roomMessageBean.status == 0) {
+                if (roomMessageBean != null && roomMessageBean.status == 0) {
                     refreshLayout.finishRefresh(2000, true);
                     roomMessageList.clear();
                     roomMessageList.addAll(roomMessageBean.data);
