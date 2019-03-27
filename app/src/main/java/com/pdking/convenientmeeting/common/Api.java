@@ -71,4 +71,20 @@ public class Api {
 
     public static String[] GetOneMeetingRoomMessageBody = {"roomId"};
 
+    public static String WhetherBookApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/whetherBook.do";
+
+    public static String[] WhetherBookHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] WhetherBookBody = {"roomId", "startTime", "endTIme"};
+
+    public static String RequestBookApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting/bookMeeting.do";
+
+    public static String[] RequestBookHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] RequestBookBody = {"meetingName", "meetingIntro", "roomId",
+            "masterId", "startTime", "endTime"};
+
 }

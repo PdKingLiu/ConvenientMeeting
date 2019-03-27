@@ -1,12 +1,14 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -30,6 +32,7 @@ import com.pdking.convenientmeeting.adapter.MeetingListAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
+import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.DayMeetingListFragment;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -47,6 +50,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -76,22 +80,22 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     TextView tvRoomCapacity;
     @BindView(R.id.tv_recent_time)
     TextView tvRoomRecentTime;
+    @BindView(R.id.fab_book)
+    FloatingActionButton fabBook;
 
     private FragmentPagerAdapter fragmentPagerAdapter;
     private List<DayMeetingListFragment> fragmentList;
     private String[] titles = {"前天", "昨天", "今天", "明天", "后天"};
     private PopMenu mPopMenu;
-    private String roomNumber;
-    private int meetingId;
+    private int meetingRoomId;
     private ProgressDialog dialog;
     private UserToken userToken;
-    private OneMeetingRoomMessageBean meetingRoomMessageBean;
+    private UserInfo userInfo;
+    private String roomNumber;
+    private int roomStatus;
+    private int roomContent;
+    private String roomId;
     private List<MeetingMessage> allMeetingList;
-    private List<MeetingMessage> beforeYesterdayMeetingList;
-    private List<MeetingMessage> yesterdayMeetingList;
-    private List<MeetingMessage> todayMeetingList;
-    private List<MeetingMessage> tomorrowMeetingList;
-    private List<MeetingMessage> afterTomorrowMeetingList;
     private Bitmap newBitmap;
 
     @Override
@@ -101,65 +105,13 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         roomNumber = getIntent().getStringExtra("roomNumber");
-        meetingId = getIntent().getIntExtra("meetingId", -1);
-        titleView.setTitleText(roomNumber);
-        tvRoomName.setText(roomNumber);
-        dialog = new ProgressDialog(this);
-        dialog.setCancelable(false);
-        dialog.setTitle("加载中");
-        dialog.setMessage("正在加载...");
-        showProgressBar();
-        init();
-        initPagerAndTab();
-        requestData();
-    }
+        roomContent = getIntent().getIntExtra("content", -1);
+        roomStatus = getIntent().getIntExtra("status", -1);
+        meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
+        Log.d("Lpp", "onCreate:meetingRoomId "+meetingRoomId);
+        Log.d("Lpp", "onCreate:roomStatus "+roomStatus);
 
-    private void requestData() {
-        userToken = LitePal.findAll(UserToken.class).get(0);
-        OkHttpClient client = new OkHttpClient();
-        FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.GetOneMeetingRoomMessageBody[0], meetingId + "");
-        Request request = new Request.Builder()
-                .url(Api.GetOneMeetingRoomMessageApi)
-                .header("token", userToken.getToken())
-                .post(body.build())
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                hideProgressBar();
-                showToast("加载失败，请重新尝试");
-                Log.d("Lpp", "加载失败: " + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                hideProgressBar();
-                String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
-                meetingRoomMessageBean = new Gson().fromJson(msg, OneMeetingRoomMessageBean.class);
-                if (meetingRoomMessageBean.status == 1) {
-                    showToast("加载失败，请重新尝试");
-                } else {
-                    allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
-                    Log.d("Lpp", "onResponse: " + allMeetingList.size());
-                    initListAndMeetingRecyclerView();
-                }
-            }
-        });
-    }
-
-    private void changeTextViewText(final TextView tv, final String text) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tv.setText(text);
-            }
-        });
-    }
-
-    private void initListAndMeetingRecyclerView() {
-        switch (meetingRoomMessageBean.data.status) {
+        switch (roomStatus) {
             case 1:
                 changeTextViewText(tvRoomStatus, "状态：空闲");
                 break;
@@ -170,53 +122,32 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
                 changeTextViewText(tvRoomStatus, "状态：维护");
                 break;
         }
-        changeTextViewText(tvRoomCapacity, "可容纳人数" + meetingRoomMessageBean.data.content);
+        changeTextViewText(tvRoomCapacity, "可容纳人数：" + roomContent);
         changeTextViewText(tvRoomRecentTime, "最近一次使用：昨天");
-        beforeYesterdayMeetingList = new ArrayList<>();
-        yesterdayMeetingList = new ArrayList<>();
-        todayMeetingList = new ArrayList<>();
-        tomorrowMeetingList = new ArrayList<>();
-        afterTomorrowMeetingList = new ArrayList<>();
-        for (MeetingMessage meeting : allMeetingList) {
-            int data = getRelativeData(meeting.startTime);
-            switch (data) {
-                case -2:
-                    beforeYesterdayMeetingList.add(meeting);
-                    break;
-                case -1:
-                    yesterdayMeetingList.add(meeting);
-                    break;
-                case 0:
-                    todayMeetingList.add(meeting);
-                    break;
-                case 1:
-                    tomorrowMeetingList.add(meeting);
-                    break;
-                case 2:
-                    afterTomorrowMeetingList.add(meeting);
-                    break;
+        titleView.setTitleText(roomNumber);
+        tvRoomName.setText(roomNumber);
+        dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setTitle("加载中");
+        dialog.setMessage("正在加载...");
+        init();
+        initPagerAndTab();
+        requestData();
+    }
+
+    private void requestData() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
+        allMeetingList = LitePal.findAll(MeetingMessage.class);
+    }
+
+    private void changeTextViewText(final TextView tv, final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv.setText(text);
             }
-        }
-        for (int i = 0; i < 5; i++) {
-            DayMeetingListFragment fragment = fragmentList.get(i);
-            switch (i) {
-                case 0:
-                    fragment.setList(beforeYesterdayMeetingList);
-                    break;
-                case 1:
-                    fragment.setList(yesterdayMeetingList);
-                    break;
-                case 2:
-                    fragment.setList(todayMeetingList);
-                    break;
-                case 3:
-                    fragment.setList(tomorrowMeetingList);
-                    break;
-                case 4:
-                    fragment.setList(afterTomorrowMeetingList);
-                    break;
-            }
-        }
+        });
     }
 
     private int getRelativeData(long startTime) {
@@ -336,7 +267,7 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     private void initPagerAndTab() {
         fragmentList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            DayMeetingListFragment fragment = DayMeetingListFragment.newInstance("暂无数据");
+            DayMeetingListFragment fragment = DayMeetingListFragment.newInstance("暂无数据", i + "");
             fragmentList.add(fragment);
         }
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -361,6 +292,17 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         tlTab.getTabAt(2).select();
     }
 
+    @OnClick(R.id.fab_book)
+    void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab_book:
+                Intent intent = new Intent(this, BookRoomDetailActivity.class);
+                intent.putExtra("roomNumber", roomNumber);
+                intent.putExtra("meetingRoomId", meetingRoomId);
+                startActivityForResult(intent, 1);
+                break;
+        }
+    }
 
     @Override
     public void onDestroy() {

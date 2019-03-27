@@ -2,11 +2,14 @@ package com.pdking.convenientmeeting.db;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
+
 /**
  * @author liupeidong
  * Created on 2019/3/20 15:12
  */
-public class MeetingMessage {
+public class MeetingMessage extends LitePalSupport{
     @SerializedName("id")
     public int meetingId;
     @SerializedName("meetingName")

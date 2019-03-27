@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,8 +22,10 @@ import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.AllMeetingRoomMessageBean;
+import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.MeetingRoomBean;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
+import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -54,6 +57,9 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     private AllMeetingRoomMessageBean roomMessageBean;
     private UserInfo userInfo;
     private UserToken userToken;
+    private ProgressDialog dialog;
+    private List<MeetingMessage> allMeetingList;
+    private OneMeetingRoomMessageBean meetingRoomMessageBean;
 
     @Override
     public void onStart() {
@@ -82,6 +88,9 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("正在加载...");
+        dialog.setTitle("加载中");
     }
 
     @Override
@@ -112,10 +121,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             @Override
             public void onItemClick(View view, int position) {
                 OneMeetingRoomMessage meetingRoomMessage = roomMessageList.get(position);
-                Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
-                intent.putExtra("meetingId", meetingRoomMessage.meetingRoomId);
-                intent.putExtra("roomNumber", meetingRoomMessage.roomNumber);
-                startActivity(intent);
+                enterRoomDetails(meetingRoomMessage);
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -131,6 +137,72 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 requestLoadMore();
+            }
+        });
+    }
+
+    private void enterRoomDetails(OneMeetingRoomMessage meetingRoomMessage) {
+        showProgressBar();
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.GetOneMeetingRoomMessageBody[0], meetingRoomMessage.meetingRoomId + "");
+        Request request = new Request.Builder()
+                .url(Api.GetOneMeetingRoomMessageApi)
+                .header("token", userToken.getToken())
+                .post(body.build())
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                hideProgressBar();
+                showToast("加载失败，请重新尝试");
+                Log.d("Lpp", "加载失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                hideProgressBar();
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+                meetingRoomMessageBean = new Gson().fromJson(msg, OneMeetingRoomMessageBean.class);
+                if (meetingRoomMessageBean.status == 1) {
+                    showToast("加载失败，请重新尝试");
+                } else {
+                    if (meetingRoomMessageBean != null && meetingRoomMessageBean.data != null &&
+                            meetingRoomMessageBean.data.recentlyMeetings != null) {
+                        allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
+                        LitePal.deleteAll(MeetingMessage.class);
+                        LitePal.saveAll(allMeetingList);
+                        Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
+                        intent.putExtra("status", meetingRoomMessageBean.data.status);
+                        intent.putExtra("meetingRoomId", meetingRoomMessageBean.data.meetingRoomId);
+                        intent.putExtra("roomNumber", meetingRoomMessageBean.data.roomNumber);
+                        intent.putExtra("content", meetingRoomMessageBean.data.content);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
+    }
+
+    private void hideProgressBar() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog != null) {
+                    dialog.hide();
+                }
+            }
+        });
+    }
+
+    private void showProgressBar() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog != null) {
+                    dialog.show();
+                }
             }
         });
     }
@@ -232,6 +304,17 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
 
     private void initListener() {
         rlHaveNothing.setOnClickListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            if (dialog.isShowing()) {
+                dialog.hide();
+            }
+            dialog.dismiss();
+        }
     }
 
     @Override

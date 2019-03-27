@@ -13,21 +13,27 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingListAdapter;
 import com.pdking.convenientmeeting.db.MeetingMessage;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DayMeetingListFragment extends Fragment {
 
     private static final String ARG_PARAM = "title";
+    private static final String ARG_PARAM2 = "number";
 
     private String title;
 
-    private TextView textView;
-
     private List<MeetingMessage> meetingList;
+
+    private List<MeetingMessage> allMeetingList;
 
     private TextView tvHaveNothing;
 
@@ -35,13 +41,16 @@ public class DayMeetingListFragment extends Fragment {
 
     private MeetingListAdapter adapter;
 
+    private String number;
+
     public DayMeetingListFragment() {
     }
 
-    public static DayMeetingListFragment newInstance(String param) {
+    public static DayMeetingListFragment newInstance(String param, String number) {
         DayMeetingListFragment fragment = new DayMeetingListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM, param);
+        args.putString(ARG_PARAM2, number);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,27 +60,10 @@ public class DayMeetingListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             title = getArguments().getString(ARG_PARAM);
+            number = getArguments().getString(ARG_PARAM2);
         }
-    }
-
-    public void setList(List<MeetingMessage> meetings) {
-        Log.d("Lpp", "setList: ");
-        if (meetingList != null) {
-            meetingList.addAll(meetings);
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (meetingList.size() == 0) {
-                        setHaveNothingVisible(true);
-                        setMeetingListVisible(false);
-                    } else {
-                        setHaveNothingVisible(false);
-                        setMeetingListVisible(true);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
+        meetingList = new ArrayList<>();
+        allMeetingList = LitePal.findAll(MeetingMessage.class);
     }
 
     @Override
@@ -86,13 +78,33 @@ public class DayMeetingListFragment extends Fragment {
         return view;
     }
 
+    private int getRelativeData(long startTime) {
+        int today;
+        int startDay;
+        Calendar cale = Calendar.getInstance();
+        cale.setTime(new Date(System.currentTimeMillis()));
+        today = cale.get(Calendar.DAY_OF_YEAR);
+        cale.setTime(new Date(startTime));
+        startDay = cale.get(Calendar.DAY_OF_YEAR);
+        return startDay - today;
+    }
+
     private void initRecyclerView() {
-        meetingList = new ArrayList<>();
+        int i = Integer.parseInt(number);
+        for (MeetingMessage meeting : allMeetingList) {
+            int data = getRelativeData(meeting.startTime) + 2;
+            if (data==i) {
+                meetingList.add(meeting);
+            }
+        }
+        Log.d("Lpp", "initRecyclerView: " + meetingList.size());
         adapter = new MeetingListAdapter(meetingList);
         rvMeetingList.setLayoutManager(new LinearLayoutManager(getContext()));
         rvMeetingList.setAdapter(adapter);
-        setHaveNothingVisible(true);
-        setMeetingListVisible(false);
+        if (meetingList.size() == 0) {
+            setHaveNothingVisible(true);
+            setMeetingListVisible(false);
+        }
     }
 
     public void setHaveNothingVisible(final boolean visible) {

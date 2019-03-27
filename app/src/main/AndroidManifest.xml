@@ -70,7 +70,8 @@
         <activity android:name=".activity.ModificationUserDataActivity" />
         <activity android:name=".activity.AccountAndSafetyActivity" />
         <activity android:name=".activity.UpdatePasswordActivity" />
-        <activity android:name=".activity.UpdatePhoneActivity"></activity>
+        <activity android:name=".activity.UpdatePhoneActivity" />
+        <activity android:name=".activity.BookRoomDetailActivity"></activity>
     </application>
 
 </manifest>

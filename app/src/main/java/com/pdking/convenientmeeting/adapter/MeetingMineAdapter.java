@@ -14,6 +14,7 @@ import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.MineMeetingBean;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**

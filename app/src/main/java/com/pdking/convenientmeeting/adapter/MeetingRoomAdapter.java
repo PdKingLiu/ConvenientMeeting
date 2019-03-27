@@ -101,13 +101,17 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
             switch (oneMeetingRoomMessage.status) {
                 case 1:
                     stvStatus.setText("空闲");
-                    stvStatus.setSlantedBackgroundColor(Color.GREEN);
+                    stvStatus.setSlantedBackgroundColor(mContext.getResources().getColor(R.color
+                            .pie_green));
+                    break;
                 case 2:
                     stvStatus.setText("使用中");
                     stvStatus.setSlantedBackgroundColor(Color.RED);
+                    break;
                 case 3:
-                    stvStatus.setText("空闲");
+                    stvStatus.setText("维修");
                     stvStatus.setSlantedBackgroundColor(Color.LTGRAY);
+                    break;
             }
             tvRank.setText("使用榜第 " + i++ + " 名");
             tvPeopleSum.setText("可容纳人数" + oneMeetingRoomMessage.content + "人");
