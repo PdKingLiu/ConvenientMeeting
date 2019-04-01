@@ -168,9 +168,10 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                 if (meetingRoomMessageBean.status == 1) {
                     showToast("加载失败，请重新尝试");
                 } else {
-                    if (meetingRoomMessageBean != null && meetingRoomMessageBean.data != null &&
-                            meetingRoomMessageBean.data.recentlyMeetings != null) {
+                    if (meetingRoomMessageBean.data != null && meetingRoomMessageBean.data
+                            .recentlyMeetings != null) {
                         allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
+                        Log.d("Lpp", "onResponse: MeetingRoomFragment"+allMeetingList);
                         LitePal.deleteAll(MeetingMessage.class);
                         LitePal.saveAll(allMeetingList);
                         Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);

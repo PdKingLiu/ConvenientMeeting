@@ -64,6 +64,7 @@ public class DayMeetingListFragment extends Fragment {
         }
         meetingList = new ArrayList<>();
         allMeetingList = LitePal.findAll(MeetingMessage.class);
+        Log.d("Lpp", "onCreate: DayMeetingListFragment" + allMeetingList);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class DayMeetingListFragment extends Fragment {
         int i = Integer.parseInt(number);
         for (MeetingMessage meeting : allMeetingList) {
             int data = getRelativeData(meeting.startTime) + 2;
-            if (data==i) {
+            if (data == i) {
                 meetingList.add(meeting);
             }
         }
@@ -104,6 +105,9 @@ public class DayMeetingListFragment extends Fragment {
         if (meetingList.size() == 0) {
             setHaveNothingVisible(true);
             setMeetingListVisible(false);
+        } else {
+            setHaveNothingVisible(false);
+            setMeetingListVisible(true);
         }
     }
 
@@ -124,4 +128,28 @@ public class DayMeetingListFragment extends Fragment {
         }
     }
 
+    public void notifyDataChanged() {
+        allMeetingList = LitePal.findAll(MeetingMessage.class);
+        meetingList.clear();
+        int i = Integer.parseInt(number);
+        for (MeetingMessage meeting : allMeetingList) {
+            int data = getRelativeData(meeting.startTime) + 2;
+            if (data == i) {
+                meetingList.add(meeting);
+            }
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (meetingList.size() == 0) {
+                    setHaveNothingVisible(true);
+                    setMeetingListVisible(false);
+                } else {
+                    setHaveNothingVisible(false);
+                    setMeetingListVisible(true);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
 }

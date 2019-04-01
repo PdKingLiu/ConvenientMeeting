@@ -108,8 +108,8 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         roomContent = getIntent().getIntExtra("content", -1);
         roomStatus = getIntent().getIntExtra("status", -1);
         meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
-        Log.d("Lpp", "onCreate:meetingRoomId "+meetingRoomId);
-        Log.d("Lpp", "onCreate:roomStatus "+roomStatus);
+        Log.d("Lpp", "onCreate:meetingRoomId " + meetingRoomId);
+        Log.d("Lpp", "onCreate:roomStatus " + roomStatus);
 
         switch (roomStatus) {
             case 1:
@@ -287,6 +287,7 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
                 return titles[position];
             }
         };
+        vpDayList.setOffscreenPageLimit(4);
         vpDayList.setAdapter(fragmentPagerAdapter);
         tlTab.setupWithViewPager(vpDayList);
         tlTab.getTabAt(2).select();
@@ -319,4 +320,16 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK && data != null) {
+                    int len = data.getIntExtra("dateLen", -1);
+                    if (len != -1) {
+                        fragmentList.get(len + 1).notifyDataChanged();
+                    }
+                }
+        }
+    }
 }

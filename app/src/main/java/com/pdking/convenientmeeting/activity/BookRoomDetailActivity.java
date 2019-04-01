@@ -1,8 +1,10 @@
 package com.pdking.convenientmeeting.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -184,9 +186,10 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             }
             startDate.setTime(date.getTime());
             startTimeFlag = true;
-            String time = calendar.get(Calendar.YEAR) + "年" + calendar.get(Calendar.MONTH)+1 + "月"
-                    + calendar.get(Calendar.DAY_OF_MONTH) + "日 " + calendar.get(Calendar
-                    .HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+            @SuppressLint("DefaultLocale") String time = String.format("%d年%d月%d日 %d:%02d",
+                    calendar.get(Calendar.YEAR), (calendar.get(Calendar.MONTH) + 1),
+                    calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             changeTextView(msg, time);
         } else {
             if (!startTimeFlag) {
@@ -204,9 +207,10 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             }
             endDate.setTime(date.getTime());
             endTimeFlag = true;
-            String time = calendar.get(Calendar.YEAR) + "年" + calendar.get(Calendar.MONTH)+1 + "月"
-                    + calendar.get(Calendar.DAY_OF_MONTH) + "日 " + calendar.get(Calendar
-                    .HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+            @SuppressLint("DefaultLocale") String time = String.format("%d年%d月%d日 %d:%02d",
+                    calendar.get(Calendar.YEAR),
+                    (calendar.get(Calendar.MONTH) + 1), calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             changeTextView(msg, time);
         }
     }
@@ -223,8 +227,8 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
     private void initPage() {
         title.setRightTextSize(18);
         roomNumber = getIntent().getStringExtra("roomNumber");
-        meetingRoomId = getIntent().getIntExtra("meetingRoomId",-1);
-        Log.d("Lpp", "initPage: "+meetingRoomId+roomNumber);
+        meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
+        Log.d("Lpp", "initPage: " + meetingRoomId + roomNumber);
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         userToken = LitePal.findAll(UserToken.class).get(0);
         tvRoomNumber.setText(roomNumber);
@@ -263,6 +267,7 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             startBook(meetingName, meetingIntroduce);
         }
     }
+
     private void hideProgressBar() {
         runOnUiThread(new Runnable() {
             @Override
@@ -291,7 +296,7 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
         String meetingEndTime = getDateString(endDate);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.WhetherBookBody[0], meetingRoomId+"");
+        body.add(Api.WhetherBookBody[0], meetingRoomId + "");
         body.add(Api.WhetherBookBody[1], meetingStartTime);
         body.add(Api.WhetherBookBody[2], meetingEndTime);
         final Request request = new Request.Builder()
@@ -328,14 +333,14 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
         FormBody.Builder body = new FormBody.Builder();
         body.add(Api.RequestBookBody[0], meetingName);
         body.add(Api.RequestBookBody[1], meetingIntroduce);
-        body.add(Api.RequestBookBody[2], meetingRoomId+"");
-        body.add(Api.RequestBookBody[3], userInfo.getUserId()+"");
+        body.add(Api.RequestBookBody[2], meetingRoomId + "");
+        body.add(Api.RequestBookBody[3], userInfo.getUserId() + "");
         body.add(Api.RequestBookBody[4], getDateString(startDate));
         body.add(Api.RequestBookBody[5], getDateString(endDate));
         Request request = new Request.Builder()
-                .header(Api.RequestBookHeader[0],Api.RequestBookHeader[1])
+                .header(Api.RequestBookHeader[0], Api.RequestBookHeader[1])
                 .url(Api.RequestBookApi)
-                .addHeader("token",userToken.getToken())
+                .addHeader("token", userToken.getToken())
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -348,7 +353,7 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: "+msg);
+                Log.d("Lpp", "onResponse: " + msg);
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
                 if (bean.status == 1) {
                     hideProgressBar();
@@ -356,6 +361,14 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                 } else {
                     hideProgressBar();
                     showToast("预订成功");
+                    bean.data.save();
+                    Calendar cale = Calendar.getInstance();
+                    Calendar cale2 = Calendar.getInstance();
+                    cale2.setTime(startDate);
+                    int len = cale2.get(Calendar.DAY_OF_YEAR) - cale.get(Calendar.DAY_OF_YEAR) + 1;
+                    Intent intent = new Intent();
+                    intent.putExtra("dateLen", len);
+                    setResult(RESULT_OK, intent);
                     saveFlag = true;
                 }
             }

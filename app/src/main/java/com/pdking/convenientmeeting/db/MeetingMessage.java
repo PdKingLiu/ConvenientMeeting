@@ -30,4 +30,20 @@ public class MeetingMessage extends LitePalSupport{
     public long createTime;
     @SerializedName("updateTime")
     public long updateTime;
+
+    @Override
+    public String toString() {
+        return "MeetingMessage{" +
+                "meetingId=" + meetingId +
+                ", meetingName='" + meetingName + '\'' +
+                ", meetingIntro='" + meetingIntro + '\'' +
+                ", roomId=" + roomId +
+                ", status=" + status +
+                ", masterId=" + masterId +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

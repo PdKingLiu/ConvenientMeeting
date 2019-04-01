@@ -18,11 +18,12 @@ import java.util.List;
  * @author liupeidong
  * Created on 2019/3/25 16:38
  */
-public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.ViewHolder> implements View.OnClickListener {
+public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.ViewHolder>
+        implements View.OnClickListener {
 
     private List<MeetingMessage> meetingList;
-    private  Calendar calendar = Calendar.getInstance();
-    private  Date dt = new Date();
+    private Calendar calendar = Calendar.getInstance();
+    private Date dt = new Date();
     private OnItemClickListener onItemClickListener;
 
     public MeetingListAdapter(List<MeetingMessage> meetingList) {
@@ -49,7 +50,7 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         MeetingMessage message = meetingList.get(i);
-        viewHolder.setData(message,i);
+        viewHolder.setData(message, i);
     }
 
     @Override
@@ -97,12 +98,12 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
             }
             dt.setTime(data.startTime);
             calendar.setTime(dt);
-            String startTime = calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE)
-                    + ":" + calendar.get(Calendar.SECOND);
+//            String startTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+            String startTime = String.format("%d:%02d",calendar.get(Calendar.HOUR_OF_DAY) , calendar.get(Calendar.MINUTE));
             dt.setTime(data.endTime);
             calendar.setTime(dt);
-            String endTime = calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE)
-                    + ":" + calendar.get(Calendar.SECOND);
+            String endTime = String.format("%d:%02d",calendar.get(Calendar.HOUR_OF_DAY) , calendar.get(Calendar.MINUTE));;
+//            String endTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
             tvMeetingTime.setText(startTime + "  -  " + endTime);
         }
     }
