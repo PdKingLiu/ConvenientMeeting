@@ -265,6 +265,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_have_nothing:
+//                autoRefresh();
                 autoRefresh();
                 break;
         }
