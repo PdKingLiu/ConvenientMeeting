@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +11,15 @@ import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.MeetingBean;
+import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.UserInfo;
 
+import org.litepal.LitePal;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,19 +29,22 @@ import java.util.List;
 public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAdapter.ViewHolder>
         implements View.OnClickListener {
 
-    private List<MeetingBean> meetingBeanList;
+    private List<MeetingMessage> meetingBeanList;
 
     private Context mContext;
 
     private OnItemClickListener mListener;
 
+    private UserInfo userInfo;
+
     public void setClickListener(OnItemClickListener mListener) {
         this.mListener = mListener;
     }
 
-    public MeetingHistoryAdapter(List<MeetingBean> meetingBeanList, Context mContext) {
+    public MeetingHistoryAdapter(List<MeetingMessage> meetingBeanList, Context mContext) {
         this.meetingBeanList = meetingBeanList;
         this.mContext = mContext;
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
     }
 
     @NonNull
@@ -46,7 +58,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        MeetingBean meetingBean = meetingBeanList.get(i);
+        MeetingMessage meetingBean = meetingBeanList.get(i);
         viewHolder.setDate(meetingBean, i);
     }
 
@@ -63,54 +75,92 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_meeting_name;
-        private TextView tv_user_kind;
-        private TextView tv_people_number;
-        private TextView tv_user_status;
-        private TextView tv_place;
-        private TextView tv_meeting_time_length;
-        private TextView tv_meeting_master;
-        private TextView tv_meeting_data;
-        private TextView tv_meeting_time;
-        private TextView tv_meeting_introduce;
+        private TextView tvMeetingName;
+        private TextView tvUserKind;
+        private TextView tvPeopleNumber;
+        private TextView tvUserStatus;
+        private TextView tvPlace;
+        private TextView tvMeetingTimeLength;
+        private TextView tvMaster;
+        private TextView tvDate;
+        private TextView tvTime;
+        private TextView tvIntroduce;
         private View view;
         private View line;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.view = itemView;
-            tv_meeting_name = itemView.findViewById(R.id.tv_meeting_name);
-            tv_user_kind = itemView.findViewById(R.id.tv_user_kind);
-            tv_people_number = itemView.findViewById(R.id.tv_people_number);
-            tv_user_status = itemView.findViewById(R.id.tv_user_status);
-            tv_place = itemView.findViewById(R.id.tv_place);
-            tv_meeting_time_length = itemView.findViewById(R.id.tv_meeting_time_length);
-            tv_meeting_master = itemView.findViewById(R.id.tv_meeting_master);
-            tv_meeting_data = itemView.findViewById(R.id.tv_meeting_data);
-            tv_meeting_time = itemView.findViewById(R.id.tv_meeting_time);
-            tv_meeting_introduce = itemView.findViewById(R.id.tv_meeting_introduce);
+            tvMeetingName = itemView.findViewById(R.id.tv_meeting_name);
+            tvUserKind = itemView.findViewById(R.id.tv_user_kind);
+            tvPeopleNumber = itemView.findViewById(R.id.tv_people_number);
+            tvUserStatus = itemView.findViewById(R.id.tv_user_status);
+            tvPlace = itemView.findViewById(R.id.tv_place);
+            tvMeetingTimeLength = itemView.findViewById(R.id.tv_meeting_time_length);
+            tvMaster = itemView.findViewById(R.id.tv_meeting_master);
+            tvDate = itemView.findViewById(R.id.tv_meeting_date);
+            tvTime = itemView.findViewById(R.id.tv_meeting_time);
+            tvIntroduce = itemView.findViewById(R.id.tv_meeting_introduce);
             line = itemView.findViewById(R.id.view_line);
         }
 
-        void setDate(MeetingBean meetingBean, int i) {
+        void setDate(MeetingMessage meetingBean, int i) {
             view.setTag(i);
-            tv_meeting_name.setText(meetingBean.getTv_meeting_name());
-            tv_user_kind.setText(meetingBean.getTv_user_kind());
-            tv_people_number.setText(meetingBean.getTv_people_number());
-            tv_user_status.setText(meetingBean.getTv_user_status());
-            tv_place.setText(meetingBean.getTv_place());
-            tv_meeting_time_length.setText(meetingBean.getTv_meeting_time_length());
-            tv_meeting_master.setText(meetingBean.getTv_meeting_master());
-            tv_meeting_data.setText(meetingBean.getTv_meeting_data());
-            tv_meeting_time.setText(meetingBean.getTv_meeting_time());
-            tv_meeting_introduce.setText(meetingBean.getTv_meeting_introduce());
-            if (meetingBean.getTv_user_kind().equals("组织者")) {
-                tv_user_kind.setBackground(mContext.getResources().getDrawable(R.drawable
+            tvMeetingName.setText(meetingBean.meetingName);
+            if (userInfo.userId == meetingBean.masterId) {
+                tvUserKind.setText("组织者");
+                tvUserKind.setBackground(mContext.getResources().getDrawable(R.drawable
                         .shape_history_meeting_user_kind_master));
-            } else if (meetingBean.getTv_user_kind().equals("参与者")) {
-                tv_user_kind.setBackground(mContext.getResources().getDrawable(R.drawable
+            } else {
+                tvUserKind.setText("参与者");
+                tvUserKind.setBackground(mContext.getResources().getDrawable(R.drawable
                         .shape_history_meeting_user_kind_member));
             }
+            tvPeopleNumber.setText(meetingBean.peopleNum);
+            switch (meetingBean.userStatus) {
+                case 1:
+                    tvUserStatus.setText("缺勤");
+                    break;
+                case 2:
+                    tvUserStatus.setText("请假");
+                    break;
+                case 3:
+                    tvUserStatus.setText("迟到");
+                    break;
+                case 4:
+                    tvUserStatus.setText("正常");
+                    break;
+            }
+            tvPlace.setText(meetingBean.roomName);
+            Date date = new Date();
+            Date date2 = new Date();
+            try {
+                date = format.parse(meetingBean.startTime);
+                date2 = format.parse(meetingBean.endTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int len = (int) ((date2.getTime() - date.getTime()) / 1000 / 60);
+            tvMeetingTimeLength.setText(len);
+            tvMaster.setText(meetingBean.masterName);
+            calendar.setTime(date);
+            @SuppressLint("DefaultLocale") String time = String.format("%d年%d月%d日",
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MINUTE),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            tvDate.setText(time);
+            calendar.setTime(date);
+            @SuppressLint("DefaultLocale")
+            String string = String.format("%d:%02d:00", calendar.get
+                    (Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+            calendar.setTime(date2);
+            @SuppressLint("DefaultLocale")
+            String string2 = String.format("%d:%02d:00", calendar.get
+                    (Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+            String s = string + "  -  " + string2;
+            tvTime.setText(s);
+            tvIntroduce.setText(meetingBean.meetingIntro);
             if (i == meetingBeanList.size() - 1) {
                 line.setVisibility(View.GONE);
             } else {

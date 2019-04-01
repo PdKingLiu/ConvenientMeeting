@@ -165,7 +165,7 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
             @SuppressLint("DefaultLocale")
             String string2 = String.format("%d:%02d:00", calendar.get
                     (Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-            String s = string + " - " + string2;
+            String s = string + "  -  " + string2;
             tvTime.setText(s);
             if (i == beanList.size() - 1) {
                 line.setVisibility(View.GONE);

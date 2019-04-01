@@ -12,35 +12,49 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.adapter.MeetingHistoryAdapter;
+import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingBean;
+import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.MeetingMessageBean;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.litepal.LitePal;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.Response;
 
-public class MeetingHistoryFragment extends Fragment {
+public class MeetingHistoryFragment extends Fragment implements View.OnClickListener{
 
     private static MeetingHistoryFragment meetingHistoryFragment;
-
-    RecyclerView mRecyclerView;
-
-    SmartRefreshLayout refreshLayout;
-
-    private List<MeetingBean> meetingBeanList;
-
+    private RecyclerView recyclerView;
+    private SmartRefreshLayout refreshLayout;
+    private RelativeLayout rlHaveNothing;
+    private List<MeetingMessage> beanList;
     private MeetingHistoryAdapter mAdapter;
-
+    private UserInfo userInfo;
+    private UserToken userToken;
 
     public MeetingHistoryFragment() {
     }
@@ -52,15 +66,6 @@ public class MeetingHistoryFragment extends Fragment {
                 refreshLayout.autoRefresh();
             }
         });
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     public static MeetingHistoryFragment newInstance() {
@@ -74,109 +79,108 @@ public class MeetingHistoryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initList();
-        initRecyclerView();
+        initRecyclerAndRefresh();
     }
 
-    private void initRecyclerView() {
-        mAdapter = new MeetingHistoryAdapter(meetingBeanList, getContext());
+    private void initRecyclerAndRefresh() {
+        mAdapter = new MeetingHistoryAdapter(beanList, getContext());
         mAdapter.setClickListener(new MeetingHistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getContext(), meetingBeanList.get(position).getTv_meeting_name(),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), beanList.get(position).roomName, Toast.LENGTH_SHORT)
+                        .show();
             }
         });
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(mAdapter);
-        initFlush();
-    }
-
-    private void initFlush() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(mAdapter);
         refreshLayout.setEnableAutoLoadMore(false);
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                loadMore();
-                refreshLayout.finishLoadMore();
+                refreshLayout.finishLoadMoreWithNoMoreData();
             }
         });
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 refresh();
-                refreshLayout.finishRefresh();
             }
         });
     }
 
     private void refresh() {
-        meetingBeanList.clear();
-        initList();
-        mAdapter.notifyDataSetChanged();
+        FormBody.Builder body = new FormBody.Builder()
+                .add("token", userToken.getToken())
+                .add(Api.RequestUserMeetingListBody[0], userInfo.getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[1], 2 + "");
+        Request request = new Request.Builder()
+                .post(body.build())
+                .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
+                .addHeader("token", userToken.getToken())
+                .url(Api.RequestUserMeetingListApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                refreshLayout.finishRefresh(3000, false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+                MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
+                if (bean != null && bean.status == 0) {
+                    for (MeetingMessage message : bean.data) {
+                        message.meetingType = 1;
+                    }
+                    refreshLayout.finishRefresh(2000, true);
+                    beanList.clear();
+                    beanList.addAll(bean.data);
+                    Log.d("Lpp", "onResponse: " + beanList.size());
+                    LitePal.deleteAll(MeetingMessage.class, "meetingType = ?", "2");
+                    LitePal.saveAll(beanList);
+                    notifyDataChanged();
+                } else {
+                    refreshLayout.finishRefresh(2000, false);
+                }
+            }
+        });
     }
 
-    private void loadMore() {
-        initList();
-        mAdapter.notifyDataSetChanged();
+    private void notifyDataChanged() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mAdapter != null && beanList != null) {
+                    if (beanList.size() == 0) {
+                        rlHaveNothing.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        rlHaveNothing.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    rlHaveNothing.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initList() {
-        MeetingBean meet = new MeetingBean();
-        meet.setTv_meeting_name("便捷会议");
-        meet.setTv_user_kind("组织者");
-        meet.setTv_people_number("20");
-        meet.setTv_user_status("缺勤");
-        meet.setTv_place("FZ155");
-        meet.setTv_meeting_time_length("90分钟");
-        meet.setTv_meeting_master("刘沛栋");
-        meet.setTv_meeting_data("2018年11月17日");
-        meet.setTv_meeting_time("18:00:00 - 20:00:00");
-        meet.setTv_meeting_introduce("关于纳新的会议");
-        MeetingBean meet2 = new MeetingBean();
-        meet2.setTv_meeting_name("迅速会议");
-        meet2.setTv_user_kind("参与者");
-        meet2.setTv_people_number("50");
-        meet2.setTv_user_status("迟到");
-        meet2.setTv_place("FZ156");
-        meet2.setTv_meeting_time_length("120分钟");
-        meet2.setTv_meeting_master("王舜");
-        meet2.setTv_meeting_data("2018年11月12日");
-        meet2.setTv_meeting_time("15:00:00 - 23:00:00");
-        meet2.setTv_meeting_introduce("谈论、分享会");
-        meetingBeanList.add(meet);
-        meetingBeanList.add(meet2);
-        for (int i = 0; i < 10; i++) {
-            MeetingBean meetingBean = new MeetingBean();
-            meetingBean.setTv_meeting_name(getRandomString(1));
-            meetingBean.setTv_user_kind(getRandomString(1));
-            meetingBean.setTv_people_number(getRandomString(1));
-            meetingBean.setTv_user_status(getRandomString(1));
-            meetingBean.setTv_place(getRandomString(1));
-            meetingBean.setTv_meeting_time_length(getRandomString(1));
-            meetingBean.setTv_meeting_master(getRandomString(1));
-            meetingBean.setTv_meeting_data(getRandomString(1));
-            meetingBean.setTv_meeting_time(getRandomString(1));
-            meetingBean.setTv_meeting_introduce(getRandomString(1));
-            meetingBeanList.add(meetingBean);
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
+        beanList = new ArrayList<>();
+        beanList = LitePal.where("meetingType = ?", "2").find(MeetingMessage.class);
+        if (beanList.size() == 0) {
+            rlHaveNothing.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            rlHaveNothing.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
-    }
-
-    public static String getRandomString(int length) {
-        String str = "甲乙丙丁戊abcde";
-        Random random = new Random();
-        length = random.nextInt(8);
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(10);
-            sb.append(str.charAt(number));
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        meetingBeanList = new ArrayList<>();
     }
 
     @Override
@@ -189,8 +193,18 @@ public class MeetingHistoryFragment extends Fragment {
 
     private void initView(View view) {
         refreshLayout = view.findViewById(R.id.srl_flush);
-        mRecyclerView = view.findViewById(R.id.rv_history);
+        recyclerView = view.findViewById(R.id.rv_history);
+        rlHaveNothing = view.findViewById(R.id.rl_have_nothing);
+        rlHaveNothing.setOnClickListener(this);
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_have_nothing:
+                refreshLayout.autoRefresh();
+                break;
+        }
+    }
 }

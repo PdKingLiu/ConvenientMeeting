@@ -44,7 +44,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MeetingMineFragment extends Fragment {
+public class MeetingMineFragment extends Fragment implements View.OnClickListener {
 
     private static MeetingMineFragment meetingMineFragment;
     private SmartRefreshLayout refreshLayout;
@@ -64,11 +64,6 @@ public class MeetingMineFragment extends Fragment {
             meetingMineFragment = new MeetingMineFragment();
         }
         return meetingMineFragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -147,7 +142,7 @@ public class MeetingMineFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishLoadMore();
+                refreshLayout.finishLoadMoreWithNoMoreData();
             }
         });
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -165,8 +160,8 @@ public class MeetingMineFragment extends Fragment {
                 .add(Api.RequestUserMeetingListBody[1], 1 + "");
         Request request = new Request.Builder()
                 .post(body.build())
-                .header(Api.RequestUserMeetingListHeader[0],Api.RequestUserMeetingListHeader[1])
-                .addHeader("token",userToken.getToken())
+                .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
+                .addHeader("token", userToken.getToken())
                 .url(Api.RequestUserMeetingListApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -188,7 +183,7 @@ public class MeetingMineFragment extends Fragment {
                     beanList.clear();
                     beanList.addAll(bean.data);
                     Log.d("Lpp", "onResponse: " + beanList.size());
-                    LitePal.deleteAll(MeetingMessage.class);
+                    LitePal.deleteAll(MeetingMessage.class, "meetingType = ?", "1");
                     LitePal.saveAll(beanList);
                     notifyDataChanged();
                 } else {
@@ -232,7 +227,7 @@ public class MeetingMineFragment extends Fragment {
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         userToken = LitePal.findAll(UserToken.class).get(0);
         beanList = new ArrayList<>();
-        beanList = LitePal.findAll(MeetingMessage.class);
+        beanList = LitePal.where("meetingType = ?", "1").find(MeetingMessage.class);
         if (beanList.size() == 0) {
             rlHaveNothing.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -263,5 +258,15 @@ public class MeetingMineFragment extends Fragment {
         refreshLayout = view.findViewById(R.id.srl_flush);
         recyclerView = view.findViewById(R.id.rv_mine);
         rlHaveNothing = view.findViewById(R.id.rl_have_nothing);
+        rlHaveNothing.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_have_nothing:
+                autoRefresh();
+                break;
+        }
     }
 }

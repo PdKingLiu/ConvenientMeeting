@@ -78,10 +78,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         return meetingRoomFragment;
     }
 
-    public SmartRefreshLayout getRefreshLayout() {
-        return refreshLayout;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,8 +200,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     private void requestLoadMore() {
-        refreshLayout.finishLoadMore();
-        AllMeetingRoomMessageBean bean;
+        refreshLayout.finishLoadMoreWithNoMoreData();
     }
 
     private void requestRefresh() {
