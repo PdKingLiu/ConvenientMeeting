@@ -22,7 +22,7 @@ public class OneMeetingRoomMessage extends LitePalSupport{
     @SerializedName("id")
     public int meetingRoomId;
     @SerializedName("meetingLists")
-    public List<MeetingMessage> meetingLists;
+    public List<RoomOfMeetingMessage> meetingLists;
     @SerializedName("recentlyMeetings")
-    public List<MeetingMessage> recentlyMeetings;
+    public List<RoomOfMeetingMessage> recentlyMeetings;
 }

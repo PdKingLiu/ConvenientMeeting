@@ -79,12 +79,29 @@ public class Api {
 
     public static String[] WhetherBookBody = {"roomId", "startTime", "endTIme"};
 
-    public static String RequestBookApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting/bookMeeting.do";
+    public static String RequestBookApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/bookMeeting.do";
 
     public static String[] RequestBookHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
     public static String[] RequestBookBody = {"meetingName", "meetingIntro", "roomId",
             "masterId", "startTime", "endTime"};
+
+    public static String RequestUserMeetingListApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/getUserMeetings.do";
+
+    public static String[] RequestUserMeetingListHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] RequestUserMeetingListBody = {"userId", "type"};
+
+    public static String MeetingAddMemberApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/inviteMeetingMember.do";
+
+    public static String[] MeetingAddMemberHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] MeetingAddMemberBody = {"userId", "meetingId"};
 
 }

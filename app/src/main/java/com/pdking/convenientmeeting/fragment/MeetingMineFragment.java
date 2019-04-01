@@ -12,11 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
-import com.pdking.convenientmeeting.db.MineMeetingBean;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.MeetingMessageBean;
+import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -24,29 +32,31 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.litepal.LitePal;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MeetingMineFragment extends Fragment {
 
     private static MeetingMineFragment meetingMineFragment;
     private SmartRefreshLayout refreshLayout;
+    private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
     private MeetingMineAdapter mineAdapter;
-    private List<MineMeetingBean> beanList;
+    private List<MeetingMessage> beanList;
     private PopMenu mPopMenu;
+    private UserToken userToken;
+    private UserInfo userInfo;
 
     public MeetingMineFragment() {
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     public static MeetingMineFragment newInstance() {
@@ -67,10 +77,6 @@ public class MeetingMineFragment extends Fragment {
         initList();
         initMenu();
         initRecyclerAndFlush();
-    }
-
-    public SmartRefreshLayout getRefreshLayout() {
-        return refreshLayout;
     }
 
     private void initMenu() {
@@ -147,16 +153,92 @@ public class MeetingMineFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh();
+                refresh();
+            }
+        });
+    }
+
+    private void refresh() {
+        FormBody.Builder body = new FormBody.Builder()
+                .add("token", userToken.getToken())
+                .add(Api.RequestUserMeetingListBody[0], userInfo.getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[1], 1 + "");
+        Request request = new Request.Builder()
+                .post(body.build())
+                .header(Api.RequestUserMeetingListHeader[0],Api.RequestUserMeetingListHeader[1])
+                .addHeader("token",userToken.getToken())
+                .url(Api.RequestUserMeetingListApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                refreshLayout.finishRefresh(3000, false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+                MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
+                if (bean != null && bean.status == 0) {
+                    for (MeetingMessage message : bean.data) {
+                        message.meetingType = 1;
+                    }
+                    refreshLayout.finishRefresh(2000, true);
+                    beanList.clear();
+                    beanList.addAll(bean.data);
+                    Log.d("Lpp", "onResponse: " + beanList.size());
+                    LitePal.deleteAll(MeetingMessage.class);
+                    LitePal.saveAll(beanList);
+                    notifyDataChanged();
+                } else {
+                    refreshLayout.finishRefresh(2000, false);
+                }
+            }
+        });
+    }
+
+    private void notifyDataChanged() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mineAdapter != null && beanList != null) {
+                    if (beanList.size() == 0) {
+                        rlHaveNothing.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        rlHaveNothing.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        mineAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    rlHaveNothing.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void showToast(final String text) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initList() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
         beanList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            MineMeetingBean mineMeetingBean = new MineMeetingBean();
-            beanList.add(mineMeetingBean);
+        beanList = LitePal.findAll(MeetingMessage.class);
+        if (beanList.size() == 0) {
+            rlHaveNothing.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            rlHaveNothing.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -180,6 +262,6 @@ public class MeetingMineFragment extends Fragment {
     private void initView(View view) {
         refreshLayout = view.findViewById(R.id.srl_flush);
         recyclerView = view.findViewById(R.id.rv_mine);
+        rlHaveNothing = view.findViewById(R.id.rl_have_nothing);
     }
-
 }

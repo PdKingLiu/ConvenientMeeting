@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,8 +21,7 @@ import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.AllMeetingRoomMessageBean;
-import com.pdking.convenientmeeting.db.MeetingMessage;
-import com.pdking.convenientmeeting.db.MeetingRoomBean;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -36,7 +34,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.litepal.LitePal;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -58,7 +55,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     private UserInfo userInfo;
     private UserToken userToken;
     private ProgressDialog dialog;
-    private List<MeetingMessage> allMeetingList;
+    private List<RoomOfMeetingMessage> allMeetingList;
     private OneMeetingRoomMessageBean meetingRoomMessageBean;
 
     @Override
@@ -104,7 +101,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         userToken = LitePal.findAll(UserToken.class).get(0);
         roomMessageList = LitePal.findAll(OneMeetingRoomMessage.class);
-
         if (roomMessageList.size() == 0) {
             rlHaveNothing.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -112,7 +108,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             rlHaveNothing.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
-
     }
 
     private void initRecycleViewAndRefresh() {
@@ -172,7 +167,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                             .recentlyMeetings != null) {
                         allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
                         Log.d("Lpp", "onResponse: MeetingRoomFragment"+allMeetingList);
-                        LitePal.deleteAll(MeetingMessage.class);
+                        LitePal.deleteAll(RoomOfMeetingMessage.class);
                         LitePal.saveAll(allMeetingList);
                         Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
                         intent.putExtra("status", meetingRoomMessageBean.data.status);
@@ -258,7 +253,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     } else {
                         rlHaveNothing.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        Log.d("Lpp", "run: ");
                         roomAdapter.notifyDataSetChanged();
                     }
                 } else {

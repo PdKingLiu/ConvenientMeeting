@@ -1,7 +1,5 @@
 package com.pdking.convenientmeeting.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingListAdapter;
-import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 
 import org.litepal.LitePal;
 
@@ -31,9 +28,9 @@ public class DayMeetingListFragment extends Fragment {
 
     private String title;
 
-    private List<MeetingMessage> meetingList;
+    private List<RoomOfMeetingMessage> meetingList;
 
-    private List<MeetingMessage> allMeetingList;
+    private List<RoomOfMeetingMessage> allMeetingList;
 
     private TextView tvHaveNothing;
 
@@ -63,7 +60,7 @@ public class DayMeetingListFragment extends Fragment {
             number = getArguments().getString(ARG_PARAM2);
         }
         meetingList = new ArrayList<>();
-        allMeetingList = LitePal.findAll(MeetingMessage.class);
+        allMeetingList = LitePal.findAll(RoomOfMeetingMessage.class);
         Log.d("Lpp", "onCreate: DayMeetingListFragment" + allMeetingList);
     }
 
@@ -92,7 +89,7 @@ public class DayMeetingListFragment extends Fragment {
 
     private void initRecyclerView() {
         int i = Integer.parseInt(number);
-        for (MeetingMessage meeting : allMeetingList) {
+        for (RoomOfMeetingMessage meeting : allMeetingList) {
             int data = getRelativeData(meeting.startTime) + 2;
             if (data == i) {
                 meetingList.add(meeting);
@@ -129,10 +126,10 @@ public class DayMeetingListFragment extends Fragment {
     }
 
     public void notifyDataChanged() {
-        allMeetingList = LitePal.findAll(MeetingMessage.class);
+        allMeetingList = LitePal.findAll(RoomOfMeetingMessage.class);
         meetingList.clear();
         int i = Integer.parseInt(number);
-        for (MeetingMessage meeting : allMeetingList) {
+        for (RoomOfMeetingMessage meeting : allMeetingList) {
             int data = getRelativeData(meeting.startTime) + 2;
             if (data == i) {
                 meetingList.add(meeting);

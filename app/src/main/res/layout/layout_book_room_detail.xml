@@ -179,15 +179,6 @@
                         android:layout_margin="10dp"
                         android:text="参会人员" />
 
-                    <Button
-                        android:id="@+id/btn_add_member"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:background="@null"
-                        android:text="添加"
-                        android:textColor="@color/color_bnv_click" />
 
                 </RelativeLayout>
 
@@ -199,6 +190,15 @@
                     android:gravity="center_vertical"
                     android:text="刘沛栋"
                     android:textColor="@android:color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="其他成员预订成功后可手动添加"
+                    android:textColor="@color/color_bnv_click"
                     android:textSize="15sp" />
 
             </LinearLayout>

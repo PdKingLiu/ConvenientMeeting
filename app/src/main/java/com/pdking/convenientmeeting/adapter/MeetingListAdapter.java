@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,12 +21,12 @@ import java.util.List;
 public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.ViewHolder>
         implements View.OnClickListener {
 
-    private List<MeetingMessage> meetingList;
+    private List<RoomOfMeetingMessage> meetingList;
     private Calendar calendar = Calendar.getInstance();
     private Date dt = new Date();
     private OnItemClickListener onItemClickListener;
 
-    public MeetingListAdapter(List<MeetingMessage> meetingList) {
+    public MeetingListAdapter(List<RoomOfMeetingMessage> meetingList) {
         this.meetingList = meetingList;
     }
 
@@ -49,7 +49,7 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        MeetingMessage message = meetingList.get(i);
+        RoomOfMeetingMessage message = meetingList.get(i);
         viewHolder.setData(message, i);
     }
 
@@ -67,6 +67,7 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
         View view;
+        View viewUpLine;
         TextView tvMeetingName;
         TextView tvMeetingMessage;
         TextView tvMeetingStatus;
@@ -79,9 +80,10 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
             tvMeetingMessage = itemView.findViewById(R.id.tv_meeting_message);
             tvMeetingStatus = itemView.findViewById(R.id.tv_meeting_status);
             tvMeetingTime = itemView.findViewById(R.id.tv_meeting_time);
+            viewUpLine = itemView.findViewById(R.id.view_up_line);
         }
 
-        public void setData(MeetingMessage data, int i) {
+        public void setData(RoomOfMeetingMessage data, int i) {
             view.setTag(i);
             tvMeetingName.setText(data.meetingName);
             tvMeetingMessage.setText(data.meetingIntro);
@@ -95,6 +97,9 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
                 case 3:
                     tvMeetingStatus.setText("即将进行");
                     break;
+            }
+            if (i == 0) {
+                viewUpLine.setVisibility(View.VISIBLE);
             }
             dt.setTime(data.startTime);
             calendar.setTime(dt);

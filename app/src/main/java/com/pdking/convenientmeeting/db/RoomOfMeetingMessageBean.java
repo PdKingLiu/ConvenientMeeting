@@ -2,17 +2,13 @@ package com.pdking.convenientmeeting.db;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.litepal.crud.LitePalSupport;
-
-import java.util.List;
-
 /**
  * @author liupeidong
- * Created on 2019/4/1 16:34
+ * Created on 2019/3/27 20:40
  */
-public class MeetingMessageBean {
+public class RoomOfMeetingMessageBean {
     @SerializedName("status")
     public int status;
     @SerializedName("data")
-    public List<MeetingMessage> data;
+    public RoomOfMeetingMessage data;
 }

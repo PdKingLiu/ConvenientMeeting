@@ -21,10 +21,11 @@ import com.bigkoo.pickerview.view.TimePickerView;
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.MeetingMessageBean;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessageBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
@@ -66,8 +67,6 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
     TextView tvMeetingStartTime;
     @BindView(R.id.tv_meeting_end_time)
     TextView tvMeetingEndTime;
-    @BindView(R.id.btn_add_member)
-    Button btnAddMember;
     @BindView(R.id.tv_member_master)
     TextView tvMemberMaster;
 
@@ -337,7 +336,7 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
         body.add(Api.RequestBookBody[3], userInfo.getUserId() + "");
         body.add(Api.RequestBookBody[4], getDateString(startDate));
         body.add(Api.RequestBookBody[5], getDateString(endDate));
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .header(Api.RequestBookHeader[0], Api.RequestBookHeader[1])
                 .url(Api.RequestBookApi)
                 .addHeader("token", userToken.getToken())
@@ -354,7 +353,8 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Log.d("Lpp", "onResponse: " + msg);
-                MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
+                RoomOfMeetingMessageBean bean = new Gson().fromJson(msg, RoomOfMeetingMessageBean
+                        .class);
                 if (bean.status == 1) {
                     hideProgressBar();
                     showToast("预定失败");
@@ -362,6 +362,7 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     hideProgressBar();
                     showToast("预订成功");
                     bean.data.save();
+                    requestAddMember(bean.data.meetingId, bean.data.masterId);
                     Calendar cale = Calendar.getInstance();
                     Calendar cale2 = Calendar.getInstance();
                     cale2.setTime(startDate);
@@ -371,6 +372,30 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     setResult(RESULT_OK, intent);
                     saveFlag = true;
                 }
+            }
+        });
+    }
+
+    private void requestAddMember(int meetingId, int masterId) {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.MeetingAddMemberBody[0], masterId + "");
+        body.add(Api.MeetingAddMemberBody[1], meetingId + "");
+        Request request = new Request.Builder()
+                .url(Api.MeetingAddMemberApi)
+                .post(body.build())
+                .header(Api.MeetingAddMemberHeader[0], Api.MeetingAddMemberHeader[1])
+                .addHeader("token", userToken.getToken())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("Lpp", "邀请成员失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "邀请成员成功 onResponse: " + msg);
             }
         });
     }

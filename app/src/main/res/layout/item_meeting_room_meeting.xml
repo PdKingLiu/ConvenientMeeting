@@ -5,9 +5,13 @@
     android:orientation="vertical">
 
     <View
+        android:id="@+id/view_up_line"
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="#d2d2d2" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#d2d2d2"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_meeting_name"
@@ -50,6 +54,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_height="25dp"
         android:orientation="horizontal"
         android:paddingBottom="2dp"
@@ -94,6 +99,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:background="#d2d2d2" />
 
 </LinearLayout>

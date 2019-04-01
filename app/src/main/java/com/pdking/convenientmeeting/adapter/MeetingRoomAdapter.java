@@ -106,7 +106,8 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
                     break;
                 case 2:
                     stvStatus.setText("使用中");
-                    stvStatus.setSlantedBackgroundColor(Color.RED);
+                    stvStatus.setSlantedBackgroundColor(mContext.getResources().getColor(R.color
+                            .pie_orange));
                     break;
                 case 3:
                     stvStatus.setText("维修");

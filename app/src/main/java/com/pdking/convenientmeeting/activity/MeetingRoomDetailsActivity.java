@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -21,17 +20,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.adapter.MeetingListAdapter;
-import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.MeetingMessage;
-import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.DayMeetingListFragment;
@@ -42,7 +36,6 @@ import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -52,14 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.wasabeef.glide.transformations.BlurTransformation;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-import static androidx.annotation.Dimension.DP;
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class MeetingRoomDetailsActivity extends AppCompatActivity {
@@ -95,7 +81,7 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     private int roomStatus;
     private int roomContent;
     private String roomId;
-    private List<MeetingMessage> allMeetingList;
+    private List<RoomOfMeetingMessage> allMeetingList;
     private Bitmap newBitmap;
 
     @Override
@@ -138,7 +124,7 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     private void requestData() {
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         userToken = LitePal.findAll(UserToken.class).get(0);
-        allMeetingList = LitePal.findAll(MeetingMessage.class);
+        allMeetingList = LitePal.findAll(RoomOfMeetingMessage.class);
     }
 
     private void changeTextViewText(final TextView tv, final String text) {
