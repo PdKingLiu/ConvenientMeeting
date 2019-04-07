@@ -37,11 +37,15 @@ import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MeetingRoomFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 
 import org.litepal.LitePal;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import butterknife.BindView;
@@ -81,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     private LoginBean loginInfo;
 
     private Snackbar snackbar;
+
+    private File iconFile;
 
     private boolean exitFlag = false;
 
@@ -155,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                             finish();
                         } else {
                             showToast("登录成功");
+                            Log.d(TAG, "onResponse: " + message);
                             userToken = new UserToken(loginInfo.msg);
                             userInfo = loginInfo.data;
                             ActivityContainer.removeAllActivity();
@@ -173,14 +180,52 @@ public class MainActivity extends AppCompatActivity {
         LitePal.deleteAll(UserInfo.class);
         userToken.save();
         userInfo.save();
+        File file = new File(getExternalFilesDir(null), "/user/userIcon");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        iconFile = new File(file, "user_icon_clip_" + userInfo.getPhone() + ".jpg");
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof MeetingRoomFragment) {
                 ((MeetingRoomFragment) fragment).autoRefresh();
             }
         }
-    }
+        Request request = new Request.Builder()
+                .url(userInfo.avatarUrl)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("Lpp", "onFailure: " + e.getMessage());
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                InputStream inputStream = null;
+                byte[] bytes = new byte[1024];
+                FileOutputStream fileOutputStream = null;
+                long current = 0;
+                int len;
+                try {
+                    long total = response.body().contentLength();
+                    Log.d("Lpp", "onResponse: " + total);
+                    inputStream = response.body().byteStream();
+                    fileOutputStream = new FileOutputStream(iconFile);
+                    while ((len = inputStream.read(bytes)) != -1) {
+                        current += len;
+                        fileOutputStream.write(bytes, 0, len);
+                        Log.d("Lpp", "onResponse: " + current);
+                    }
+                    fileOutputStream.flush();
+                    inputStream.close();
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    Log.d("Lpp", "onResponse: " + e.getMessage());
+                }
+            }
+        });
+    }
 
     private void showToast(final String text) {
         runOnUiThread(new Runnable() {
@@ -347,17 +392,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent
+            data) {
         switch (requestCode) {
             case UPDATE_USER_DATA:
                 if (resultCode == RESULT_OK && data != null) {
                     List<Fragment> fragments = getSupportFragmentManager().getFragments();
                     for (Fragment f : fragments) {
                         if (f instanceof MineFragment) {
-                            ((MineFragment) f).onActivityResult(requestCode, resultCode, data);
+                            ((MineFragment) f).onActivityResult(requestCode, resultCode,
+                                    data);
                         }
                         if (f instanceof RecordFragment) {
-                            ((RecordFragment) f).onActivityResult(requestCode, resultCode, data);
+                            ((RecordFragment) f).onActivityResult(requestCode, resultCode,
+                                    data);
                         }
                     }
                 }

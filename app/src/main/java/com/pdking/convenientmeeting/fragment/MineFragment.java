@@ -21,14 +21,21 @@ import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
 
 import org.litepal.LitePal;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -75,7 +82,17 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         civUserIcon = view.findViewById(R.id.civ_user_icon);
         tvUserEmail = view.findViewById(R.id.tv_user_email);
         rlSettingSafety = view.findViewById(R.id.rl_setting_safety);
+        init();
         initListener();
+    }
+
+    private void init() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        File file = new File(getContext().getExternalFilesDir(null), "/user/userIcon");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        iconFile = new File(file, "user_icon_clip_" + userInfo.getPhone() + ".jpg");
     }
 
     private void initListener() {
@@ -119,8 +136,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 boolean flag[] = {false, false};
-                Log.d("Lpp", "info.email: "+info.email);
-                Log.d("Lpp", "userInfo.email: "+userInfo.email);
                 if (!info.email.equals(userInfo.email)) {
                     tvUserEmail.setText("邮箱：" + info.email);
                     flag[0] = true;
@@ -148,9 +163,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadUserData() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        iconFile = new File(getContext().getExternalFilesDir(null) + "/user/userIcon",
-                "user_icon_clip_" + userInfo.getPhone() + ".jpg");
         if (iconFile.exists()) {
             Log.d("Lpp", "civUserIcon:file ");
             Glide.with(this)
@@ -160,8 +172,41 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     .into(civUserIcon);
         } else {
             Log.d("Lpp", "civUserIcon:avatarUrl ");
+            Request request = new Request.Builder()
+                    .url(userInfo.avatarUrl)
+                    .build();
+            OkHttpUtils.requestHelper(request, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("Lpp", "onFailure: " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    InputStream inputStream = null;
+                    byte[] bytes = new byte[1024];
+                    FileOutputStream fileOutputStream = null;
+                    long current = 0;
+                    int len;
+                    try {
+                        long total = response.body().contentLength();
+                        inputStream = response.body().byteStream();
+                        fileOutputStream = new FileOutputStream(iconFile);
+                        while ((len = inputStream.read(bytes)) != -1) {
+                            current += len;
+                            fileOutputStream.write(bytes, 0, len);
+                            Log.d("Lpp", "onResponse: " + current);
+                        }
+                        fileOutputStream.flush();
+                        inputStream.close();
+                        fileOutputStream.close();
+                    } catch (Exception e) {
+                        Log.d("Lpp", "onResponse:hh " + e.getMessage());
+                    }
+                }
+            });
             Glide.with(this)
-                    .load(userInfo.avatarUrl)
+                    .load(iconFile)
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
                             .NONE).skipMemoryCache(true))
                     .into(civUserIcon);

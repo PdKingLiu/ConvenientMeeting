@@ -234,8 +234,8 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         ButterKnife.bind(this);
         LitePal.getDatabase();
         dialog = new ProgressDialog(this);
-        dialog.setMessage("正在保存...");
-        dialog.setTitle("保存中");
+        dialog.setMessage("正在加载...");
+        dialog.setTitle("加载中");
         dialog.setCancelable(false);
 
         title.setLeftClickListener(this);
