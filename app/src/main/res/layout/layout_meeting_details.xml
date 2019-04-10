@@ -1,19 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_sum"
     android:layout_width="match_parent"
-    android:background="@android:color/darker_gray"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
     tools:context=".activity.MeetingDetailsActivity">
 
-    <com.pdking.convenientmeeting.weight.TitleView
+    <ImageView
+        android:id="@+id/iv_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:leftTextVisibility="false"
-        app:titleBackground="@android:color/transparent"
-        app:titleText="比赛会议">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/meeting_default_background" />
 
-    </com.pdking.convenientmeeting.weight.TitleView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="750dp"
+                android:orientation="vertical">
+
+                <com.pdking.convenientmeeting.weight.TitleView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:leftTextVisibility="false"
+                    app:titleBackground="@android:color/transparent"
+                    app:titleText="比赛会议"
+                    app:titleTextSize="10sp">
+
+                </com.pdking.convenientmeeting.weight.TitleView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/tv_people_sum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        android:text="30 人"
+                        android:textColor="@android:color/white"
+                        android:textSize="45sp" />
+
+                    <TextView
+                        android:id="@+id/tv_meeting_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/tv_people_sum"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="8dp"
+                        android:text="正在进行"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
+
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="#8000"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="20dp"
+                        android:text="开始时间：2019-03-17 21:29:57"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tv_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="结束时间：2019-03-17 21:29:57"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:text="地点：FZ155"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="会议信息"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="#8000"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_introduce"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:padding="15dp"
+                        android:text="会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="成员"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btn_add_member"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="25dp"
+                        android:background="@android:color/transparent"
+                        android:text="添加成员"
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_member_list"
+                    android:layout_width="match_parent"
+                    android:minHeight="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="#8000"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp">
+
+<!--                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="刘沛栋"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />-->
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_start_or_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:clickable="true"
+            android:src="@mipmap/icon_meeting_start"
+            app:backgroundTint="#08b9fd"
+            app:elevation="8dp"
+            app:pressedTranslationZ="20dp"
+            app:useCompatPadding="true" />
+    </FrameLayout>
+
+</FrameLayout>

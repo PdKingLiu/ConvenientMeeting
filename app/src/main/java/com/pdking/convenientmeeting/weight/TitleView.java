@@ -193,7 +193,7 @@ public class TitleView extends RelativeLayout {
         }
     }
 
-    private void setViewUpLineVisible(boolean b) {
+    public void setViewUpLineVisible(boolean b) {
         if (b) {
             viewLine.setVisibility(VISIBLE);
         } else {

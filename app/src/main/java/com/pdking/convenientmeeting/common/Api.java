@@ -77,7 +77,7 @@ public class Api {
     public static String[] WhetherBookHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
-    public static String[] WhetherBookBody = {"roomId", "startTime", "endTIme"};
+    public static String[] WhetherBookBody = {"roomId", "startTime", "endTime"};
 
     public static String RequestBookApi = "http://www.shidongxuan" +
             ".top/smartMeeting_Web/meeting/bookMeeting.do";
@@ -103,5 +103,13 @@ public class Api {
             "application/x-www-form-urlencoded"};
 
     public static String[] MeetingAddMemberBody = {"userId", "meetingId"};
+
+    public static String GetMeetingByIdApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/getMeetingById.do";
+
+    public static String[] GetMeetingByIdHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] GetMeetingByIdBody = {"meetingId"};
 
 }

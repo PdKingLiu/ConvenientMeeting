@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
@@ -109,7 +111,8 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
         mineAdapter.setListener(new MeetingMineAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getContext(), "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
+                startActivity(intent );
             }
         });
         mineAdapter.setMoreListener(new MeetingMineAdapter.OnMoreClickListener() {
