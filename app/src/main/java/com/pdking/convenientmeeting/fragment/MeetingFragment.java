@@ -105,6 +105,7 @@ public class MeetingFragment extends Fragment {
             }
         };
         mViewPager.setAdapter(pagerAdapter);
+        mViewPager.setOffscreenPageLimit(3);
         mTabLayout.setupWithViewPager(mViewPager);
         for (int i = 0; i < mTabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mTabLayout.getTabAt(i);

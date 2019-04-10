@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.haozhang.lib.SlantedTextView;
@@ -15,6 +17,10 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.MeetingRoomBean;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,8 +33,8 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
     private Context mContext;
     private List<OneMeetingRoomMessage> roomMessageList;
     private OnItemClickListener itemClickListener;
-    static int i = 1;
-
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
@@ -72,9 +78,9 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvRoomName;
-        TextView tvRank;
-        TextView tvCanOrder;
+        TextView tvMeetingSum;
         TextView tvPeopleSum;
+        ImageView ivRecentMeeting;
         SlantedTextView stvStatus;
         View line;
         View view;
@@ -83,11 +89,11 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
             super(itemView);
             this.view = itemView;
             tvRoomName = itemView.findViewById(R.id.tv_room_name);
-            tvRank = itemView.findViewById(R.id.tv_rank);
-            tvCanOrder = itemView.findViewById(R.id.tv_can_order);
+            tvMeetingSum = itemView.findViewById(R.id.tv_recent_meeting_sum);
             tvPeopleSum = itemView.findViewById(R.id.tv_people_sum);
             stvStatus = itemView.findViewById(R.id.stv_status);
             line = itemView.findViewById(R.id.view_line);
+            ivRecentMeeting = itemView.findViewById(R.id.iv_recent_meeting);
         }
 
         void setDate(OneMeetingRoomMessage oneMeetingRoomMessage, int i) {
@@ -114,8 +120,21 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
                     stvStatus.setSlantedBackgroundColor(Color.LTGRAY);
                     break;
             }
-            tvRank.setText("使用榜第 " + i++ + " 名");
-            tvPeopleSum.setText("可容纳人数" + oneMeetingRoomMessage.content + "人");
+            if (oneMeetingRoomMessage.recentlyMeetings != null) {
+                if (oneMeetingRoomMessage.recentlyMeetings.size() != 0) {
+                    tvMeetingSum.setText("近五天有" + oneMeetingRoomMessage.recentlyMeetings.size() +
+                            "场会议");
+                    ivRecentMeeting.setImageResource(R.mipmap.icon_recent_meeting_sum);
+                } else {
+                    tvMeetingSum.setText("近期暂无会议");
+                    ivRecentMeeting.setImageResource(R.mipmap.icon_recent_meeting_sum_0);
+                }
+            } else {
+                tvMeetingSum.setText("近期暂无会议");
+                ivRecentMeeting.setImageResource(R.mipmap.icon_recent_meeting_sum_0);
+            }
+            tvPeopleSum.setText("可容纳" + oneMeetingRoomMessage.content + "人");
+
         }
     }
 

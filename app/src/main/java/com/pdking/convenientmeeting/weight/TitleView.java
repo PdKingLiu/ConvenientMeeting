@@ -29,6 +29,8 @@ public class TitleView extends RelativeLayout {
     private LinearLayout rlViewGroup;
     private Button btnReturn, btnReturnText, btnMenuText, btnMenu;
 
+    private View viewLine;
+
     public interface LeftClickListener {
         void OnLeftButtonClick();
     }
@@ -96,6 +98,7 @@ public class TitleView extends RelativeLayout {
         tvTitle = findViewById(R.id.tv_title);
         btnMenu = findViewById(R.id.btn_menu);
         btnReturn = findViewById(R.id.btn_return);
+        viewLine = findViewById(R.id.view_up_line);
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -187,6 +190,14 @@ public class TitleView extends RelativeLayout {
             layoutLeft.setVisibility(View.VISIBLE);
         } else {
             layoutLeft.setVisibility(View.GONE);
+        }
+    }
+
+    private void setViewUpLineVisible(boolean b) {
+        if (b) {
+            viewLine.setVisibility(VISIBLE);
+        } else {
+            viewLine.setVisibility(GONE);
         }
     }
 

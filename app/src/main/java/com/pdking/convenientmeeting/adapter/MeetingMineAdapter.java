@@ -100,6 +100,7 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
         TextView tvPlace;
         TextView tvTimeSum;
         TextView tvTime;
+        TextView tvMeetingDate;
         View line;
         RelativeLayout btnMore;
 
@@ -118,6 +119,7 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
             tvTimeSum = itemView.findViewById(R.id.tv_meeting_time_length);
             tvTime = itemView.findViewById(R.id.tv_meeting_time);
             line = itemView.findViewById(R.id.view_line);
+            tvMeetingDate = itemView.findViewById(R.id.tv_meeting_date);
             btnMore = itemView.findViewById(R.id.btn_more);
         }
 
@@ -144,7 +146,7 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
                             .shape_mine_meeting_status_future));
                     break;
             }
-            tvPeopleSum.setText(mineMeetingBean.peopleNum+"");
+            tvPeopleSum.setText(mineMeetingBean.peopleNum + "");
             tvMaster.setText(mineMeetingBean.masterName);
             tvPlace.setText(mineMeetingBean.roomName);
             Date date = new Date();
@@ -170,6 +172,11 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
             if (i == beanList.size() - 1) {
                 line.setVisibility(View.GONE);
             }
+            calendar.setTime(date);
+            @SuppressLint("DefaultLocale") String time = String.format("%d年%d月%d日",
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            tvMeetingDate.setText(time);
         }
     }
 }

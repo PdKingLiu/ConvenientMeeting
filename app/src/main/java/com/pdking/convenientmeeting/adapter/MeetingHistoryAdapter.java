@@ -118,7 +118,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                 tvUserKind.setBackground(mContext.getResources().getDrawable(R.drawable
                         .shape_history_meeting_user_kind_member));
             }
-            tvPeopleNumber.setText(meetingBean.peopleNum);
+            tvPeopleNumber.setText(meetingBean.peopleNum + "");
             switch (meetingBean.userStatus) {
                 case 1:
                     tvUserStatus.setText("缺勤");
@@ -143,11 +143,11 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                 e.printStackTrace();
             }
             int len = (int) ((date2.getTime() - date.getTime()) / 1000 / 60);
-            tvMeetingTimeLength.setText(len);
+            tvMeetingTimeLength.setText(len + "");
             tvMaster.setText(meetingBean.masterName);
             calendar.setTime(date);
             @SuppressLint("DefaultLocale") String time = String.format("%d年%d月%d日",
-                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MINUTE),
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH));
             tvDate.setText(time);
             calendar.setTime(date);

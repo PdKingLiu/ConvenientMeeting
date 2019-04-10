@@ -59,9 +59,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ModificationUserDataActivity extends AppCompatActivity implements TitleView
-        .LeftClickListener, TitleView.RightClickListener
-
-{
+        .LeftClickListener, TitleView.RightClickListener {
 
     private ProgressDialog dialog;
 
