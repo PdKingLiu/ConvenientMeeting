@@ -34,6 +34,7 @@ import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
@@ -94,6 +95,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_meeting_details);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
@@ -101,7 +103,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         dialog.setMessage("正在加载...");
         userInfo = LitePal.findAll(UserInfo.class).get(0);
         userToken = LitePal.findAll(UserToken.class).get(0);
-        titleView.setViewUpLineVisible(false);
         titleView.setLeftClickListener(new TitleView.LeftClickListener() {
             @Override
             public void OnLeftButtonClick() {
@@ -337,7 +338,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 }
                 tvStartTime.setText("开始时间：" + bean.data.startTime);
                 tvEndTime.setText("结束时间：" + bean.data.endTime);
-                tvPlace.setText(bean.data.roomName);
+                tvPlace.setText("地点："+bean.data.roomName);
                 tvIntroduce.setText(bean.data.meetingIntro);
                 if (userInfo.userId != bean.data.masterId) {
                     btnAddMember.setVisibility(View.GONE);
@@ -365,6 +366,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     private void loadBackground() {

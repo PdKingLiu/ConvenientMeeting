@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,9 @@ import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,6 +55,10 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
     TitleView titleView;
     @BindView(R.id.rl_file_list)
     RecyclerView recyclerView;
+    @BindView(R.id.srl_flush)
+    SmartRefreshLayout smartRefreshLayout;
+
+
     private String meetingID;
     private String userId;
     private String token;
@@ -89,6 +97,47 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
                 intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
+            }
+        });
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                loadData();
+            }
+        });
+    }
+
+    private void loadData() {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.LoadMeetingFileBody[0], meetingID);
+        Request request = new Request.Builder()
+                .header(Api.LoadMeetingFileHeader[0], Api.LoadMeetingFileHeader[1])
+                .addHeader("token", token)
+                .post(body.build())
+                .url(Api.LoadMeetingFileApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                smartRefreshLayout.finishRefresh(2000, false);
+                Log.d(TAG, "加载文件列表失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "加载文件列表 onResponse: " + msg);
+                fileDataListBean = new Gson().fromJson(msg, FileDataListBean.class);
+                if (fileDataListBean != null) {
+                    if (fileDataListBean.status != 0) {
+                        smartRefreshLayout.finishRefresh(2000, false);
+                    } else {
+                        smartRefreshLayout.finishRefresh(2000, true);
+                        fileList.clear();
+                        fileList.addAll(fileDataListBean.data);
+                        notifyDataChanged();
+                    }
+                }
             }
         });
     }
@@ -204,7 +253,17 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
                     showToast("上传失败");
                 } else {
                     showToast("上传成功");
+                    refresh();
                 }
+            }
+        });
+    }
+
+    public void refresh() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                smartRefreshLayout.autoRefresh();
             }
         });
     }

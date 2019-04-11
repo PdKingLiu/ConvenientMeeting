@@ -126,6 +126,7 @@ public class ScanFileActivity extends AppCompatActivity {
             default:
                 type = null;
         }
+        type = name.substring(name.lastIndexOf(".") + 1);
         return type;
     }
 
