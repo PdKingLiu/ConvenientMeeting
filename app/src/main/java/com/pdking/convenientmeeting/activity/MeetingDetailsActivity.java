@@ -3,6 +3,7 @@ package com.pdking.convenientmeeting.activity;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +39,7 @@ import com.pdking.convenientmeeting.weight.TitleView;
 import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
+import java.io.File;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -182,7 +184,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end,R.id.rl_meeting_files})
+    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.rl_meeting_files})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -196,6 +198,11 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 fabClick();
                 break;
             case R.id.rl_meeting_files:
+                Intent intent = new Intent(this, FileListActivity.class);
+                intent.putExtra("meetingID", meetingId);
+                intent.putExtra("userId", userInfo.getUserId() + "");
+                intent.putExtra("token", userToken.getToken());
+                startActivity(intent);
                 break;
         }
     }

@@ -72,7 +72,8 @@
         <activity android:name=".activity.UpdatePasswordActivity" />
         <activity android:name=".activity.UpdatePhoneActivity" />
         <activity android:name=".activity.BookRoomDetailActivity" />
-        <activity android:name=".activity.MeetingDetailsActivity"></activity>
+        <activity android:name=".activity.MeetingDetailsActivity" />
+        <activity android:name=".activity.FileListActivity"></activity>
     </application>
 
 </manifest>

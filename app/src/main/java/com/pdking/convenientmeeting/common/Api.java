@@ -112,4 +112,20 @@ public class Api {
 
     public static String[] GetMeetingByIdBody = {"meetingId"};
 
+    public static String UpLoadFileApi = "www.shidongxuan.top/smartMeeting_Web/meeting/uploadFile" +
+            ".do";
+
+    public static String[] UpLoadFileHeader = {"Content-Type",
+            "multipart/form-data"};
+
+    public static String[] UpLoadFileBody = {"uploadFile", "meetingId", "userId"};
+
+    public static String LoadMeetingFileApi = "www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/getMeetingFiles.do";
+
+    public static String[] LoadMeetingFileHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] LoadMeetingFileBody = {"meetingId"};
+
 }
