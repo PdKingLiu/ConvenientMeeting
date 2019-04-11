@@ -1,9 +1,12 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -58,9 +61,14 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText edPassword;
 
     private UserInfo userInfo;
-    private AlertDialog dialog;
+    private ProgressDialog dialog;
+    private AlertDialog dia;
     private boolean[] flag = {false, false};
 
+    private String[] permissicns = new
+            String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission
+            .CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission
+            .WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +78,56 @@ public class LoginActivity extends AppCompatActivity {
         SystemUtil.setTitleMode(getWindow());
         LitePal.getDatabase();
         btLogin.setEnabled(false);
-        dialog = new AlertDialog.Builder(this)
-                .setView(new ProgressBar(this))
-                .create();
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("正在登录...");
+        dialog.setTitle("登录中");
+        dialog.setCancelable(false);
         ActivityContainer.addActivity(this);
-        PermissionUtil.applyPermission(this);
+        if (!checkPermission()) {
+            applyPermission();
+        }
         changeText();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 1 && grantResults.length > 0) {
+            boolean[] flag = {false, false, false, false};
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    flag[i] = true;
+                }
+            }
+            if (!(flag[0] && flag[1] && flag[2] && flag[3])) {
+                dia = new AlertDialog.Builder(this)
+                        .setTitle("警告")
+                        .setMessage("拒绝权限软件将无法使用！")
+                        .setCancelable(false)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityContainer.removeAllActivity();
+                                finish();
+                            }
+                        })
+                        .create();
+                dia.show();
+            }
+        }
+    }
+
+    public boolean checkPermission() {
+        boolean[] flag = {false, false, false, false};
+        for (int i = 0; i < permissicns.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissicns[i])
+                    != PackageManager.PERMISSION_GRANTED) {
+                flag[i] = false;
+            } else {
+                flag[i] = true;
+            }
+        }
+        return flag[0] && flag[1] && flag[2] && flag[3];
     }
 
     @OnClick({R.id.bt_login_register, R.id.bt_login_find_password, R.id.btn_login})
@@ -217,17 +269,16 @@ public class LoginActivity extends AppCompatActivity {
             }
             dialog.dismiss();
         }
+        if (dia != null) {
+            if (dia.isShowing()) {
+                dia.hide();
+            }
+            dia.dismiss();
+        }
     }
 
     private void applyPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) != PackageManager
-                .PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new
-                    String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission
-                    .CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission
-                    .WRITE_EXTERNAL_STORAGE}, 1);
-        }
+        ActivityCompat.requestPermissions(this, permissicns, 1);
     }
 
     public void changeText() {

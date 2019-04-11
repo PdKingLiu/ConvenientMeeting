@@ -2,6 +2,7 @@ package com.pdking.convenientmeeting.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -88,9 +89,17 @@ public class MainActivity extends AppCompatActivity {
 
     private File iconFile;
 
+    private AlertDialog dia;
+
     private boolean exitFlag = false;
 
     private long exitTime = 0;
+
+    private String[] permissicns = new
+            String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Main onCreate: ");
         setContentView(R.layout.layout_main);
         SystemUtil.setTitleMode(getWindow());
-        applyPermission();
         LitePal.getDatabase();
         ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
@@ -115,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUser() {
         dialog = new ProgressDialog(this);
-        dialog.setMessage("正在加载...");
-        dialog.setTitle("加载中");
+        dialog.setMessage("正在登录...");
+        dialog.setTitle("登录中");
         dialog.setCancelable(false);
         userInfo = getIntent().getParcelableExtra("userInfo");
         userToken = getIntent().getParcelableExtra("userToken");
@@ -257,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void bottomNavigationViewListener() {
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView
                 .OnNavigationItemSelectedListener() {
@@ -299,9 +306,6 @@ public class MainActivity extends AppCompatActivity {
         mFragmentTransaction.commit();
     }
 
-    /**
-     * 设置当前的页面
-     */
     public void setFragmentPage(int fragmentPage) {
         hideFragmentPage();
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -334,10 +338,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-
-    /**
-     * 隐藏之前的Fragment
-     */
     private void hideFragmentPage() {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         switch (bottomFlag) {
@@ -361,15 +361,17 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void applyPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) != PackageManager
-                .PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new
-                    String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission
-                    .CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission
-                    .WRITE_EXTERNAL_STORAGE}, 1);
+    public boolean checkPermission() {
+        boolean[] flag = {false, false, false, false};
+        for (int i = 0; i < permissicns.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissicns[i])
+                    != PackageManager.PERMISSION_GRANTED) {
+                flag[i] = false;
+            } else {
+                flag[i] = true;
+            }
         }
+        return flag[0] && flag[1] && flag[2] && flag[3];
     }
 
     @Override
@@ -387,6 +389,12 @@ public class MainActivity extends AppCompatActivity {
         }
         if (snackbar != null) {
             snackbar.dismiss();
+        }
+        if (dia != null) {
+            if (dia.isShowing()) {
+                dia.hide();
+            }
+            dia.dismiss();
         }
     }
 
