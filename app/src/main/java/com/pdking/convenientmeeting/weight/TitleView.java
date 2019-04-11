@@ -110,7 +110,7 @@ public class TitleView extends RelativeLayout {
         }
         rlViewGroup.setBackground(viewGroupDrawable);
 
-        float titleSize = typedArray.getDimension(R.styleable.TitleView_titleTextSize, 18);
+        float titleSize = typedArray.getDimension(R.styleable.TitleView_titleTextSize, 22);
         int titleColor = typedArray.getColor(R.styleable.TitleView_titleColor, Color.WHITE);
         String titleText = typedArray.getString(R.styleable.TitleView_titleText);
         tvTitle.setText(titleText);

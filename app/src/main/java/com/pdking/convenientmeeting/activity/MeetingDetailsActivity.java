@@ -2,17 +2,23 @@ package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +28,11 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingByIdMessage;
 import com.pdking.convenientmeeting.db.MeetingByIdMessageBean;
+import com.pdking.convenientmeeting.db.RequestReturnBean;
+import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
@@ -33,6 +42,7 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -60,18 +70,23 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     TextView tvIntroduce;
     @BindView(R.id.btn_add_member)
     Button btnAddMember;
-    @BindView(R.id.ll_member_list)
-    LinearLayout llMemberList;
+    @BindView(R.id.tv_member_list)
+    TextView tvMemberList;
     @BindView(R.id.fab_start_or_end)
     FloatingActionButton fabStartOrEnd;
+    @BindView(R.id.rl_meeting_files)
+    RelativeLayout rlMeetingFiles;
 
     private String meetingId;
     private UserInfo userInfo;
     private UserToken userToken;
     private MeetingByIdMessageBean bean;
     private String TAG = "Lpp";
+    private StringBuilder stringBuilder = new StringBuilder();
 
     private ProgressDialog dialog;
+
+    private boolean networkFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +115,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (dialog != null) {
-                    dialog.show();
+                    dialog.hide();
                 }
             }
         });
@@ -138,6 +153,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         Request request = new Request.Builder()
                 .url(Api.GetMeetingByIdApi)
                 .header(Api.GetMeetingByIdHeader[0], Api.GetMeetingByIdHeader[1])
+                .addHeader("token", userToken.getToken())
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -145,6 +161,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
                 showToast("加载失败");
+                networkFlag = false;
                 Log.d(TAG, "加载失败: " + e.getMessage());
             }
 
@@ -155,15 +172,145 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 Log.d(TAG, "onResponse: " + msg);
                 bean = new Gson().fromJson(msg, MeetingByIdMessageBean.class);
                 if (bean.status == 1) {
+                    networkFlag = false;
                     showToast("加载失败");
                 } else {
+                    networkFlag = true;
                     changePage(bean);
                 }
             }
         });
     }
 
+    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end,R.id.rl_meeting_files})
+    void onClick(View view) {
+        if (!networkFlag) {
+            showToast("加载错误");
+            return;
+        }
+        switch (view.getId()) {
+            case R.id.btn_add_member:
+                addMember();
+                break;
+            case R.id.fab_start_or_end:
+                fabClick();
+                break;
+            case R.id.rl_meeting_files:
+                break;
+        }
+    }
+
+    private void fabClick() {
+
+    }
+
+    private void addMember() {
+        final EditText editText = new EditText(this);
+        editText.setGravity(Gravity.CENTER);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("输入成员电话")
+                .setCancelable(true)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        dealAdd(editText.getText().toString());
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setView(editText)
+                .show();
+    }
+
+    private void dealAdd(String phone) {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.GetUserInfoBody[0], phone);
+        Request request = new Request.Builder()
+                .header("token", userToken.getToken())
+                .post(body.build())
+                .url(Api.GetUserInfoApi)
+                .build();
+        showProgressBar();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                hideProgressBar();
+                showToast("添加失败");
+                Log.d(TAG, "添加失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "onResponse: " + msg);
+                UserDataBean userDataBean = new Gson().fromJson(msg, UserDataBean.class);
+                if (userDataBean != null) {
+                    if (userDataBean.status != 0) {
+                        hideProgressBar();
+                        showToast("添加失败，用户不存在");
+                    } else {
+                        inviteMember(userDataBean);
+                    }
+                }
+            }
+        });
+    }
+
+    private void inviteMember(final UserDataBean userDataBean) {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.MeetingAddMemberBody[0], userDataBean.data.getUserId() + "");
+        body.add(Api.MeetingAddMemberBody[1], meetingId);
+        final Request request = new Request.Builder()
+                .url(Api.MeetingAddMemberApi)
+                .header(Api.MeetingAddMemberHeader[0], Api.MeetingAddMemberHeader[1])
+                .post(body.build())
+                .addHeader("token", userToken.getToken())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                hideProgressBar();
+                showToast("添加失败");
+                Log.d(TAG, "添加失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                hideProgressBar();
+                String msg = response.body().string();
+                Log.d(TAG, "onResponse: " + msg);
+                RequestReturnBean requestReturnBean = new Gson().fromJson(msg, RequestReturnBean
+                        .class);
+                if (requestReturnBean.status == 0) {
+                    showToast("邀请会议成员成功");
+                    changeMemberUi(userDataBean);
+                } else {
+                    showToast("邀请会议成员失败，成员可能已添加");
+                }
+            }
+        });
+    }
+
+    private void changeMemberUi(final UserDataBean userDataBean) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bean.data.peopleNum += 1;
+                tvPeopleSum.setText(bean.data.peopleNum + "");
+                stringBuilder.append("\n").append(userDataBean.data.getUsername());
+                tvMemberList.setText(stringBuilder.toString());
+            }
+        });
+    }
+
     private void changePage(final MeetingByIdMessageBean bean) {
+
         runOnUiThread(new Runnable() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -198,22 +345,16 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                         fabStartOrEnd.setBackgroundResource(R.mipmap.icon_meeting_finish);
                     }
                 }
-                TextView tv = new TextView(MeetingDetailsActivity.this);
-                tv.setText(bean.data.masterName + "（组织者）");
-                tv.setTextSize(18);
-                tv.setTextColor(Color.WHITE);
-                llMemberList.addView(tv);
+                stringBuilder.append(bean.data.masterName).append("（组织者）");
+                tvMemberList.setText(stringBuilder.toString());
                 for (int i = 0; i < bean.data.memberStatus.size(); i++) {
                     MeetingByIdMessage.MemberStatusBean memberStatusBean = bean.data.memberStatus
                             .get(i);
                     if (memberStatusBean.userId == bean.data.masterId) {
                         continue;
                     }
-                    TextView textView = new TextView(MeetingDetailsActivity.this);
-                    textView.setText(memberStatusBean.username);
-                    textView.setTextSize(18);
-                    textView.setTextColor(Color.WHITE);
-                    llMemberList.addView(tv);
+                    stringBuilder.append("\n").append(memberStatusBean.username);
+                    tvMemberList.setText(stringBuilder.toString());
                 }
             }
         });
@@ -228,6 +369,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 showToast("图片加载失败");
+                networkFlag = false;
                 Log.d("Lpp", "onFailure: " + e.getMessage());
             }
 
@@ -237,14 +379,19 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Glide.with(MeetingDetailsActivity.this).load(msg).into(ivBackGround);
+//                        Glide.with(MeetingDetailsActivity.this).load(msg).into(ivBackGround);
                     }
                 });
             }
         });
     }
 
-    private void showToast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    private void showToast(final String s) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MeetingDetailsActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

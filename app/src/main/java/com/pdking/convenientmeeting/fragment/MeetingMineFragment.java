@@ -112,7 +112,8 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
-                startActivity(intent );
+                intent.putExtra("meetingId", beanList.get(position).meetingId + "");
+                startActivity(intent);
             }
         });
         mineAdapter.setMoreListener(new MeetingMineAdapter.OnMoreClickListener() {

@@ -35,8 +35,7 @@
                     android:layout_height="wrap_content"
                     app:leftTextVisibility="false"
                     app:titleBackground="@android:color/transparent"
-                    app:titleText="比赛会议"
-                    app:titleTextSize="10sp">
+                    app:titleText="比赛会议">
 
                 </com.pdking.convenientmeeting.weight.TitleView>
 
@@ -73,7 +72,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
                     android:background="#8000"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -117,9 +118,10 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="25dp"
+                        android:gravity="center_vertical"
                         android:text="会议信息"
                         android:textColor="@android:color/white"
                         android:textSize="16sp" />
@@ -129,7 +131,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:background="#8000"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -149,17 +152,73 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rl_meeting_files"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="50dp"
+                    android:background="#8000"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/icon_meeting_file" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="5dp"
+                            android:text="会议文件"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="20"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/icon_file_more" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginLeft="25dp"
                         android:text="成员"
                         android:textColor="@android:color/white"
@@ -168,7 +227,7 @@
                     <Button
                         android:id="@+id/btn_add_member"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="25dp"
@@ -180,22 +239,25 @@
                 </RelativeLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_member_list"
                     android:layout_width="match_parent"
-                    android:minHeight="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:background="#8000"
+                    android:minHeight="40dp"
                     android:orientation="vertical"
-                    android:paddingLeft="20dp">
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp">
 
-<!--                    <TextView
+                    <TextView
+                        android:id="@+id/tv_member_list"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="刘沛栋"
+                        android:lineSpacingExtra="5dp"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />-->
+                        android:textSize="18sp" />
 
 
                 </LinearLayout>
