@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -28,6 +29,7 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
 
@@ -71,7 +73,13 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout llUserData;
 
+    private LinearLayout llSwitchoverChart;
+
+    private TextView tvSwitchoverChart;
+
     private static RecordFragment INSTANCE = null;
+
+    private boolean chartTimeFlag = true;
 
     public static RecordFragment getINSTANCE() {
         if (INSTANCE == null) {
@@ -104,7 +112,11 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            initChart();
+            if (chartTimeFlag) {
+                initChart();
+            } else {
+                initIdentityChart();
+            }
         }
     }
 
@@ -153,6 +165,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pieChart = view.findViewById(R.id.pie_chart);
         civUserIcon = view.findViewById(R.id.civ_user_icon);
         llUserData = view.findViewById(R.id.ll_user_data);
+        llSwitchoverChart = view.findViewById(R.id.ll_switchover_chart);
+        tvSwitchoverChart = view.findViewById(R.id.tv_switchover_chart);
+        llSwitchoverChart.setOnClickListener(this);
         llUserData.setOnClickListener(this);
     }
 
@@ -256,7 +271,54 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 startActivityForResult(new Intent(getContext(), ModificationUserDataActivity
                         .class), UPDATE_USER_DATA);
                 break;
-
+            case R.id.ll_switchover_chart:
+                if (chartTimeFlag) {
+                    initIdentityChart();
+                    tvSwitchoverChart.setText("切换出勤占比图");
+                    chartTimeFlag = false;
+                } else {
+                    initChart();
+                    tvSwitchoverChart.setText("切换会议身份图");
+                    chartTimeFlag = true;
+                }
+                break;
         }
+    }
+
+    private void initIdentityChart() {
+        List<PieEntry> pieCharts = new ArrayList<>();
+        pieCharts.add(new PieEntry(33.3f, "组织者"));
+        pieCharts.add(new PieEntry(66.6f, "参与者"));
+        PieDataSet pieDataSet = new PieDataSet(pieCharts, "");
+        PieData data = new PieData(pieDataSet);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(14f);
+        data.setDrawValues(true);
+        data.setValueFormatter(new PercentFormatter());
+        List<Integer> integerList = new ArrayList<>();
+        integerList.add(getResources().getColor(R.color.pie_blue));
+        integerList.add(getResources().getColor(R.color.pie_orange));
+        pieDataSet.setHighlightEnabled(true);
+        pieDataSet.setColors(integerList);
+        pieDataSet.setSliceSpace(5);
+        pieChart.setData(data);
+        pieChart.invalidate(); // refresh
+        pieChart.getLegend();
+        pieChart.setRotationEnabled(false);
+        pieChart.setHighlightPerTapEnabled(true);
+        pieChart.animateX(2000, Easing.EaseOutCirc);
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(0);
+        l.setYOffset(20);
+        // 输入标签样式
+        pieChart.setEntryLabelColor(Color.WHITE);
+        pieChart.setEntryLabelTextSize(12f);
     }
 }

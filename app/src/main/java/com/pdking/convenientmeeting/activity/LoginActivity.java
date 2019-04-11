@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!(flag[0] && flag[1] && flag[2] && flag[3])) {
                 dia = new AlertDialog.Builder(this)
                         .setTitle("警告")
-                        .setMessage("拒绝权限软件将无法使用！")
+                        .setMessage("拒绝权限软件将无法使用")
                         .setCancelable(false)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override

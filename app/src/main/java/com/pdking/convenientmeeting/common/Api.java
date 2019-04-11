@@ -112,7 +112,8 @@ public class Api {
 
     public static String[] GetMeetingByIdBody = {"meetingId"};
 
-    public static String UpLoadFileApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting/uploadFile" +
+    public static String UpLoadFileApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/uploadFile" +
             ".do";
 
     public static String[] UpLoadFileHeader = {"Content-Type",
@@ -127,5 +128,22 @@ public class Api {
             "application/x-www-form-urlencoded"};
 
     public static String[] LoadMeetingFileBody = {"meetingId"};
+
+    public static String GetMeetingNoteApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/getMeetingNote.do";
+
+    public static String[] GetMeetingNoteHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] GetMeetingNoteBody = {"meetingId", "userId"};
+
+
+    public static String SetMeetingNoteApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/editNote.do";
+
+    public static String[] SetMeetingNoteHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] SetMeetingNoteBody = {"meetingId", "userId", "note"};
 
 }

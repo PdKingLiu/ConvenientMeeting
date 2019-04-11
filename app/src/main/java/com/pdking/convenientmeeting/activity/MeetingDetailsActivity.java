@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,8 +28,10 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.FileDataListBean;
 import com.pdking.convenientmeeting.db.MeetingByIdMessage;
 import com.pdking.convenientmeeting.db.MeetingByIdMessageBean;
+import com.pdking.convenientmeeting.db.MeetingNoteBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -46,6 +49,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -69,6 +73,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     TextView tvEndTime;
     @BindView(R.id.tv_place)
     TextView tvPlace;
+    @BindView(R.id.tv_file_sum)
+    TextView tvFileSum;
     @BindView(R.id.tv_introduce)
     TextView tvIntroduce;
     @BindView(R.id.btn_add_member)
@@ -79,6 +85,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     FloatingActionButton fabStartOrEnd;
     @BindView(R.id.rl_meeting_files)
     RelativeLayout rlMeetingFiles;
+    @BindView(R.id.ed_meeting_note)
+    EditText edMeetingNote;
 
     private String meetingId;
     private UserInfo userInfo;
@@ -86,6 +94,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private MeetingByIdMessageBean bean;
     private String TAG = "Lpp";
     private StringBuilder stringBuilder = new StringBuilder();
+    private String note = "";
 
     private ProgressDialog dialog;
 
@@ -97,6 +106,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.layout_meeting_details);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
         dialog.setTitle("加载中");
@@ -109,8 +119,49 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
+        titleView.setRightClickListener(new TitleView.RightClickListener() {
+            @Override
+            public void OnRightButtonClick() {
+                saveNote();
+            }
+        });
+        titleView.setRightTextSize(20);
         loadBackground();
         loadPage();
+    }
+
+    private void saveNote() {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.SetMeetingNoteBody[0], meetingId + "");
+        body.add(Api.SetMeetingNoteBody[1], userInfo.getUserId() + "");
+        body.add(Api.SetMeetingNoteBody[2], edMeetingNote.getText().toString());
+        final Request request = new Request.Builder()
+                .header(Api.SetMeetingNoteHeader[0], Api.SetMeetingNoteHeader[1])
+                .addHeader("token", userToken.getToken())
+                .post(body.build())
+                .url(Api.SetMeetingNoteApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "onResponse: " + msg);
+                showToast("保存成功");
+                note = edMeetingNote.getText().toString();
+                MeetingNoteBean bean = new Gson().fromJson(msg, MeetingNoteBean.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        titleView.setRightTextVisible(false);
+                    }
+                });
+            }
+        });
     }
 
     private void hideProgressBar() {
@@ -135,7 +186,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onDestroy() {
         if (dialog != null) {
@@ -145,6 +195,15 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             dialog.dismiss();
         }
         super.onDestroy();
+    }
+
+    @OnTextChanged(R.id.ed_meeting_note)
+    void onTextChange(CharSequence charSequence) {
+        if (charSequence.toString().equals(note)) {
+            titleView.setRightTextVisible(false);
+        } else {
+            titleView.setRightTextVisible(true);
+        }
     }
 
     private void loadPage() {
@@ -180,6 +239,77 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 } else {
                     networkFlag = true;
                     changePage(bean);
+                }
+            }
+        });
+    }
+
+    private void loadFileNumber() {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.LoadMeetingFileBody[0], meetingId + "");
+        Request request = new Request.Builder()
+                .header(Api.LoadMeetingFileHeader[0], Api.LoadMeetingFileHeader[1])
+                .addHeader("token", userToken.getToken())
+                .post(body.build())
+                .url(Api.LoadMeetingFileApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "fileDataListBean: " + msg);
+                final FileDataListBean fileDataListBean = new Gson().fromJson(msg,
+                        FileDataListBean.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (fileDataListBean.data.size() == 0) {
+                            tvFileSum.setText("暂无文件");
+                        } else {
+                            tvFileSum.setText(fileDataListBean.data.size() + "");
+                        }
+                    }
+                });
+                loadMeetingNote();
+            }
+        });
+    }
+
+    private void loadMeetingNote() {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.GetMeetingNoteBody[0], meetingId + "");
+        body.add(Api.GetMeetingNoteBody[1], userInfo.getUserId() + "");
+        Request request = new Request.Builder()
+                .addHeader(Api.GetMeetingNoteHeader[0], Api.GetMeetingNoteHeader[1])
+                .header("token", userToken.getToken())
+                .post(body.build())
+                .url(Api.GetMeetingNoteApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "会议笔记失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "会议笔记: " + msg);
+                MeetingNoteBean bean = new Gson().fromJson(msg, MeetingNoteBean.class);
+                if (bean.status != 0) {
+                    Log.d(TAG, "会议笔记失败:");
+                } else {
+                    note = bean.data;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            edMeetingNote.setText(note);
+                        }
+                    });
                 }
             }
         });
@@ -338,7 +468,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 }
                 tvStartTime.setText("开始时间：" + bean.data.startTime);
                 tvEndTime.setText("结束时间：" + bean.data.endTime);
-                tvPlace.setText("地点："+bean.data.roomName);
+                tvPlace.setText("地点：" + bean.data.roomName);
                 tvIntroduce.setText(bean.data.meetingIntro);
                 if (userInfo.userId != bean.data.masterId) {
                     btnAddMember.setVisibility(View.GONE);
@@ -366,8 +496,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-
-
+        loadFileNumber();
     }
 
     private void loadBackground() {
@@ -378,7 +507,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                showToast("图片加载失败");
+//                showToast("图片加载失败");
                 networkFlag = false;
                 Log.d("Lpp", "onFailure: " + e.getMessage());
             }

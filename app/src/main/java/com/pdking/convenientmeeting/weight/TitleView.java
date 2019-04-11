@@ -185,6 +185,14 @@ public class TitleView extends RelativeLayout {
         }
     }
 
+    public void setRightTextVisible(boolean visible) {
+        if (visible) {
+            btnMenuText.setVisibility(View.VISIBLE);
+        } else {
+            btnMenuText.setVisibility(View.GONE);
+        }
+    }
+
     public void setLeftMenuTextVisible(boolean visible) {
         if (visible) {
             layoutLeft.setVisibility(View.VISIBLE);
@@ -200,6 +208,8 @@ public class TitleView extends RelativeLayout {
             viewLine.setVisibility(GONE);
         }
     }
+
+
 
     public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs);

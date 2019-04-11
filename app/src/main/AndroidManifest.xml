@@ -74,7 +74,8 @@
         <activity android:name=".activity.BookRoomDetailActivity" />
         <activity android:name=".activity.MeetingDetailsActivity" />
         <activity android:name=".activity.FileListActivity" />
-        <activity android:name=".activity.ScanFileActivity"></activity>
+        <activity android:name=".activity.ScanFileActivity" />
+        <activity android:name=".activity.AboutAppActivity"></activity>
     </application>
 
 </manifest>

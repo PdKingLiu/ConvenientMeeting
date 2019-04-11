@@ -121,16 +121,16 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
             tvPeopleNumber.setText(meetingBean.peopleNum + "");
             switch (meetingBean.userStatus) {
                 case 1:
-                    tvUserStatus.setText("缺勤");
+                    tvUserStatus.setText("正常");
                     break;
                 case 2:
-                    tvUserStatus.setText("请假");
+                    tvUserStatus.setText("缺勤");
                     break;
                 case 3:
                     tvUserStatus.setText("迟到");
                     break;
                 case 4:
-                    tvUserStatus.setText("正常");
+                    tvUserStatus.setText("请假");
                     break;
             }
             tvPlace.setText(meetingBean.roomName);

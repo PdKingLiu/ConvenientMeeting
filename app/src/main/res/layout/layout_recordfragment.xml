@@ -165,6 +165,7 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/ll_switchover_chart"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_alignParentRight="true"
@@ -178,6 +179,7 @@
                             android:src="@mipmap/icon_switch" />
 
                         <TextView
+                            android:id="@+id/tv_switchover_chart"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"

@@ -99,7 +99,9 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                         Toast.makeText(getContext(), "请假", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        Toast.makeText(getContext(), "查看详情", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
+                        intent.putExtra("meetingId", beanList.get(position).meetingId + "");
+                        startActivity(intent);
                         break;
                 }
             }
@@ -119,20 +121,6 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
         mineAdapter.setMoreListener(new MeetingMineAdapter.OnMoreClickListener() {
             @Override
             public void onMoreClick(View view, int position) {
-                int[] a = new int[2];
-                view.getLocationInWindow(a);
-                view.getLocationOnScreen(a);
-                Log.d("Lpp", "onMoreClick:getLocationOnScreen " + a[0] + "-" + a[1]);
-                Log.d("Lpp", "onMoreClick:getHeight" + view.getHeight());
-//                if (a[1] > 2000) {
-                int offsetX = -mPopMenu.getmPopupWindow().getContentView().getMeasuredWidth();
-                int offsetY = 0;
-//                    mPopMenu.showAsDropDown(view, offsetX,offsetY,Gravity.LEFT|Gravity.TOP);
-//                } else {
-//                    mPopMenu.showAsDropDown(view);
-//                }
-//                mPopMenu.getmPopupWindow().showAtLocation(view, Gravity.TOP | Gravity.LEFT, a[0],
-//                        a[1]);
                 mPopMenu.getmPopupWindow().showAsDropDown(view);
                 WindowManager.LayoutParams wl = getActivity().getWindow().getAttributes();
                 getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.AboutAppActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
@@ -59,6 +60,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private TextView tvUserEmail;
 
+    private RelativeLayout rlAboutApp;
+
     final private int UPDATE_USER_DATA = 1;
 
     public static MineFragment getINSTANCE() {
@@ -82,6 +85,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         civUserIcon = view.findViewById(R.id.civ_user_icon);
         tvUserEmail = view.findViewById(R.id.tv_user_email);
         rlSettingSafety = view.findViewById(R.id.rl_setting_safety);
+        rlAboutApp = view.findViewById(R.id.rl_about_app);
+        rlAboutApp.setOnClickListener(this);
         init();
         initListener();
     }
@@ -113,6 +118,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 ActivityContainer.addActivity(getActivity());
                 getActivity().startActivity(new Intent(getContext(), AccountAndSafetyActivity
                         .class));
+                break;
+            case R.id.rl_about_app:
+                startActivity(new Intent(getContext(), AboutAppActivity.class));
                 break;
         }
     }
