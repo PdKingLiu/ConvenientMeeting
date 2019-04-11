@@ -73,7 +73,8 @@
         <activity android:name=".activity.UpdatePhoneActivity" />
         <activity android:name=".activity.BookRoomDetailActivity" />
         <activity android:name=".activity.MeetingDetailsActivity" />
-        <activity android:name=".activity.FileListActivity"></activity>
+        <activity android:name=".activity.FileListActivity" />
+        <activity android:name=".activity.ScanFileActivity"></activity>
     </application>
 
 </manifest>

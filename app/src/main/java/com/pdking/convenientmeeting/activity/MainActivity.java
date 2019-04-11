@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                     while ((len = inputStream.read(bytes)) != -1) {
                         current += len;
                         fileOutputStream.write(bytes, 0, len);
-                        Log.d("Lpp", "onResponse: " + current);
                     }
                     fileOutputStream.flush();
                     inputStream.close();

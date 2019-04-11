@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -23,10 +24,13 @@ import com.pdking.convenientmeeting.db.FileData;
 import com.pdking.convenientmeeting.db.FileDataListBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +45,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class FileListActivity extends AppCompatActivity {
+public class FileListActivity extends AppCompatActivity implements FileAdapter.OnItemClickListener {
 
     @BindView(R.id.title)
     TitleView titleView;
@@ -61,6 +65,7 @@ public class FileListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_file_list);
+        SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         meetingID = getIntent().getStringExtra("meetingID");
         userId = getIntent().getStringExtra("userId");
@@ -70,6 +75,7 @@ public class FileListActivity extends AppCompatActivity {
         dialog.setTitle("加载中");
         dialog.setCancelable(false);
         initListAndLoadFileList();
+        titleView.setRightTextSize(20);
         titleView.setLeftClickListener(new TitleView.LeftClickListener() {
             @Override
             public void OnLeftButtonClick() {
@@ -90,6 +96,7 @@ public class FileListActivity extends AppCompatActivity {
     private void initListAndLoadFileList() {
         fileList = new ArrayList<>();
         adapter = new FileAdapter(this, fileList);
+        adapter.setClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         showProgressBar();
@@ -158,6 +165,7 @@ public class FileListActivity extends AppCompatActivity {
             return;
         }
         String mediaType = getType(file);
+        Log.d(TAG, "mediaType: " + mediaType);
         if (mediaType == null) {
             showToast("暂不支持此类文件");
             return;
@@ -344,5 +352,69 @@ public class FileListActivity extends AppCompatActivity {
             //Log.i(TAG, "Uri Scheme:" + uri.getScheme());
         }
         return null;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        final FileData data = fileList.get(position);
+        dialog.setTitle("下载中");
+        dialog.setMessage("正在下载");
+        Request request = new Request.Builder()
+                .url(data.fileUrl)
+                .build();
+        File fileDir = new File(getExternalFilesDir(null) + "/user/meetingFile");
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        final File file = new File(fileDir, data.fileName);
+        if (file.exists()) {
+            Intent intent = new Intent(this, ScanFileActivity.class);
+            intent.putExtra("fileName", data.fileName);
+            startActivity(intent);
+        } else {
+            showProgressBar();
+            OkHttpUtils.requestHelper(request, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    hideProgressBar();
+                    showToast("文件下载失败");
+                    Log.d(TAG, "文件下载失败: " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    InputStream inputStream = null;
+                    byte[] bytes = new byte[1024];
+                    FileOutputStream fileOutputStream = null;
+                    long current = 0;
+                    int len;
+                    try {
+                        file.createNewFile();
+                        Log.d(TAG, "contentLength: " + response.body().contentLength());
+                        inputStream = response.body().byteStream();
+                        fileOutputStream = new FileOutputStream(file);
+                        while ((len = inputStream.read(bytes)) != -1) {
+                            current += len;
+                            fileOutputStream.write(bytes, 0, len);
+                            Log.d(TAG, "fileLen: " + current);
+                        }
+                        fileOutputStream.flush();
+                        inputStream.close();
+                        fileOutputStream.close();
+                        hideProgressBar();
+                        showToast("文件下载成功");
+                        Intent intent = new Intent(FileListActivity.this, ScanFileActivity.class);
+                        intent.putExtra("fileName", data.fileName);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        showToast("文件下载失败");
+                        Log.d(TAG, "Exception: " + e.getMessage());
+                    } finally {
+                        hideProgressBar();
+                    }
+                }
+            });
+
+        }
     }
 }
