@@ -240,6 +240,7 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
                 showToast("上传失败");
+                e.printStackTrace();
                 Log.d("Lpp", "上传失败: " + e.getMessage());
             }
 

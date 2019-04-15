@@ -48,6 +48,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -323,7 +324,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             @Override
             public void onFailure(Call call, IOException e) {
                 hideDialog();
-                Log.d(TAG, "onFailure: " + e.getMessage());
+                showToast("注册失败");
             }
 
             @Override
@@ -332,11 +333,25 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 Log.d(TAG, "onResponse: " + string);
                 hideDialog();
                 RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
-                userInfo.save();
-                Intent intent = new Intent(RegisterActivityThree.this, MainActivity.class);
-                intent.putExtra("user", userInfo);
-                startActivity(intent);
-                ActivityContainer.removeAllActivity();
+                if (bean.status == 0) {
+                    showToast("注册成功");
+                    userInfo.save();
+                    Intent intent = new Intent(RegisterActivityThree.this, MainActivity.class);
+                    intent.putExtra("user", userInfo);
+                    startActivity(intent);
+                    ActivityContainer.removeAllActivity();
+                } else {
+                    showToast("注册失败，该账号可能已经注册");
+                }
+            }
+        });
+    }
+
+    public void showToast(final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(RegisterActivityThree.this, text, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -73,8 +73,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     TextView tvEndTime;
     @BindView(R.id.tv_place)
     TextView tvPlace;
-    @BindView(R.id.tv_file_sum)
-    TextView tvFileSum;
     @BindView(R.id.tv_introduce)
     TextView tvIntroduce;
     @BindView(R.id.btn_add_member)
@@ -83,10 +81,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     TextView tvMemberList;
     @BindView(R.id.fab_start_or_end)
     FloatingActionButton fabStartOrEnd;
-    @BindView(R.id.rl_meeting_files)
-    RelativeLayout rlMeetingFiles;
-    @BindView(R.id.ed_meeting_note)
-    EditText edMeetingNote;
+    @BindView(R.id.ll_meeting_files)
+    LinearLayout rlMeetingFiles;
 
     private String meetingId;
     private UserInfo userInfo;
@@ -122,7 +118,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         titleView.setRightClickListener(new TitleView.RightClickListener() {
             @Override
             public void OnRightButtonClick() {
-                saveNote();
+//                saveNote();
             }
         });
         titleView.setRightTextSize(20);
@@ -130,7 +126,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         loadPage();
     }
 
-    private void saveNote() {
+/*    private void saveNote() {
         FormBody.Builder body = new FormBody.Builder();
         body.add(Api.SetMeetingNoteBody[0], meetingId + "");
         body.add(Api.SetMeetingNoteBody[1], userInfo.getUserId() + "");
@@ -162,7 +158,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 });
             }
         });
-    }
+    }*/
 
     private void hideProgressBar() {
         runOnUiThread(new Runnable() {
@@ -197,14 +193,14 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @OnTextChanged(R.id.ed_meeting_note)
+/*    @OnTextChanged(R.id.ed_meeting_note)
     void onTextChange(CharSequence charSequence) {
         if (charSequence.toString().equals(note)) {
             titleView.setRightTextVisible(false);
         } else {
             titleView.setRightTextVisible(true);
         }
-    }
+    }*/
 
     private void loadPage() {
         showProgressBar();
@@ -244,41 +240,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void loadFileNumber() {
-        FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.LoadMeetingFileBody[0], meetingId + "");
-        Request request = new Request.Builder()
-                .header(Api.LoadMeetingFileHeader[0], Api.LoadMeetingFileHeader[1])
-                .addHeader("token", userToken.getToken())
-                .post(body.build())
-                .url(Api.LoadMeetingFileApi)
-                .build();
-        OkHttpUtils.requestHelper(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String msg = response.body().string();
-                Log.d(TAG, "fileDataListBean: " + msg);
-                final FileDataListBean fileDataListBean = new Gson().fromJson(msg,
-                        FileDataListBean.class);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (fileDataListBean.data.size() == 0) {
-                            tvFileSum.setText("暂无文件");
-                        } else {
-                            tvFileSum.setText(fileDataListBean.data.size() + "");
-                        }
-                    }
-                });
-                loadMeetingNote();
-            }
-        });
-    }
-
     private void loadMeetingNote() {
         FormBody.Builder body = new FormBody.Builder();
         body.add(Api.GetMeetingNoteBody[0], meetingId + "");
@@ -307,7 +268,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            edMeetingNote.setText(note);
+//                            edMeetingNote.setText(note);
                         }
                     });
                 }
@@ -315,7 +276,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.rl_meeting_files})
+    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -328,7 +289,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             case R.id.fab_start_or_end:
                 fabClick();
                 break;
-            case R.id.rl_meeting_files:
+            case R.id.ll_meeting_files:
                 Intent intent = new Intent(this, FileListActivity.class);
                 intent.putExtra("meetingID", meetingId);
                 intent.putExtra("userId", userInfo.getUserId() + "");
@@ -496,7 +457,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-        loadFileNumber();
     }
 
     private void loadBackground() {

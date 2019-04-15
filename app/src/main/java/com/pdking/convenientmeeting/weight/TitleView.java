@@ -125,7 +125,7 @@ public class TitleView extends RelativeLayout {
         if (leftText == null || leftText.equals("")) {
             leftText = "返回";
         }
-        float leftTextSize = typedArray.getDimension(R.styleable.TitleView_leftTextSize, 15);
+        float leftTextSize = typedArray.getDimension(R.styleable.TitleView_leftTextSize, 20);
         int leftTextColor = typedArray.getColor(R.styleable.TitleView_leftTextColor, Color.WHITE);
         boolean leftIconVisibility = typedArray.getBoolean(R.styleable
                 .TitleView_leftIconVisibility, true);
@@ -154,7 +154,7 @@ public class TitleView extends RelativeLayout {
         if (rightText == null || leftText.equals("")) {
             rightText = "菜单";
         }
-        float rightTextSize = typedArray.getDimension(R.styleable.TitleView_rightTextSize, 15);
+        float rightTextSize = typedArray.getDimension(R.styleable.TitleView_rightTextSize, 20);
         int rightTextColor = typedArray.getColor(R.styleable.TitleView_rightTextColor, Color.WHITE);
         boolean rightIconVisibility = typedArray.getBoolean(R.styleable
                 .TitleView_rightIconVisibility, false);

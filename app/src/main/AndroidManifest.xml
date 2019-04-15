@@ -75,7 +75,9 @@
         <activity android:name=".activity.MeetingDetailsActivity" />
         <activity android:name=".activity.FileListActivity" />
         <activity android:name=".activity.ScanFileActivity" />
-        <activity android:name=".activity.AboutAppActivity"></activity>
+        <activity android:name=".activity.AboutAppActivity" />
+        <activity android:name=".activity.VoteActivity" />
+        <activity android:name=".activity.VoteDetailsActivity"></activity>
     </application>
 
 </manifest>
