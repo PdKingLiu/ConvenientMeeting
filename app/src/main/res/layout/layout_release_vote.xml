@@ -9,6 +9,7 @@
     tools:context=".activity.ReleaseVoteActivity">
 
     <com.pdking.convenientmeeting.weight.TitleView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:leftTextVisibility="false"
@@ -40,7 +41,9 @@
                     android:layout_marginLeft="17dp"
                     android:layout_marginRight="17dp"
                     android:layout_marginTop="10dp"
-                    android:background="null"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:gravity="left|top"
                     android:hint="输入投票主题，2-60字" />
 
@@ -74,8 +77,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:background="null"
-                            android:hint="选项1" />
+                            android:background="@null"
+                            android:hint="选项1"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true" />
 
                     </LinearLayout>
 
@@ -116,8 +122,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:background="null"
-                            android:hint="选项2" />
+                            android:background="@null"
+                            android:hint="选项2"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true" />
 
                     </LinearLayout>
 
@@ -139,8 +148,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_3"
                     android:layout_width="match_parent"
                     android:layout_height="41dp"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -148,6 +160,7 @@
                         android:layout_height="40dp">
 
                         <ImageView
+                            android:id="@+id/iv_3"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
@@ -159,8 +172,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:background="null"
-                            android:hint="选项3" />
+                            android:background="@null"
+                            android:hint="选项3"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true" />
 
                     </LinearLayout>
 
@@ -182,8 +198,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_4"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="41dp"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -191,6 +210,7 @@
                         android:layout_height="40dp">
 
                         <ImageView
+                            android:id="@+id/iv_4"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
@@ -202,8 +222,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:background="null"
-                            android:hint="选项4" />
+                            android:background="@null"
+                            android:hint="选项4"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true" />
 
                     </LinearLayout>
 
@@ -225,8 +248,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_5"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="41dp"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -234,6 +260,7 @@
                         android:layout_height="40dp">
 
                         <ImageView
+                            android:id="@+id/iv_5"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
@@ -245,8 +272,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:background="null"
-                            android:hint="选项5" />
+                            android:background="@null"
+                            android:hint="选项5"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true" />
 
                     </LinearLayout>
 
@@ -268,6 +298,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_add"
                     android:layout_width="match_parent"
                     android:layout_height="41dp"
                     android:orientation="vertical">
@@ -288,7 +319,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:background="null"
+                            android:background="@null"
                             android:hint="添加选项"
                             android:textSize="18sp" />
 
@@ -306,6 +337,7 @@
                 android:textColor="#a8a8a8" />
 
             <LinearLayout
+                android:id="@+id/ll_kind"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@android:color/white">
@@ -320,6 +352,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/tv_kind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -343,6 +376,7 @@
                 android:background="#e4e4e4" />
 
             <LinearLayout
+                android:id="@+id/ll_end_time"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@android:color/white">
@@ -357,6 +391,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/tv_end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -380,9 +415,10 @@
                 android:background="#e4e4e4" />
 
             <LinearLayout
-                android:layout_marginBottom="20dp"
+                android:id="@+id/ll_remind"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
                 android:background="@android:color/white">
 
                 <TextView
@@ -395,6 +431,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/tv_remind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

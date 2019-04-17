@@ -98,5 +98,7 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
 
     @Override
     public void OnRightButtonClick() {
+        Intent intent = new Intent(this,ReleaseVoteActivity.class);
+        startActivityForResult(intent,1);
     }
 }

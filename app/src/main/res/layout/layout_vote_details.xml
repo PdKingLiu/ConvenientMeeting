@@ -9,6 +9,7 @@
     tools:context=".activity.VoteDetailsActivity">
 
     <com.pdking.convenientmeeting.weight.TitleView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:leftTextVisibility="false"
@@ -120,15 +121,18 @@
                 android:visibility="visible">
 
                 <LinearLayout
+                    android:id="@+id/ll_1"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:background="#fafafa">
 
                     <RadioButton
+                        android:id="@+id/rb_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp" />
+                        android:layout_marginLeft="15dp"
+                        android:checked="true" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -141,16 +145,18 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_2"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="1dp"
                     android:background="#fafafa">
 
                     <RadioButton
+                        android:id="@+id/rb_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp" />
+                        android:layout_marginLeft="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -163,16 +169,18 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_3"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="1dp"
                     android:background="#fafafa">
 
                     <RadioButton
+                        android:id="@+id/rb_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp" />
+                        android:layout_marginLeft="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -185,16 +193,18 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_4"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="1dp"
                     android:background="#fafafa">
 
                     <RadioButton
+                        android:id="@+id/rb_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp" />
+                        android:layout_marginLeft="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -207,16 +217,18 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_5"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="1dp"
                     android:background="#fafafa">
 
                     <RadioButton
+                        android:id="@+id/rb_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp" />
+                        android:layout_marginLeft="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -743,6 +755,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="8dp"
+        android:textSize="20sp"
         android:background="@drawable/selector_button_is_enabled"
         android:text="投票" />
 
