@@ -61,6 +61,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.title)
     TitleView titleView;
+    @BindView(R.id.rl_vote)
+    RelativeLayout rlVote;
     @BindView(R.id.iv_background)
     ImageView ivBackGround;
     @BindView(R.id.tv_people_sum)
@@ -276,7 +278,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files})
+    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files,R.id.rl_vote})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -296,7 +298,15 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 intent.putExtra("token", userToken.getToken());
                 startActivity(intent);
                 break;
+            case R.id.rl_vote:
+                enterVote();
+                break;
         }
+    }
+
+    private void enterVote() {
+        Intent intent = new Intent(this, VoteActivity.class);
+        startActivity(intent);
     }
 
     private void fabClick() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
@@ -65,9 +65,10 @@
         android:background="@android:color/transparent"
         android:text="立即投票"
         android:textColor="#49a2db"
-        android:textSize="18sp" />
+        android:textSize="20sp" />
 
     <View
+        android:id="@+id/view_line"
         android:background="#efefef"
         android:layout_width="match_parent"
         android:layout_height="15dp" />
