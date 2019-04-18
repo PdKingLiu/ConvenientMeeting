@@ -108,8 +108,13 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     View viewShape4;
     @BindView(R.id.view_shape_5)
     View viewShape5;
+    @BindView(R.id.ll_vote_item)
+    LinearLayout llVoteItem;
+    @BindView(R.id.ll_vote_result)
+    LinearLayout llVoteResult;
 
     private boolean singleFlag = true;
+    private boolean tem = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +205,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         rb5.setOnClickListener(this);
         title.setLeftClickListener(this);
         title.setRightClickListener(this);
+        btnVote.setOnClickListener(this);
     }
 
     @Override
@@ -268,6 +274,18 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.btn_vote) {
+            if (tem) {
+                llVoteItem.setVisibility(View.GONE);
+                llVoteResult.setVisibility(View.VISIBLE);
+                tem = false;
+            } else {
+                llVoteItem.setVisibility(View.VISIBLE);
+                llVoteResult.setVisibility(View.GONE);
+                tem = true;
+            }
+
+        }
         int which = -1;
         switch (v.getId()) {
             case R.id.ll_1:

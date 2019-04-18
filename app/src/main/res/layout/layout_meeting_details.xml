@@ -4,17 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/meeting_default_background"
+    android:background="#f5f6fa"
     android:orientation="vertical"
     tools:context=".activity.MeetingDetailsActivity">
-
-    <ImageView
-        android:id="@+id/iv_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/meeting_default_background"
-        android:visibility="gone" />
 
     <com.pdking.convenientmeeting.weight.TitleView
         android:id="@+id/title"
@@ -47,13 +39,14 @@
                     android:padding="15dp">
 
                     <TextView
+                        android:textStyle="bold"
                         android:id="@+id/tv_people_sum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="20dp"
                         android:text="30 人"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="45sp" />
 
                     <TextView
@@ -65,18 +58,17 @@
                         android:layout_marginRight="20dp"
                         android:layout_marginTop="8dp"
                         android:text="正在进行"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
 
                 </RelativeLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="30dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_height="120dp"
                     android:background="@drawable/view_dark_transparent">
 
                     <RelativeLayout
@@ -103,7 +95,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginTop="5dp"
                                 android:text="会议文件"
-                                android:textColor="@android:color/white" />
+                                android:textColor="@android:color/black" />
 
                         </LinearLayout>
                     </RelativeLayout>
@@ -131,7 +123,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginTop="5dp"
                                 android:text="共享文档"
-                                android:textColor="@android:color/white" />
+                                android:textColor="@android:color/black" />
 
                         </LinearLayout>
                     </RelativeLayout>
@@ -159,7 +151,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginTop="5dp"
                                 android:text="会议笔记"
-                                android:textColor="@android:color/white" />
+                                android:textColor="@android:color/black" />
 
                         </LinearLayout>
                     </RelativeLayout>
@@ -188,7 +180,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginTop="5dp"
                                 android:text="投票"
-                                android:textColor="@android:color/white" />
+                                android:textColor="@android:color/black" />
 
                         </LinearLayout>
                     </RelativeLayout>
@@ -198,11 +190,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/view_dark_transparent"
                     android:gravity="center"
+                    android:visibility="visible"
                     android:orientation="vertical">
 
                     <TextView
@@ -212,7 +203,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="20dp"
                         android:text="开始时间：2019-03-17 21:29:57"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
                     <TextView
@@ -222,7 +213,7 @@
                         android:layout_marginBottom="20dp"
                         android:layout_marginTop="10dp"
                         android:text="结束时间：2019-03-17 21:29:57"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
 
@@ -232,7 +223,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
                         android:text="地点：FZ155"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -250,7 +241,7 @@
                         android:layout_marginLeft="25dp"
                         android:gravity="center_vertical"
                         android:text="会议信息"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -259,8 +250,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/view_dark_transparent"
                     android:gravity="center"
@@ -275,7 +264,7 @@
                         android:gravity="center"
                         android:padding="15dp"
                         android:text="会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议会议"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
 
@@ -293,16 +282,16 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="25dp"
                         android:text="会议成员"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
                     <Button
+                        android:paddingRight="25dp"
                         android:id="@+id/btn_add_member"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="25dp"
                         android:background="@android:color/transparent"
                         android:text="添加成员"
                         android:textColor="@android:color/holo_blue_dark"
@@ -310,30 +299,37 @@
 
                 </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/view_dark_transparent"
-                    android:minHeight="40dp"
-                    android:orientation="vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="10dp">
+                    <FrameLayout
+                        android:layout_marginBottom="100dp"
+                        android:background="@drawable/view_dark_transparent"
+                        android:minHeight="65dp"
+                        android:layout_width="match_parent"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="10dp"
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/tv_member_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="5dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        <TextView
+                            android:text="刘沛栋"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:id="@+id/tv_member_list"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="19sp" />
 
+                        <ImageView
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_gravity="right|top"
+                            android:src="@mipmap/icon_more_member"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp" />
 
-                </LinearLayout>
-
+                    </FrameLayout>
 
             </LinearLayout>
         </ScrollView>
@@ -344,7 +340,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:clickable="true"
-            android:src="@mipmap/icon_meeting_start"
+            android:src="@mipmap/icon_fab_add"
             app:backgroundTint="#08b9fd"
             app:elevation="8dp"
             app:pressedTranslationZ="20dp"

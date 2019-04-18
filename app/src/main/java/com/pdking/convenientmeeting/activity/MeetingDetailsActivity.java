@@ -1,22 +1,26 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,6 +30,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.FileDataListBean;
@@ -63,8 +69,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     TitleView titleView;
     @BindView(R.id.rl_vote)
     RelativeLayout rlVote;
-    @BindView(R.id.iv_background)
-    ImageView ivBackGround;
     @BindView(R.id.tv_people_sum)
     TextView tvPeopleSum;
     @BindView(R.id.tv_meeting_status)
@@ -85,6 +89,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     FloatingActionButton fabStartOrEnd;
     @BindView(R.id.ll_meeting_files)
     LinearLayout rlMeetingFiles;
+
+    private FloatingActionMenu actionMenu;
 
     private String meetingId;
     private UserInfo userInfo;
@@ -124,8 +130,54 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             }
         });
         titleView.setRightTextSize(20);
+        initFloatingActionMenu();
         loadBackground();
         loadPage();
+    }
+
+    private void initFloatingActionMenu() {
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+
+        ImageView itemIcon = new ImageView(this);
+        itemIcon.setPadding(10,10,10,10);
+        itemIcon.setImageDrawable(getResources().getDrawable(R.mipmap.icon_meeting_start));
+        SubActionButton button1 = itemBuilder.setContentView(itemIcon).setBackgroundDrawable
+                (getResources().getDrawable(R.mipmap.circle_fab)).setLayoutParams(new FrameLayout
+                .LayoutParams(170,170)).build();
+
+        ImageView itemIcon2 = new ImageView(this);
+        itemIcon2.setPadding(10,10,10,10);
+        itemIcon2.setImageDrawable(getResources().getDrawable(R.mipmap.icon_meeting_ending));
+        SubActionButton button2 = itemBuilder.setContentView(itemIcon2).setBackgroundDrawable
+                (getResources().getDrawable(R.mipmap.circle_fab)).setLayoutParams(new FrameLayout
+                .LayoutParams(170,170)).build();
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MeetingDetailsActivity.this, "1", Toast.LENGTH_SHORT).show();
+                if (actionMenu != null) {
+                    actionMenu.close(true);
+                }
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MeetingDetailsActivity.this, "2", Toast.LENGTH_SHORT).show();
+                if (actionMenu != null) {
+                    actionMenu.close(true);
+                }
+            }
+        });
+
+        actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(button1)
+                .addSubActionView(button2)
+                .attachTo(fabStartOrEnd)
+                .build();
     }
 
 /*    private void saveNote() {
@@ -278,7 +330,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files,R.id.rl_vote})
+    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files, R.id.rl_vote})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -444,15 +496,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 if (userInfo.userId != bean.data.masterId) {
                     btnAddMember.setVisibility(View.GONE);
                     fabStartOrEnd.setVisibility(View.GONE);
-                } else {
-                    btnAddMember.setVisibility(View.VISIBLE);
-                    if (bean.data.status == 3) {
-                        fabStartOrEnd.setBackgroundResource(R.mipmap.icon_meeting_start);
-                    } else if (bean.data.status == 2) {
-                        fabStartOrEnd.setBackgroundResource(R.mipmap.icon_meeting_ending);
-                    } else {
-                        fabStartOrEnd.setBackgroundResource(R.mipmap.icon_meeting_finish);
-                    }
                 }
                 stringBuilder.append(bean.data.masterName).append("（组织者）");
                 tvMemberList.setText(stringBuilder.toString());
