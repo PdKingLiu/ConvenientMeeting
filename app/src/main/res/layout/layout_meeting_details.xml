@@ -34,42 +34,58 @@
 
 
                 <RelativeLayout
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/view_dark_transparent"
                     android:padding="15dp">
 
                     <TextView
-                        android:textStyle="bold"
                         android:id="@+id/tv_people_sum"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="20dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
                         android:text="30 人"
                         android:textColor="@android:color/black"
                         android:textSize="45sp" />
 
                     <TextView
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginBottom="10dp"
                         android:id="@+id/tv_meeting_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentLeft="true"
                         android:layout_below="@id/tv_people_sum"
-                        android:layout_marginRight="20dp"
                         android:layout_marginTop="8dp"
                         android:text="正在进行"
                         android:textColor="@android:color/black"
-                        android:textSize="18sp" />
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/tv_people_sum"
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/tv_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="地点：FZ155"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp" />
 
 
                 </RelativeLayout>
 
                 <LinearLayout
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    android:background="@drawable/view_dark_transparent">
+                    android:background="@drawable/view_dark_transparent"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp">
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -193,8 +209,8 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/view_dark_transparent"
                     android:gravity="center"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/tv_start_time"
@@ -213,16 +229,6 @@
                         android:layout_marginBottom="20dp"
                         android:layout_marginTop="10dp"
                         android:text="结束时间：2019-03-17 21:29:57"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-
-                    <TextView
-                        android:id="@+id/tv_place"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:text="地点：FZ155"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
@@ -286,50 +292,50 @@
                         android:textSize="16sp" />
 
                     <Button
-                        android:paddingRight="25dp"
                         android:id="@+id/btn_add_member"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="@android:color/transparent"
+                        android:paddingRight="25dp"
                         android:text="添加成员"
                         android:textColor="@android:color/holo_blue_dark"
                         android:textSize="16sp" />
 
                 </RelativeLayout>
 
-                    <FrameLayout
-                        android:layout_marginBottom="100dp"
-                        android:background="@drawable/view_dark_transparent"
-                        android:minHeight="65dp"
-                        android:layout_width="match_parent"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
-                        android:paddingTop="10dp"
-                        android:layout_height="wrap_content">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="100dp"
+                    android:background="@drawable/view_dark_transparent"
+                    android:minHeight="65dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp">
 
-                        <TextView
-                            android:text="刘沛栋"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="20dp"
-                            android:id="@+id/tv_member_list"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="19sp" />
+                    <TextView
+                        android:id="@+id/tv_member_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="5dp"
+                        android:lineSpacingExtra="5dp"
+                        android:text="刘沛栋"
+                        android:textColor="@android:color/black"
+                        android:textSize="19sp" />
 
-                        <ImageView
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_gravity="right|top"
-                            android:src="@mipmap/icon_more_member"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp" />
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="right|top"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@mipmap/icon_more_member" />
 
-                    </FrameLayout>
+                </FrameLayout>
 
             </LinearLayout>
         </ScrollView>
