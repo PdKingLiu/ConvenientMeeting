@@ -24,6 +24,8 @@ import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.MeetingMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -45,7 +47,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MeetingHistoryFragment extends Fragment implements View.OnClickListener{
+public class MeetingHistoryFragment extends Fragment implements View.OnClickListener {
 
     private static MeetingHistoryFragment meetingHistoryFragment;
     private RecyclerView recyclerView;
@@ -129,6 +131,16 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
                 if (bean != null && bean.status == 0) {
                     for (MeetingMessage message : bean.data) {

@@ -20,7 +20,7 @@ public class CountDownTimerUtils extends CountDownTimer {
      *                          {@link #onTick(long)} callbacks.
      */
 
-    public CountDownTimerUtils(Button mButton ,long millisInFuture, long countDownInterval) {
+    public CountDownTimerUtils(Button mButton, long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval);
         this.mButton = mButton;
     }

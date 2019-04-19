@@ -210,7 +210,6 @@ public class TitleView extends RelativeLayout {
     }
 
 
-
     public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs);
     }

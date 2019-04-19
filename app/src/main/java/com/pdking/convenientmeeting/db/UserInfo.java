@@ -11,7 +11,7 @@ import org.litepal.crud.LitePalSupport;
  * @author liupeidong
  * Created on 2019/2/7 12:19
  */
-public class UserInfo extends LitePalSupport implements Parcelable{
+public class UserInfo extends LitePalSupport implements Parcelable {
     @SerializedName("id")
     public int userId;
     @SerializedName("username")

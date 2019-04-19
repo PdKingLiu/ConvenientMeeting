@@ -43,7 +43,7 @@ public class RegisterActivityOne extends AppCompatActivity implements TitleView.
     private String s3 = "";
 
     private boolean flag1 = false;
-    private  boolean flag2 = false;
+    private boolean flag2 = false;
     private boolean flag3 = false;
 
 

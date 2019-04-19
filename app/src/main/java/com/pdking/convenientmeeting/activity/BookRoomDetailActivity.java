@@ -25,6 +25,8 @@ import com.pdking.convenientmeeting.db.RoomOfMeetingMessageBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
@@ -315,7 +317,16 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(BookRoomDetailActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 1) {
                     hideProgressBar();
@@ -352,7 +363,16 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(BookRoomDetailActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 RoomOfMeetingMessageBean bean = new Gson().fromJson(msg, RoomOfMeetingMessageBean
                         .class);
                 if (bean.status == 1) {
@@ -362,7 +382,6 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     hideProgressBar();
                     showToast("预订成功");
                     bean.data.save();
-                    requestAddMember(bean.data.meetingId, bean.data.masterId);
                     Calendar cale = Calendar.getInstance();
                     Calendar cale2 = Calendar.getInstance();
                     cale2.setTime(startDate);
@@ -372,30 +391,6 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     setResult(RESULT_OK, intent);
                     saveFlag = true;
                 }
-            }
-        });
-    }
-
-    private void requestAddMember(int meetingId, int masterId) {
-        FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.MeetingAddMemberBody[0], masterId + "");
-        body.add(Api.MeetingAddMemberBody[1], meetingId + "");
-        Request request = new Request.Builder()
-                .url(Api.MeetingAddMemberApi)
-                .post(body.build())
-                .header(Api.MeetingAddMemberHeader[0], Api.MeetingAddMemberHeader[1])
-                .addHeader("token", userToken.getToken())
-                .build();
-        OkHttpUtils.requestHelper(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("Lpp", "邀请成员失败: " + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String msg = response.body().string();
-                Log.d("Lpp", "邀请成员成功 onResponse: " + msg);
             }
         });
     }

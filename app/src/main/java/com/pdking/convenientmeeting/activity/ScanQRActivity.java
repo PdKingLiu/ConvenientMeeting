@@ -171,7 +171,7 @@ public class ScanQRActivity extends AppCompatActivity {
                     finish();
                 } catch (NotFoundException | ChecksumException | FormatException e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     bitmap.recycle();
                     bitmap = null;
                     pixels = null;

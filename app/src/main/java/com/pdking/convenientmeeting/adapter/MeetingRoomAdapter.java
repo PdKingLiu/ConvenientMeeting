@@ -35,6 +35,7 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
     private OnItemClickListener itemClickListener;
     Calendar calendar = Calendar.getInstance();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }

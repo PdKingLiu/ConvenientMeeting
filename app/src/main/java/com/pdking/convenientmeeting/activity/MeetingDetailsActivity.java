@@ -42,6 +42,8 @@ import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
@@ -131,7 +133,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
         titleView.setRightTextSize(20);
         initFloatingActionMenu();
-        loadBackground();
         loadPage();
     }
 
@@ -140,18 +141,18 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
 
         ImageView itemIcon = new ImageView(this);
-        itemIcon.setPadding(10,10,10,10);
+        itemIcon.setPadding(10, 10, 10, 10);
         itemIcon.setImageDrawable(getResources().getDrawable(R.mipmap.icon_meeting_start));
         SubActionButton button1 = itemBuilder.setContentView(itemIcon).setBackgroundDrawable
                 (getResources().getDrawable(R.mipmap.circle_fab)).setLayoutParams(new FrameLayout
-                .LayoutParams(170,170)).build();
+                .LayoutParams(170, 170)).build();
 
         ImageView itemIcon2 = new ImageView(this);
-        itemIcon2.setPadding(10,10,10,10);
+        itemIcon2.setPadding(10, 10, 10, 10);
         itemIcon2.setImageDrawable(getResources().getDrawable(R.mipmap.icon_meeting_ending));
         SubActionButton button2 = itemBuilder.setContentView(itemIcon2).setBackgroundDrawable
                 (getResources().getDrawable(R.mipmap.circle_fab)).setLayoutParams(new FrameLayout
-                .LayoutParams(170,170)).build();
+                .LayoutParams(170, 170)).build();
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,6 +282,16 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 Log.d(TAG, "onResponse: " + msg);
                 bean = new Gson().fromJson(msg, MeetingByIdMessageBean.class);
                 if (bean.status == 1) {
@@ -313,6 +324,16 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 Log.d(TAG, "会议笔记: " + msg);
                 MeetingNoteBean bean = new Gson().fromJson(msg, MeetingNoteBean.class);
                 if (bean.status != 0) {
@@ -409,6 +430,16 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 Log.d(TAG, "onResponse: " + msg);
                 UserDataBean userDataBean = new Gson().fromJson(msg, UserDataBean.class);
                 if (userDataBean != null) {
@@ -445,6 +476,16 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 Log.d(TAG, "onResponse: " + msg);
                 RequestReturnBean requestReturnBean = new Gson().fromJson(msg, RequestReturnBean
                         .class);
@@ -508,32 +549,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                     stringBuilder.append("\n").append(memberStatusBean.username);
                     tvMemberList.setText(stringBuilder.toString());
                 }
-            }
-        });
-    }
-
-    private void loadBackground() {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("http://guolin.tech/api/bing_pic")
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-//                showToast("图片加载失败");
-                networkFlag = false;
-                Log.d("Lpp", "onFailure: " + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String msg = response.body().string();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        Glide.with(MeetingDetailsActivity.this).load(msg).into(ivBackGround);
-                    }
-                });
             }
         });
     }

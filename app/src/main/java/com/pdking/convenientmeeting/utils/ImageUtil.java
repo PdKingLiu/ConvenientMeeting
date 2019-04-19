@@ -99,10 +99,12 @@ public class ImageUtil {
      * @return 被裁剪后的bitmap
      */
     public static Bitmap imageCrop(Bitmap bitmap, Rect rect) {
-        if (bitmap == null || rect == null || rect.isEmpty() || bitmap.getWidth() < rect.right || bitmap.getHeight() < rect.bottom) {
+        if (bitmap == null || rect == null || rect.isEmpty() || bitmap.getWidth() < rect.right ||
+                bitmap.getHeight() < rect.bottom) {
             return null;
         }
-        return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height(), null, false);
+        return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height(),
+                null, false);
     }
 
     public static Bitmap getBitmapFromUri(Uri uri, Context context) {

@@ -197,7 +197,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                 if (flag) {
                     finish();
                 } else {
-                    startRecognition( view);
+                    startRecognition(view);
                 }
                 break;
             case R.id.btn_start:
@@ -206,7 +206,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         }
     }
 
-    private void startRecognition( final View view) {
+    private void startRecognition(final View view) {
         view.setClickable(false);
         if (progressDialog == null || progressDialog.isShowing()) {
             return;
@@ -579,7 +579,8 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                     Intent intent = new Intent();
                     intent.putExtra("status", 1);
                     userInfo = new UserInfo();
-                    userInfo.setFaceData(android.util.Base64.encodeToString(faceFeatures[0].getFeatureData(), android.util
+                    userInfo.setFaceData(android.util.Base64.encodeToString(faceFeatures[0]
+                            .getFeatureData(), android.util
                             .Base64.DEFAULT));
                     intent.putExtra("user", userInfo);
                     setResult(RESULT_OK, intent);

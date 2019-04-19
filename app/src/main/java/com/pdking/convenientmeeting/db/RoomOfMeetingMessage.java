@@ -9,7 +9,7 @@ import org.litepal.crud.LitePalSupport;
  * @author liupeidong
  * Created on 2019/3/20 15:12
  */
-public class RoomOfMeetingMessage extends LitePalSupport{
+public class RoomOfMeetingMessage extends LitePalSupport {
     @SerializedName("id")
     public int meetingId;
     @SerializedName("meetingName")

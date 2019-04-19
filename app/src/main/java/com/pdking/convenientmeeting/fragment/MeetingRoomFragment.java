@@ -232,6 +232,16 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 roomMessageBean = new Gson().fromJson(msg, AllMeetingRoomMessageBean.class);
                 if (roomMessageBean != null && roomMessageBean.status == 0) {
                     refreshLayout.finishRefresh(2000, true);

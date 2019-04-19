@@ -42,6 +42,7 @@ public class MineMeetingBean {
         public String masterName;
         @SerializedName("memberStatus")
         public List<MemberStatusBean> memberStatus;
+
         public static class MemberStatusBean {
             @SerializedName("userId")
             public int userId;

@@ -6,7 +6,7 @@ import org.litepal.crud.LitePalSupport;
  * @author liupeidong
  * Created on 2019/3/16 11:38
  */
-public class UserAccount extends LitePalSupport{
+public class UserAccount extends LitePalSupport {
 
     private String phone;
 

@@ -24,6 +24,10 @@ import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.FileData;
 import com.pdking.convenientmeeting.db.FileDataListBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
@@ -126,7 +130,16 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d(TAG, "加载文件列表 onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(FileListActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userId = newInfo.getUserId() + "";
+                            token = newToken.getToken();
+                        }
+                    });
+                    return;
+                }
                 fileDataListBean = new Gson().fromJson(msg, FileDataListBean.class);
                 if (fileDataListBean != null) {
                     if (fileDataListBean.status != 0) {
@@ -169,7 +182,16 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
-                Log.d(TAG, "加载文件列表 onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(FileListActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userId = newInfo.getUserId() + "";
+                            token = newToken.getToken();
+                        }
+                    });
+                    return;
+                }
                 fileDataListBean = new Gson().fromJson(msg, FileDataListBean.class);
                 if (fileDataListBean != null) {
                     if (fileDataListBean.status != 0) {
@@ -248,7 +270,16 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
-                Log.d("Lpp", "上传: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(FileListActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userId = newInfo.getUserId() + "";
+                            token = newToken.getToken();
+                        }
+                    });
+                    return;
+                }
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status != 0) {
                     showToast("上传失败");

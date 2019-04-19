@@ -55,7 +55,7 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(VoteActivity.this, VoteDetailsActivity.class);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -98,7 +98,7 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
 
     @Override
     public void OnRightButtonClick() {
-        Intent intent = new Intent(this,ReleaseVoteActivity.class);
-        startActivityForResult(intent,1);
+        Intent intent = new Intent(this, ReleaseVoteActivity.class);
+        startActivityForResult(intent, 1);
     }
 }

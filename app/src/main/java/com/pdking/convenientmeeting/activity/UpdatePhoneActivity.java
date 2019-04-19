@@ -171,7 +171,7 @@ public class UpdatePhoneActivity extends AppCompatActivity {
                 String msg = response.body().string();
                 RequestReturnBean statusBean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (statusBean.status == 0) {
-                    checkCodeOnce(newPhone,newCode);
+                    checkCodeOnce(newPhone, newCode);
                 } else {
                     hideProgressBar();
                     showToast("验证码错误");
@@ -242,7 +242,8 @@ public class UpdatePhoneActivity extends AppCompatActivity {
                     hideProgressBar();
                     showToast("修改失败");
                 } else {
-                    hideProgressBar();showToast("修改成功");
+                    hideProgressBar();
+                    showToast("修改成功");
                     startActivity(new Intent(UpdatePhoneActivity.this, LoginActivity.class));
                     ActivityContainer.removeAllActivity();
                 }

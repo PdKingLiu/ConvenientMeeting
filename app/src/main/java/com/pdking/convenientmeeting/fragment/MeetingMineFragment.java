@@ -26,6 +26,8 @@ import com.pdking.convenientmeeting.db.MeetingMessageBean;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
@@ -166,6 +168,16 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
                 if (bean != null && bean.status == 0) {
                     for (MeetingMessage message : bean.data) {

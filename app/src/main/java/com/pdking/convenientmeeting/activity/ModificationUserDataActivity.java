@@ -36,6 +36,8 @@ import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.IOUtil;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
@@ -311,6 +313,18 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(ModificationUserDataActivity.this, new
+                            LoginCallBack() {
+                                @Override
+                                public void newMessageCallBack(UserInfo newInfo, UserToken
+                                        newToken) {
+                                    userInfo = newInfo;
+                                    token = newToken;
+                                }
+                            });
+                    return;
+                }
                 Log.d("Lpp", "onResponse: " + msg);
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 1) {
@@ -347,6 +361,17 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(ModificationUserDataActivity.this, new
+                            LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            token = newToken;
+                        }
+                    });
+                    return;
+                }
                 dataBean = new Gson().fromJson(msg, UserDataBean.class);
                 if (dataBean.status == 1) {
                     showToast("失败");
@@ -446,6 +471,17 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(ModificationUserDataActivity.this, new
+                            LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            token = newToken;
+                        }
+                    });
+                    return;
+                }
                 Log.d("Lpp", "onResponse: " + msg);
                 dataBean = new Gson().fromJson(msg, UserDataBean.class);
                 if (dataBean.status == 1) {
