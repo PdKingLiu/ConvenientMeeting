@@ -26,6 +26,8 @@ import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -154,7 +156,16 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userInfo = newInfo;
+                            userToken = newToken;
+                        }
+                    });
+                    return;
+                }
                 meetingRoomMessageBean = new Gson().fromJson(msg, OneMeetingRoomMessageBean.class);
                 if (meetingRoomMessageBean.status == 1) {
                     showToast("加载失败，请重新尝试");
@@ -162,7 +173,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     if (meetingRoomMessageBean.data != null && meetingRoomMessageBean.data
                             .recentlyMeetings != null) {
                         allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
-                        Log.d("Lpp", "onResponse: MeetingRoomFragment"+allMeetingList);
+                        Log.d("Lpp", "onResponse: MeetingRoomFragment" + allMeetingList);
                         LitePal.deleteAll(RoomOfMeetingMessage.class);
                         LitePal.saveAll(allMeetingList);
                         Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
