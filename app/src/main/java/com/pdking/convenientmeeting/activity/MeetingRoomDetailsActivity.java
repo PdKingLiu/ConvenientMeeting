@@ -80,7 +80,6 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     private String roomNumber;
     private int roomStatus;
     private int roomContent;
-    private String roomId;
     private List<RoomOfMeetingMessage> allMeetingList;
     private Bitmap newBitmap;
 
@@ -226,8 +225,11 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
                                 .show();
                         break;
                     case 1:
-                        Toast.makeText(MeetingRoomDetailsActivity.this, "历史会议", Toast
-                                .LENGTH_SHORT).show();
+                        Intent intent = new Intent(MeetingRoomDetailsActivity.this,
+                                MeetingRoomHistoryMeetingActivity.class);
+                        intent.putExtra("token", userToken.getToken());
+                        intent.putExtra("roomId", meetingRoomId + "");
+                        startActivity(intent);
                         break;
                 }
             }

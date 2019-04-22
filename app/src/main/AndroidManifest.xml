@@ -81,7 +81,8 @@
         <activity android:name=".activity.ReleaseVoteActivity" />
         <activity android:name=".activity.HistoryMeetingActivity" />
         <activity android:name=".activity.MeetingNoteActivity" />
-        <activity android:name=".activity.MeetingMemberListActivity"></activity>
+        <activity android:name=".activity.MeetingMemberListActivity" />
+        <activity android:name=".activity.MeetingRoomHistoryMeetingActivity"></activity>
     </application>
 
 </manifest>

@@ -135,7 +135,6 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
                 ivRecentMeeting.setImageResource(R.mipmap.icon_recent_meeting_sum_0);
             }
             tvPeopleSum.setText("可容纳" + oneMeetingRoomMessage.content + "人");
-
         }
     }
 

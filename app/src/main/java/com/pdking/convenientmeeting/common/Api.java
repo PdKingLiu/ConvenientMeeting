@@ -159,4 +159,11 @@ public class Api {
 
     public static String[] FinishMeetingBody = {"meetingId"};
 
+    public static String GetRoomMeetingListApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting/getPageMeetingInfo.do";
+
+    public static String[] GetRoomMeetingListHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] GetRoomMeetingListBody = {"roomId"};
+
 }

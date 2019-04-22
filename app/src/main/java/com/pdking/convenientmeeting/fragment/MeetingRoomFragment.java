@@ -91,6 +91,8 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
         initDataAndList();
         initRecycleViewAndRefresh();
     }
