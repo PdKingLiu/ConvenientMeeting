@@ -114,6 +114,8 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     }
 
     private void refresh() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
         FormBody.Builder body = new FormBody.Builder()
                 .add("token", userToken.getToken())
                 .add(Api.RequestUserMeetingListBody[0], userInfo.getUserId() + "")
@@ -185,8 +187,6 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     }
 
     private void initList() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         beanList = new ArrayList<>();
         beanList = LitePal.where("meetingType = ?", "2").find(MeetingMessage.class);
         if (beanList.size() == 0) {

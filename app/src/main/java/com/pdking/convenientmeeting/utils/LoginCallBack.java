@@ -8,5 +8,5 @@ import com.pdking.convenientmeeting.db.UserToken;
  * Created on 2019/4/18 22:26
  */
 public interface LoginCallBack {
-    void newMessageCallBack(UserInfo userInfo, UserToken userToken);
+    void newMessageCallBack(UserInfo newInfo, UserToken newToken);
 }

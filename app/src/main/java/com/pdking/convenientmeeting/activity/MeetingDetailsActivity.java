@@ -46,6 +46,7 @@ import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UIUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
@@ -152,7 +153,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MeetingDetailsActivity.this, "1", Toast.LENGTH_SHORT).show();
+                startMeeting();
                 if (actionMenu != null) {
                     actionMenu.close(true);
                 }
@@ -162,7 +163,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MeetingDetailsActivity.this, "2", Toast.LENGTH_SHORT).show();
+                finishMeeting();
                 if (actionMenu != null) {
                     actionMenu.close(true);
                 }
@@ -174,6 +175,86 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 .addSubActionView(button2)
                 .attachTo(fabStartOrEnd)
                 .build();
+    }
+
+    private void finishMeeting() {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.FinishMeetingBody[0], meetingId);
+        final Request request = new Request.Builder()
+                .post(body.build())
+                .header(Api.FinishMeetingHeader[0], Api.FinishMeetingHeader[1])
+                .addHeader("token", userToken.getToken())
+                .url(Api.FinishMeetingApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(MeetingDetailsActivity.this, "结束会议失败");
+                Log.d("Lpp", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "会议结束: " + msg);
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userToken = newToken;
+                            userInfo = newInfo;
+                        }
+                    });
+                    return;
+                }
+                RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
+                if (bean != null && bean.status == 0) {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "会议结束");
+                } else {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "会议结束失败，可能已经结束过了");
+                }
+            }
+        });
+    }
+
+    private void startMeeting() {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.StartMeetingBody[0], meetingId);
+        final Request request = new Request.Builder()
+                .post(body.build())
+                .header(Api.StartMeetingHeader[0], Api.StartMeetingHeader[1])
+                .addHeader("token", userToken.getToken())
+                .url(Api.StartMeetingApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(MeetingDetailsActivity.this, "开始会议失败");
+                Log.d("Lpp", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "会议开启" + msg);
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            userToken = newToken;
+                            userInfo = newInfo;
+                        }
+                    });
+                    return;
+                }
+                RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
+                if (bean != null && bean.status == 0) {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "会议开启");
+                } else {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "会议开启失败，可能已经开启过了");
+                }
+            }
+        });
     }
 
     private void hideProgressBar() {
@@ -282,7 +363,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 enterVote();
                 break;
             case R.id.rl_note:
-                Intent intent1 = new Intent(MeetingDetailsActivity.this,MeetingNoteActivity.class);
+                Intent intent1 = new Intent(MeetingDetailsActivity.this, MeetingNoteActivity.class);
                 intent1.putExtra("userId", userInfo.getUserId() + "");
                 intent1.putExtra("meetingId", meetingId);
                 intent1.putExtra("token", userToken.getToken());
@@ -455,6 +536,10 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 stringBuilder.append(bean.data.masterName).append("（组织者）");
                 tvMemberList.setText(stringBuilder.toString());
                 for (int i = 0; i < bean.data.memberStatus.size(); i++) {
+                    if (i == 6) {
+                        stringBuilder.append("\n").append("···");
+                        break;
+                    }
                     MeetingByIdMessage.MemberStatusBean memberStatusBean = bean.data.memberStatus
                             .get(i);
                     if (memberStatusBean.userId == bean.data.masterId) {
