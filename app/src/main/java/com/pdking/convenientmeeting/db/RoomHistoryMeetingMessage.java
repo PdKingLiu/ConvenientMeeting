@@ -2,11 +2,13 @@ package com.pdking.convenientmeeting.db;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Comparator;
+
 /**
  * @author liupeidong
  * Created on 2019/4/22 21:38
  */
-public class RoomHistoryMeetingMessage {
+public class RoomHistoryMeetingMessage  {
     @SerializedName("id")
     public int id;
     @SerializedName("meetingName")

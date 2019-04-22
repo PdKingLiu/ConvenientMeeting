@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.RoomHistoryMeetingMessage;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,10 +27,10 @@ public class RoomHistoryMeetingAdapter extends RecyclerView.Adapter<RoomHistoryM
         .ViewHolder> implements View.OnClickListener {
 
     private Context mContext;
-    private List<RoomHistoryMeetingMessage> list;
+    private List<RoomOfMeetingMessage> list;
     private OnItemClickListener mListener;
 
-    public RoomHistoryMeetingAdapter(Context mContext, List<RoomHistoryMeetingMessage> list) {
+    public RoomHistoryMeetingAdapter(Context mContext, List<RoomOfMeetingMessage> list) {
         this.mContext = mContext;
         this.list = list;
     }
@@ -84,7 +85,8 @@ public class RoomHistoryMeetingAdapter extends RecyclerView.Adapter<RoomHistoryM
             line = itemView.findViewById(R.id.view_line);
         }
 
-        public void setData(RoomHistoryMeetingMessage roomHistoryMeetingMessage, int i) {
+        public void setData(RoomOfMeetingMessage roomHistoryMeetingMessage, int i) {
+            viewSum.setTag(i);
             tvMeetingName.setText(roomHistoryMeetingMessage.meetingName);
             switch (roomHistoryMeetingMessage.status) {
                 case 1:
@@ -107,10 +109,14 @@ public class RoomHistoryMeetingAdapter extends RecyclerView.Adapter<RoomHistoryM
             Date date2 = new Date(roomHistoryMeetingMessage.endTime);
             int len = (int) ((date2.getTime() - date.getTime()) / 1000 / 60);
             tvMeetingTimeLength.setText(len + "");
+
+            calendar.setTime(date);
+
             @SuppressLint("DefaultLocale") String time = String.format("%d年%d月%d日",
                     calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH));
             tvDate.setText(time);
+
             @SuppressLint("DefaultLocale")
             String string = String.format("%d:%02d:00", calendar.get
                     (Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
