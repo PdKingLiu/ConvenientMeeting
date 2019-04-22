@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingListAdapter;
 import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 
@@ -61,7 +63,6 @@ public class DayMeetingListFragment extends Fragment {
         }
         meetingList = new ArrayList<>();
         allMeetingList = LitePal.findAll(RoomOfMeetingMessage.class);
-        Log.d("Lpp", "onCreate: DayMeetingListFragment" + allMeetingList);
     }
 
     @Override
@@ -97,6 +98,14 @@ public class DayMeetingListFragment extends Fragment {
         }
         Log.d("Lpp", "initRecyclerView: " + meetingList.size());
         adapter = new MeetingListAdapter(meetingList);
+        adapter.setOnItemClickListener(new MeetingListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
+                intent.putExtra("meetingId", meetingList.get(position).meetingId + "");
+                startActivity(intent);
+            }
+        });
         rvMeetingList.setLayoutManager(new LinearLayoutManager(getContext()));
         rvMeetingList.setAdapter(adapter);
         if (meetingList.size() == 0) {

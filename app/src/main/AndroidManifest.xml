@@ -78,7 +78,9 @@
         <activity android:name=".activity.AboutAppActivity" />
         <activity android:name=".activity.VoteActivity" />
         <activity android:name=".activity.VoteDetailsActivity" />
-        <activity android:name=".activity.ReleaseVoteActivity"></activity>
+        <activity android:name=".activity.ReleaseVoteActivity" />
+        <activity android:name=".activity.HistoryMeetingActivity" />
+        <activity android:name=".activity.MeetingNoteActivity"></activity>
     </application>
 
 </manifest>

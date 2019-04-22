@@ -26,6 +26,7 @@ import java.util.List;
 public class PopMenu {
 
 
+    private int bindId;
     /**
      * 上下文.
      */
@@ -195,8 +196,13 @@ public class PopMenu {
         mPopupWindow.showAsDropDown(parent);
     }
 
-    public void showAsDropDown(View anchor, int xoff, int yoff, int gravity) {
-        mPopupWindow.showAsDropDown(anchor, xoff, yoff, gravity);
+    public void showAsDropDown(View parent,int bindId) {
+        mPopupWindow.showAsDropDown(parent);
+        this.bindId = bindId;
+    }
+
+    public int getBindId() {
+        return bindId;
     }
 
     /**

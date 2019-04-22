@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingHistoryAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingBean;
@@ -89,8 +91,9 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
         mAdapter.setClickListener(new MeetingHistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getContext(), beanList.get(position).roomName, Toast.LENGTH_SHORT)
-                        .show();
+                Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
+                intent.putExtra("meetingId", beanList.get(position).meetingId + "");
+                startActivity(intent);
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -124,7 +127,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
         OkHttpUtils.requestHelper(request, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                refreshLayout.finishRefresh(3000, false);
+                refreshLayout.finishRefresh(false);
             }
 
             @Override
@@ -146,7 +149,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
                     for (MeetingMessage message : bean.data) {
                         message.meetingType = 1;
                     }
-                    refreshLayout.finishRefresh(2000, true);
+                    refreshLayout.finishRefresh(true);
                     beanList.clear();
                     beanList.addAll(bean.data);
                     Log.d("Lpp", "onResponse: " + beanList.size());
@@ -154,7 +157,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
                     LitePal.saveAll(beanList);
                     notifyDataChanged();
                 } else {
-                    refreshLayout.finishRefresh(2000, false);
+                    refreshLayout.finishRefresh(false);
                 }
             }
         });

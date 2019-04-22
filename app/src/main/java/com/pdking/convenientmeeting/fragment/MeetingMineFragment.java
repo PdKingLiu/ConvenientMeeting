@@ -98,11 +98,11 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
             public void selected(View view, PopMenuItem item, int position) {
                 switch (item.id) {
                     case 0:
-                        Toast.makeText(getContext(), "请假", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "等待实现", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
                         Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
-                        intent.putExtra("meetingId", beanList.get(position).meetingId + "");
+                        intent.putExtra("meetingId", beanList.get(mPopMenu.getBindId()).meetingId + "");
                         startActivity(intent);
                         break;
                 }
@@ -123,7 +123,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
         mineAdapter.setMoreListener(new MeetingMineAdapter.OnMoreClickListener() {
             @Override
             public void onMoreClick(View view, int position) {
-                mPopMenu.getmPopupWindow().showAsDropDown(view);
+                mPopMenu.showAsDropDown(view, position);
                 WindowManager.LayoutParams wl = getActivity().getWindow().getAttributes();
                 getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 wl.alpha = 0.6f;
@@ -161,7 +161,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
         OkHttpUtils.requestHelper(request, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                refreshLayout.finishRefresh(3000, false);
+                refreshLayout.finishRefresh(false);
             }
 
             @Override
@@ -183,7 +183,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                     for (MeetingMessage message : bean.data) {
                         message.meetingType = 1;
                     }
-                    refreshLayout.finishRefresh(2000, true);
+                    refreshLayout.finishRefresh(true);
                     beanList.clear();
                     beanList.addAll(bean.data);
                     Log.d("Lpp", "onResponse: " + beanList.size());
@@ -191,7 +191,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                     LitePal.saveAll(beanList);
                     notifyDataChanged();
                 } else {
-                    refreshLayout.finishRefresh(2000, false);
+                    refreshLayout.finishRefresh(false);
                 }
             }
         });

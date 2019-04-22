@@ -71,6 +71,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     TitleView titleView;
     @BindView(R.id.rl_vote)
     RelativeLayout rlVote;
+    @BindView(R.id.rl_note)
+    RelativeLayout rlNote;
     @BindView(R.id.tv_people_sum)
     TextView tvPeopleSum;
     @BindView(R.id.tv_meeting_status)
@@ -100,7 +102,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private MeetingByIdMessageBean bean;
     private String TAG = "Lpp";
     private StringBuilder stringBuilder = new StringBuilder();
-    private String note = "";
 
     private ProgressDialog dialog;
 
@@ -123,12 +124,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @Override
             public void OnLeftButtonClick() {
                 finish();
-            }
-        });
-        titleView.setRightClickListener(new TitleView.RightClickListener() {
-            @Override
-            public void OnRightButtonClick() {
-//                saveNote();
             }
         });
         titleView.setRightTextSize(20);
@@ -181,40 +176,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 .build();
     }
 
-/*    private void saveNote() {
-        FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.SetMeetingNoteBody[0], meetingId + "");
-        body.add(Api.SetMeetingNoteBody[1], userInfo.getUserId() + "");
-        body.add(Api.SetMeetingNoteBody[2], edMeetingNote.getText().toString());
-        final Request request = new Request.Builder()
-                .header(Api.SetMeetingNoteHeader[0], Api.SetMeetingNoteHeader[1])
-                .addHeader("token", userToken.getToken())
-                .post(body.build())
-                .url(Api.SetMeetingNoteApi)
-                .build();
-        OkHttpUtils.requestHelper(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String msg = response.body().string();
-                Log.d(TAG, "onResponse: " + msg);
-                showToast("保存成功");
-                note = edMeetingNote.getText().toString();
-                MeetingNoteBean bean = new Gson().fromJson(msg, MeetingNoteBean.class);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        titleView.setRightTextVisible(false);
-                    }
-                });
-            }
-        });
-    }*/
-
     private void hideProgressBar() {
         runOnUiThread(new Runnable() {
             @Override
@@ -247,15 +208,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
-
-/*    @OnTextChanged(R.id.ed_meeting_note)
-    void onTextChange(CharSequence charSequence) {
-        if (charSequence.toString().equals(note)) {
-            titleView.setRightTextVisible(false);
-        } else {
-            titleView.setRightTextVisible(true);
-        }
-    }*/
 
     private void loadPage() {
         showProgressBar();
@@ -305,53 +257,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void loadMeetingNote() {
-        FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.GetMeetingNoteBody[0], meetingId + "");
-        body.add(Api.GetMeetingNoteBody[1], userInfo.getUserId() + "");
-        Request request = new Request.Builder()
-                .addHeader(Api.GetMeetingNoteHeader[0], Api.GetMeetingNoteHeader[1])
-                .header("token", userToken.getToken())
-                .post(body.build())
-                .url(Api.GetMeetingNoteApi)
-                .build();
-        OkHttpUtils.requestHelper(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "会议笔记失败: " + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String msg = response.body().string();
-                if (msg.contains("token过期!")) {
-                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
-                        @Override
-                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
-                        }
-                    });
-                    return;
-                }
-                Log.d(TAG, "会议笔记: " + msg);
-                MeetingNoteBean bean = new Gson().fromJson(msg, MeetingNoteBean.class);
-                if (bean.status != 0) {
-                    Log.d(TAG, "会议笔记失败:");
-                } else {
-                    note = bean.data;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-//                            edMeetingNote.setText(note);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files, R.id.rl_vote})
+    @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files, R.id.rl_vote, R
+            .id.rl_note})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -373,6 +280,13 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 break;
             case R.id.rl_vote:
                 enterVote();
+                break;
+            case R.id.rl_note:
+                Intent intent1 = new Intent(MeetingDetailsActivity.this,MeetingNoteActivity.class);
+                intent1.putExtra("userId", userInfo.getUserId() + "");
+                intent1.putExtra("meetingId", meetingId);
+                intent1.putExtra("token", userToken.getToken());
+                startActivity(intent1);
                 break;
         }
     }

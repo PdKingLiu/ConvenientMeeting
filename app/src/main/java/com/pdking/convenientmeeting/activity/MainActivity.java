@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     private long exitTime = 0;
 
-    private String[] permissicns = new
+    private String[] permissions = new
             String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
             Manifest.permission.READ_PHONE_STATE,
@@ -169,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                             finish();
                         } else {
                             showToast("登录成功");
-                            Log.d(TAG, "onResponse: " + message);
                             userToken = new UserToken(loginInfo.msg);
                             userInfo = loginInfo.data;
                             ActivityContainer.removeAllActivity();
@@ -363,8 +362,8 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean checkPermission() {
         boolean[] flag = {false, false, false, false};
-        for (int i = 0; i < permissicns.length; i++) {
-            if (ContextCompat.checkSelfPermission(this, permissicns[i])
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i])
                     != PackageManager.PERMISSION_GRANTED) {
                 flag[i] = false;
             } else {

@@ -96,8 +96,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     private void initDataAndList() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         roomMessageList = LitePal.findAll(OneMeetingRoomMessage.class);
         if (roomMessageList.size() == 0) {
             rlHaveNothing.setVisibility(View.VISIBLE);
@@ -156,6 +154,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                Log.d("Lpp", "msg: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
@@ -215,6 +214,8 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     private void requestRefresh() {
+        userInfo = LitePal.findAll(UserInfo.class).get(0);
+        userToken = LitePal.findAll(UserToken.class).get(0);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
         Request request = new Request.Builder()
@@ -225,7 +226,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                refreshLayout.finishRefresh(2000, false);
+                refreshLayout.finishRefresh(false);
             }
 
             @Override
@@ -240,11 +241,12 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                             userToken = newToken;
                         }
                     });
+                    refreshLayout.finishRefresh(false);
                     return;
                 }
                 roomMessageBean = new Gson().fromJson(msg, AllMeetingRoomMessageBean.class);
                 if (roomMessageBean != null && roomMessageBean.status == 0) {
-                    refreshLayout.finishRefresh(2000, true);
+                    refreshLayout.finishRefresh(true);
                     roomMessageList.clear();
                     roomMessageList.addAll(roomMessageBean.data);
                     Log.d("Lpp", "onResponse: " + roomMessageList.size());
@@ -252,7 +254,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     LitePal.saveAll(roomMessageList);
                     notifyDataChanged();
                 } else {
-                    refreshLayout.finishRefresh(2000, false);
+                    refreshLayout.finishRefresh(false);
                 }
             }
         });
