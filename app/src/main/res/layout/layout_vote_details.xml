@@ -306,6 +306,7 @@
                                 android:src="@mipmap/icon_right_icon" />
 
                             <TextView
+                                android:id="@+id/tv_option_result_1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -376,6 +377,7 @@
                                 android:visibility="invisible" />
 
                             <TextView
+                                android:id="@+id/tv_option_result_2"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -446,6 +448,7 @@
                                 android:visibility="invisible" />
 
                             <TextView
+                                android:id="@+id/tv_option_result_3"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -516,6 +519,7 @@
                                 android:visibility="invisible" />
 
                             <TextView
+                                android:id="@+id/tv_option_result_4"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -751,6 +755,7 @@
                                 android:visibility="invisible" />
 
                             <TextView
+                                android:id="@+id/tv_option_result_5"
                                 android:layout_width="302dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"

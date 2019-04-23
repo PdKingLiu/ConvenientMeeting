@@ -174,10 +174,19 @@ public class Api {
     public static String[] SetVoteHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
-    public static String[] SetVoteBody = {"meetingId", "publisherId", "topic", "selectWay","remindTime", "createTime", "endTime", "options"};
+    public static String[] SetVoteBody = {"meetingId", "publisherId", "topic", "selectWay",
+            "remindTime", "createTime", "endTime", "options"};
 
-    public static String GetVoteListApi = "http://www.shidongxuan.top/smartMeeting_Web/vote/specificInfo";
+    public static String GetVoteListApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/vote/specificInfo";
 
-    public static String[] GetVoteListBody = {"meetingId", "userId" };
+    public static String[] GetVoteListBody = {"meetingId", "userId"};
+
+    public static String VoteApi = "http://www.shidongxuan.top/smartMeeting_Web/vote/userOption";
+
+    public static String[] VoteHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] VoteBody = {"userId", "voteId", "optionIds"};
 
 }

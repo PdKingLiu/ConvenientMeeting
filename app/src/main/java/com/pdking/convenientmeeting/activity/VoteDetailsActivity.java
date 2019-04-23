@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -149,6 +151,16 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     TextView tvOption4;
     @BindView(R.id.tv_option_5)
     TextView tvOption5;
+    @BindView(R.id.tv_option_result_1)
+    TextView tvOptionResult1;
+    @BindView(R.id.tv_option_result_2)
+    TextView tvOptionResult2;
+    @BindView(R.id.tv_option_result_3)
+    TextView tvOptionResult3;
+    @BindView(R.id.tv_option_result_4)
+    TextView tvOptionResult4;
+    @BindView(R.id.tv_option_result_5)
+    TextView tvOptionResult5;
 
     private boolean singleFlag = true;
     private boolean tem = true;
@@ -161,6 +173,8 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     private List<VoteListBean.VoteBean> voteList;
     private VoteListBean.VoteBean thisMessage;
     private boolean isVote = false;
+
+    private boolean[] chooseList = {false, false, false, false, false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,7 +249,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                                 @Override
                                 public void run() {
                                     loadOtherPage();
-                                    loadChoosePage();
+                                    loadResultPage();
                                 }
                             });
                             break;
@@ -244,6 +258,56 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                 }
             }
         });
+    }
+
+    private void loadResultPage() {
+        tvTicketSum.setVisibility(View.VISIBLE);
+        int sum = 0;
+        int[] proportions = {0, 0, 0, 0, 0};
+        for (int i = 0; i < thisMessage.optionList.size(); i++) {
+            sum += thisMessage.optionList.get(i).num;
+            proportions[i] = thisMessage.optionList.get(i).num;
+        }
+        tvTicketSum.setText("共" + sum + "票");
+        llTicket1.setVisibility(View.VISIBLE);
+        tvOptionResult1.setText(thisMessage.optionList.get(0).optionName);
+        tvOptionResult2.setText(thisMessage.optionList.get(1).optionName);
+        llTicket2.setVisibility(View.VISIBLE);
+        tvTicket1.setText(thisMessage.optionList.get(0).num + " 票");
+        tvTicket2.setText(thisMessage.optionList.get(1).num + " 票");
+        Log.d("Lpp", "thisMessage.optionList.size(): " + thisMessage.optionList.size());
+        switch (thisMessage.optionList.size() - 2) {
+            case 1:
+                tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
+                llTicket3.setVisibility(View.VISIBLE);
+                tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                llTicket4.setVisibility(View.GONE);
+                llTicket5.setVisibility(View.GONE);
+                break;
+            case 2:
+                tvTicket4.setText(thisMessage.optionList.get(3).num + " 票");
+                llTicket3.setVisibility(View.VISIBLE);
+                llTicket4.setVisibility(View.VISIBLE);
+                tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                tvOptionResult4.setText(thisMessage.optionList.get(3).optionName);
+                llTicket5.setVisibility(View.GONE);
+                break;
+            case 3:
+                tvTicket5.setText(thisMessage.optionList.get(4).num + " 票");
+                tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                tvOptionResult4.setText(thisMessage.optionList.get(3).optionName);
+                tvOptionResult5.setText(thisMessage.optionList.get(4).optionName);
+                llTicket3.setVisibility(View.VISIBLE);
+                llTicket4.setVisibility(View.VISIBLE);
+                llTicket5.setVisibility(View.VISIBLE);
+                break;
+        }
+        setProportion(sum, proportions);
+        int[] which = new int[thisMessage.userSelectList.size()];
+        for (int i = 0; i < thisMessage.userSelectList.size(); i++) {
+            which[i] = thisMessage.userSelectList.get(i);
+        }
+        setWhichIcon(which);
     }
 
     private void loadOtherPage() {
@@ -306,6 +370,57 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     }
 
     private void loadResultByHaveChoose() {
+        llVoteItem.setVisibility(View.GONE);
+        llVoteResult.setVisibility(View.VISIBLE);
+        btnVote.setVisibility(View.GONE);
+        Request request = new Request.Builder()
+                .url(Api.GetVoteListApi + "?" + Api.GetVoteListBody[0] + "=" + meetingId + "&" + Api
+                        .GetVoteListBody[1] + "=" + userId)
+                .header("token", token)
+                .get()
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(VoteDetailsActivity.this, "加载失败");
+                Log.d("Lpp", "onFailure: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(VoteDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            token = newToken.getToken();
+                        }
+                    });
+                    return;
+                }
+                VoteListBean bean = new Gson().fromJson(msg, VoteListBean.class);
+                if (bean == null || bean.status != 0) {
+                    UIUtils.showToast(VoteDetailsActivity.this, "加载失败");
+                } else {
+                    voteList = new ArrayList<>();
+                    voteList.addAll(bean.data);
+                    for (int i = 0; i < voteList.size(); i++) {
+                        if ((voteList.get(i).voteId + "").equals(voteId)) {
+                            thisMessage = voteList.get(i);
+                            Log.d("Lpp", "thisMessage: " + thisMessage);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadOtherPage();
+                                    loadResultPage();
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        });
 
     }
 
@@ -458,18 +573,6 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_vote) {
-            if (tem) {
-                llVoteItem.setVisibility(View.GONE);
-                llVoteResult.setVisibility(View.VISIBLE);
-                tem = false;
-            } else {
-                llVoteItem.setVisibility(View.VISIBLE);
-                llVoteResult.setVisibility(View.GONE);
-                tem = true;
-            }
-
-        }
         int which = -1;
         switch (v.getId()) {
             case R.id.ll_1:
@@ -541,6 +644,67 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
             UIUtils.showToast(this, "已经投过了");
             return;
         }
+        chooseList[0] = rb1.isChecked();
+        chooseList[1] = rb2.isChecked();
+        chooseList[2] = rb3.isChecked();
+        chooseList[3] = rb4.isChecked();
+        chooseList[4] = rb5.isChecked();
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.VoteBody[0], userId);
+        body.add(Api.VoteBody[1], thisMessage.voteId + "");
+        if (chooseList[0]) {
+            body.add(Api.VoteBody[2], thisMessage.optionList.get(0).id + "");
+        }
+        if (chooseList[1]) {
+            body.add(Api.VoteBody[2], thisMessage.optionList.get(1).id + "");
+        }
+        if (chooseList[2]) {
+            body.add(Api.VoteBody[2], thisMessage.optionList.get(2).id + "");
+        }
+        if (chooseList[3]) {
+            body.add(Api.VoteBody[2], thisMessage.optionList.get(3).id + "");
+        }
+        if (chooseList[4]) {
+            body.add(Api.VoteBody[2], thisMessage.optionList.get(4).id + "");
+        }
+        Request request = new Request.Builder()
+                .header(Api.VoteHeader[0], Api.VoteHeader[1])
+                .addHeader("token", token)
+                .url(Api.VoteApi)
+                .post(body.build())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(VoteDetailsActivity.this, "投票失败");
+                isVote = false;
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "msg:" + msg);
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(VoteDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            token = newToken.getToken();
+                        }
+                    });
+                    return;
+                }
+                if (msg.contains("投票成功")) {
+                    UIUtils.showToast(VoteDetailsActivity.this, "投票成功");
+                    Intent intent = new Intent();
+                    intent.putExtra("result", 1);
+                    setResult(RESULT_OK, intent);
+                    isVote = true;
+                } else {
+                    UIUtils.showToast(VoteDetailsActivity.this, "投票失败");
+                    isVote = false;
+                }
+            }
+        });
     }
 
     @Override
