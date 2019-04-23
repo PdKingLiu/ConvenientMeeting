@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -37,7 +38,12 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.litepal.LitePal;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -154,6 +160,22 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
                     refreshLayout.finishRefresh(true);
                     beanList.clear();
                     beanList.addAll(bean.data);
+                    Collections.sort(beanList, new Comparator<MeetingMessage>() {
+                        @Override
+                        public int compare(MeetingMessage o1, MeetingMessage o2) {
+                            @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new
+                                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = null;
+                            Date date2 = null;
+                            try {
+                                date = format.parse(o1.startTime);
+                                date2 = format.parse(o2.startTime);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            return (int) (date2.getTime() - date.getTime());
+                        }
+                    });
                     Log.d("Lpp", "onResponse: " + beanList.size());
                     LitePal.deleteAll(MeetingMessage.class, "meetingType = ?", "2");
                     LitePal.saveAll(beanList);

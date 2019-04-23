@@ -1,5 +1,6 @@
 package com.pdking.convenientmeeting.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,7 +40,12 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.litepal.LitePal;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -169,7 +175,6 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
@@ -188,7 +193,22 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                     refreshLayout.finishRefresh(true);
                     beanList.clear();
                     beanList.addAll(bean.data);
-                    Log.d("Lpp", "onResponse: " + beanList.size());
+                    Collections.sort(beanList, new Comparator<MeetingMessage>() {
+                        @Override
+                        public int compare(MeetingMessage o1, MeetingMessage o2) {
+                            @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new
+                                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = null;
+                            Date date2 = null;
+                            try {
+                                date = format.parse(o1.startTime);
+                                date2 = format.parse(o2.startTime);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            return (int) (date2.getTime() - date.getTime());
+                        }
+                    });
                     LitePal.deleteAll(MeetingMessage.class, "meetingType = ?", "1");
                     LitePal.saveAll(beanList);
                     notifyDataChanged();

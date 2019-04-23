@@ -30,6 +30,8 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,7 +81,7 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(VoteActivity.this, VoteDetailsActivity.class);
-                intent.putExtra("kind", voteList.get(position).kind+"");
+                intent.putExtra("kind", voteList.get(position).kind + "");
                 intent.putExtra("meetingId", meetingId);
                 intent.putExtra("userId", userId);
                 intent.putExtra("token", token);
@@ -144,6 +146,12 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
                     smartRefreshLayout.finishRefresh(true);
                     voteList.clear();
                     voteList.addAll(bean.data);
+                    Collections.sort(voteList, new Comparator<VoteListBean.VoteBean>() {
+                        @Override
+                        public int compare(VoteListBean.VoteBean o1, VoteListBean.VoteBean o2) {
+                            return (int) (o2.createTime - o1.createTime);
+                        }
+                    });
                     Log.d("Lpp", "onResponse: " + voteList.size());
                     notifyDataChanged();
                 }
