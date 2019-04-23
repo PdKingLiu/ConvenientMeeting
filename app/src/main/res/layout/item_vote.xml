@@ -2,29 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#fefefe"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <View
+        android:id="@+id/view_line_up"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="15dp"
+        android:background="#efefef" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginLeft="20dp"
+            android:id="@+id/civ_user_icon"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
             android:src="@mipmap/user_default_icon" />
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="刘沛栋"
@@ -33,6 +42,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -41,16 +51,18 @@
         </LinearLayout>
 
         <TextView
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:text="进行中"
-            android:background="@mipmap/icon_vote_proceed"
+            android:id="@+id/tv_status"
             android:layout_width="70dp"
-            android:layout_height="25dp" />
+            android:layout_height="25dp"
+            android:layout_margin="5dp"
+            android:background="@mipmap/icon_vote_proceed"
+            android:gravity="center"
+            android:text="进行中" />
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -60,17 +72,19 @@
         android:textSize="18sp" />
 
     <Button
+        android:id="@+id/btn_vote"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@android:color/transparent"
+        android:clickable="false"
         android:text="立即投票"
         android:textColor="#49a2db"
         android:textSize="20sp" />
 
     <View
         android:id="@+id/view_line"
-        android:background="#efefef"
         android:layout_width="match_parent"
-        android:layout_height="15dp" />
+        android:layout_height="15dp"
+        android:background="#efefef" />
 
 </LinearLayout>

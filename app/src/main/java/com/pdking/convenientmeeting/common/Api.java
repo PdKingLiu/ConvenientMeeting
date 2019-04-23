@@ -176,4 +176,8 @@ public class Api {
 
     public static String[] SetVoteBody = {"meetingId", "publisherId", "topic", "selectWay","remindTime", "createTime", "endTime", "options"};
 
+    public static String GetVoteListApi = "http://www.shidongxuan.top/smartMeeting_Web/vote/specificInfo";
+
+    public static String[] GetVoteListBody = {"meetingId", "userId" };
+
 }
