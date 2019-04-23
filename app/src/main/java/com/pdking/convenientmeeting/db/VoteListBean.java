@@ -16,6 +16,22 @@ public class VoteListBean {
     public List<VoteBean> data;
 
     public static class VoteBean {
+        @Override
+        public String toString() {
+            return "VoteBean{" +
+                    "kind=" + kind +
+                    ", voteId=" + voteId +
+                    ", topic='" + topic + '\'' +
+                    ", selectWay=" + selectWay +
+                    ", userInfo=" + userInfo +
+                    ", createTime=" + createTime +
+                    ", endTime=" + endTime +
+                    ", optionList=" + optionList +
+                    ", userSelectList=" + userSelectList +
+                    '}';
+        }
+
+        public int kind;
         @SerializedName("voteId")
         public int voteId;
         @SerializedName("topic")

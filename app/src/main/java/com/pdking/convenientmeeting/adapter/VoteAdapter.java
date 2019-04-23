@@ -106,16 +106,24 @@ public class VoteAdapter extends RecyclerView.Adapter<VoteAdapter.ViewHolder> im
             }
             if (bean.userSelectList == null || bean.userSelectList.size() == 0) {
                 if (calendar.getTime().getTime() > bean.endTime) {
+                    bean.kind = 1;
                     btnVote.setText("投票截止，查看结果");
                 } else {
+                    bean.kind = 2;
                     btnVote.setText("立即投票");
                 }
             } else {
+                bean.kind = 3;
                 btnVote.setText("已投票，查看结果");
             }
+            calendar = Calendar.getInstance();
             long len = calendar.getTime().getTime() - bean.createTime;
             if (len / 1000 / 60 <= 60) {
-                tvTime.setText(len / 1000 / 60 + "分钟前");
+                if (len <= 0) {
+                    tvTime.setText("刚刚");
+                } else {
+                    tvTime.setText(len / 1000 / 60 + "分钟前");
+                }
             } else {
                 tvTime.setText(format.format(new Date(bean.createTime)));
             }

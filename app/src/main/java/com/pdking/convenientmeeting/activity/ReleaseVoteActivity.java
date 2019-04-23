@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -242,6 +243,9 @@ public class ReleaseVoteActivity extends AppCompatActivity implements TitleView
                 }
                 if (msg.contains("创建投票成功")) {
                     UIUtils.showToast(ReleaseVoteActivity.this, "发布成功");
+                    Intent intent = new Intent();
+                    intent.putExtra("result", 1);
+                    setResult(RESULT_OK,intent);
                     isSucceed = true;
                 } else {
                     UIUtils.showToast(ReleaseVoteActivity.this, "发布失败");

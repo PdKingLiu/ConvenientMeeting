@@ -79,6 +79,11 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(VoteActivity.this, VoteDetailsActivity.class);
+                intent.putExtra("kind", voteList.get(position).kind+"");
+                intent.putExtra("meetingId", meetingId);
+                intent.putExtra("userId", userId);
+                intent.putExtra("token", token);
+                intent.putExtra("voteId", voteList.get(position).voteId + "");
                 startActivityForResult(intent, 1);
             }
         });
