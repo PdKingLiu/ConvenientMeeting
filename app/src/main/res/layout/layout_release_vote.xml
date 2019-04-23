@@ -35,6 +35,7 @@
                 android:background="@android:color/white">
 
                 <EditText
+                    android:id="@+id/ed_vote_theme"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="10dp"
@@ -45,7 +46,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:gravity="left|top"
-                    android:hint="输入投票主题，2-60字" />
+                    android:hint="输入投票主题，2-60字"
+                    android:maxLength="60" />
 
             </LinearLayout>
 
@@ -73,12 +75,13 @@
                             android:layout_marginLeft="10dp" />
 
                         <EditText
+                            android:id="@+id/ed_choose_1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
                             android:background="@null"
-                            android:hint="选项1"
+                            android:hint="选项1（20字以内）"
                             android:maxLength="10"
                             android:maxLines="1"
                             android:singleLine="true" />
@@ -118,6 +121,7 @@
                             android:layout_marginLeft="10dp" />
 
                         <EditText
+                            android:id="@+id/ed_choose_2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -148,12 +152,12 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/ll_3"
                     android:layout_width="match_parent"
                     android:layout_height="41dp"
                     android:animateLayoutChanges="true"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -168,6 +172,7 @@
                             android:src="@mipmap/icon_vote_delete_item" />
 
                         <EditText
+                            android:id="@+id/ed_choose_3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -200,10 +205,10 @@
                 <LinearLayout
                     android:id="@+id/ll_4"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:layout_height="41dp"
                     android:animateLayoutChanges="true"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -218,6 +223,7 @@
                             android:src="@mipmap/icon_vote_delete_item" />
 
                         <EditText
+                            android:id="@+id/ed_choose_4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -250,10 +256,10 @@
                 <LinearLayout
                     android:id="@+id/ll_5"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:layout_height="41dp"
                     android:animateLayoutChanges="true"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -268,6 +274,7 @@
                             android:src="@mipmap/icon_vote_delete_item" />
 
                         <EditText
+                            android:id="@+id/ed_choose_5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"

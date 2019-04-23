@@ -37,12 +37,19 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
     private VoteAdapter adapter;
     private List<VoteTest> voteList;
 
+    private String meetingId;
+    private String userId;
+    private String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_vote);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
+        meetingId = getIntent().getStringExtra("meetingId");
+        userId = getIntent().getStringExtra("userId");
+        token = getIntent().getStringExtra("token");
         title.setLeftClickListener(this);
         title.setRightClickListener(this);
         initPate();
@@ -99,6 +106,9 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
     @Override
     public void OnRightButtonClick() {
         Intent intent = new Intent(this, ReleaseVoteActivity.class);
+        intent.putExtra("meetingId", meetingId);
+        intent.putExtra("userId", userId);
+        intent.putExtra("token", token);
         startActivityForResult(intent, 1);
     }
 }

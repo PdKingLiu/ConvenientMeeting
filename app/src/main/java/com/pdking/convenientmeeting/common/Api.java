@@ -145,25 +145,35 @@ public class Api {
 
     public static String[] SetMeetingNoteBody = {"meetingId", "userId", "note"};
 
-    public static String StartMeetingApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting//startMeeting.do";
+    public static String StartMeetingApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting//startMeeting.do";
 
     public static String[] StartMeetingHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
     public static String[] StartMeetingBody = {"meetingId"};
 
-    public static String FinishMeetingApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting//endMeeting.do";
+    public static String FinishMeetingApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting//endMeeting.do";
 
     public static String[] FinishMeetingHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
     public static String[] FinishMeetingBody = {"meetingId"};
 
-    public static String GetRoomMeetingListApi = "http://www.shidongxuan.top/smartMeeting_Web/meeting/getPageMeetingInfo.do";
+    public static String GetRoomMeetingListApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/getPageMeetingInfo.do";
 
     public static String[] GetRoomMeetingListHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
     public static String[] GetRoomMeetingListBody = {"roomId"};
+
+    public static String SetVoteApi = "http://www.shidongxuan.top/smartMeeting_Web/vote/add";
+
+    public static String[] SetVoteHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] SetVoteBody = {"meetingId", "publisherId", "topic", "selectWay","remindTime", "createTime", "endTime", "options"};
 
 }

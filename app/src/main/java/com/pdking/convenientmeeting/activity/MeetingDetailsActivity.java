@@ -297,9 +297,9 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         final FormBody.Builder body = new FormBody.Builder();
         body.add(Api.GetMeetingByIdBody[0], meetingId);
         Request request = new Request.Builder()
-                .url(Api.GetMeetingByIdApi)
                 .header(Api.GetMeetingByIdHeader[0], Api.GetMeetingByIdHeader[1])
                 .addHeader("token", userToken.getToken())
+                .url(Api.GetMeetingByIdApi)
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -374,6 +374,9 @@ public class MeetingDetailsActivity extends AppCompatActivity {
 
     private void enterVote() {
         Intent intent = new Intent(this, VoteActivity.class);
+        intent.putExtra("userId", userInfo.getUserId() + "");
+        intent.putExtra("meetingId", meetingId);
+        intent.putExtra("token", userToken.getToken());
         startActivity(intent);
     }
 
