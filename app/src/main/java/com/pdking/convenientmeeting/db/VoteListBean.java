@@ -59,6 +59,16 @@ public class VoteListBean {
         }
 
         public static class OptionListBean {
+            @Override
+            public String toString() {
+                return "OptionListBean{" +
+                        "id=" + id +
+                        ", voteId=" + voteId +
+                        ", optionName='" + optionName + '\'' +
+                        ", num=" + num +
+                        '}';
+            }
+
             @SerializedName("id")
             public int id;
             @SerializedName("voteId")

@@ -44,8 +44,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class VoteDetailsActivity extends AppCompatActivity implements CompoundButton
-        .OnCheckedChangeListener, View.OnClickListener, TitleView.LeftClickListener, TitleView
-        .RightClickListener {
+        .OnCheckedChangeListener, View.OnClickListener, TitleView.LeftClickListener {
 
     @BindView(R.id.title)
     TitleView title;
@@ -163,7 +162,6 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     TextView tvOptionResult5;
 
     private boolean singleFlag = true;
-    private boolean tem = true;
 
     private String kind;
     private String meetingId;
@@ -202,7 +200,106 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     }
 
     private void loadResultByNoChoose() {
+        llVoteItem.setVisibility(View.GONE);
+        llVoteResult.setVisibility(View.VISIBLE);
+        btnVote.setVisibility(View.GONE);
+        Request request = new Request.Builder()
+                .url(Api.GetVoteListApi + "?" + Api.GetVoteListBody[0] + "=" + meetingId + "&" + Api
+                        .GetVoteListBody[1] + "=" + userId)
+                .header("token", token)
+                .get()
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(VoteDetailsActivity.this, "加载失败");
+                Log.d("Lpp", "onFailure: " + e.getMessage());
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(VoteDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            token = newToken.getToken();
+                        }
+                    });
+                    return;
+                }
+                VoteListBean bean = new Gson().fromJson(msg, VoteListBean.class);
+                if (bean == null || bean.status != 0) {
+                    UIUtils.showToast(VoteDetailsActivity.this, "加载失败");
+                } else {
+                    voteList = new ArrayList<>();
+                    voteList.addAll(bean.data);
+                    for (int i = 0; i < voteList.size(); i++) {
+                        if ((voteList.get(i).voteId + "").equals(voteId)) {
+                            thisMessage = voteList.get(i);
+                            Log.d("Lpp", "thisMessage: " + thisMessage);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadOtherPage();
+                                    loadNotChoose();
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void loadNotChoose() {
+        tvTicketSum.setVisibility(View.VISIBLE);
+        int sum = 0;
+        int[] proportions = {0, 0, 0, 0, 0};
+        for (int i = 0; i < thisMessage.optionList.size(); i++) {
+            sum += thisMessage.optionList.get(i).num;
+            proportions[i] = thisMessage.optionList.get(i).num;
+        }
+        tvTicketSum.setText("共" + sum + "票");
+        llTicket1.setVisibility(View.VISIBLE);
+        tvOptionResult1.setText(thisMessage.optionList.get(0).optionName);
+        tvOptionResult2.setText(thisMessage.optionList.get(1).optionName);
+        llTicket2.setVisibility(View.VISIBLE);
+        tvTicket1.setText(thisMessage.optionList.get(0).num + " 票");
+        tvTicket2.setText(thisMessage.optionList.get(1).num + " 票");
+        Log.d("Lpp", "thisMessage.optionList.size(): " + thisMessage.optionList.size());
+        switch (thisMessage.optionList.size() - 2) {
+            case 1:
+                tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
+                llTicket3.setVisibility(View.VISIBLE);
+                tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                llTicket4.setVisibility(View.GONE);
+                llTicket5.setVisibility(View.GONE);
+                break;
+            case 2:
+                tvTicket4.setText(thisMessage.optionList.get(3).num + " 票");
+                tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
+                llTicket3.setVisibility(View.VISIBLE);
+                llTicket4.setVisibility(View.VISIBLE);
+                tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                tvOptionResult4.setText(thisMessage.optionList.get(3).optionName);
+                llTicket5.setVisibility(View.GONE);
+                break;
+            case 3:
+                tvTicket4.setText(thisMessage.optionList.get(3).num + " 票");
+                tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
+                tvTicket5.setText(thisMessage.optionList.get(4).num + " 票");
+                tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                tvOptionResult4.setText(thisMessage.optionList.get(3).optionName);
+                tvOptionResult5.setText(thisMessage.optionList.get(4).optionName);
+                llTicket3.setVisibility(View.VISIBLE);
+                llTicket4.setVisibility(View.VISIBLE);
+                llTicket5.setVisibility(View.VISIBLE);
+                break;
+        }
+        setProportion(sum, proportions);
     }
 
     private void loadChoose() {
@@ -249,7 +346,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                                 @Override
                                 public void run() {
                                     loadOtherPage();
-                                    loadResultPage();
+                                    loadChoosePage();
                                 }
                             });
                             break;
@@ -279,20 +376,23 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         switch (thisMessage.optionList.size() - 2) {
             case 1:
                 tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
-                llTicket3.setVisibility(View.VISIBLE);
                 tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                llTicket3.setVisibility(View.VISIBLE);
                 llTicket4.setVisibility(View.GONE);
                 llTicket5.setVisibility(View.GONE);
                 break;
             case 2:
+                tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
                 tvTicket4.setText(thisMessage.optionList.get(3).num + " 票");
-                llTicket3.setVisibility(View.VISIBLE);
-                llTicket4.setVisibility(View.VISIBLE);
                 tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
                 tvOptionResult4.setText(thisMessage.optionList.get(3).optionName);
+                llTicket3.setVisibility(View.VISIBLE);
+                llTicket4.setVisibility(View.VISIBLE);
                 llTicket5.setVisibility(View.GONE);
                 break;
             case 3:
+                tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
+                tvTicket4.setText(thisMessage.optionList.get(3).num + " 票");
                 tvTicket5.setText(thisMessage.optionList.get(4).num + " 票");
                 tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
                 tvOptionResult4.setText(thisMessage.optionList.get(3).optionName);
@@ -305,7 +405,12 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         setProportion(sum, proportions);
         int[] which = new int[thisMessage.userSelectList.size()];
         for (int i = 0; i < thisMessage.userSelectList.size(); i++) {
-            which[i] = thisMessage.userSelectList.get(i);
+            for (int j = 0; j < thisMessage.optionList.size(); j++) {
+                if (thisMessage.optionList.get(j).id == thisMessage.userSelectList.get(i)) {
+                    which[i] = j + 1;
+                    break;
+                }
+            }
         }
         setWhichIcon(which);
     }
@@ -334,6 +439,14 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         } else {
             tvTime.setText(new SimpleDateFormat("MM-dd HH:mm").format(new Date(thisMessage
                     .createTime)));
+        }
+        if (calendar.getTime().getTime() > thisMessage.endTime) {
+            tvStatus.setText("已结束");
+            tvStatus.setBackground(getResources().getDrawable(R.mipmap.icon_vote_end));
+        } else {
+            tvStatus.setText("正在进行");
+            tvStatus.setBackground(getResources().getDrawable(R.mipmap
+                    .icon_vote_proceed));
         }
     }
 
@@ -451,23 +564,6 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         }
     }
 
-    private void setItemSum(int sum) {
-        llTicket3.setVisibility(View.GONE);
-        llTicket4.setVisibility(View.GONE);
-        llTicket5.setVisibility(View.GONE);
-        if (sum == 2) {
-        } else if (sum == 3) {
-            llTicket3.setVisibility(View.VISIBLE);
-        } else if (sum == 4) {
-            llTicket3.setVisibility(View.VISIBLE);
-            llTicket4.setVisibility(View.VISIBLE);
-        } else if (sum == 5) {
-            llTicket3.setVisibility(View.VISIBLE);
-            llTicket4.setVisibility(View.VISIBLE);
-            llTicket5.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void setProportion(int weightSum, int[] proportions) {
         llProportion1.setWeightSum((float) weightSum);
         llProportion2.setWeightSum((float) weightSum);
@@ -503,7 +599,6 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         rb4.setOnClickListener(this);
         rb5.setOnClickListener(this);
         title.setLeftClickListener(this);
-        title.setRightClickListener(this);
         btnVote.setOnClickListener(this);
     }
 
@@ -560,15 +655,6 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         } else {
             rb5.setChecked(false);
         }
-    }
-
-    public void setKindAndTicketSum(int kind, int sum) {
-        if (kind == 1) {
-            tvKind.setText("单选");
-        } else {
-            tvKind.setText("多选");
-        }
-        tvTicketSum.setText("共 " + sum + " 票");
     }
 
     @Override
@@ -712,29 +798,4 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         finish();
     }
 
-    @Override
-    public void OnRightButtonClick() {
-        Random random = new Random();
-        int sum = 0;
-        int which = random.nextInt(5) % 5 + 1;
-        int item = random.nextInt(2) + 3;
-        int ticket[] = new int[5];
-        for (int i = 0; i < ticket.length; i++) {
-            ticket[i] = random.nextInt(20);
-            sum += ticket[i];
-        }
-        setItemSum(item);
-        setKindAndTicketSum(1, sum);
-        setWhichIcon(new int[]{which});
-        setProportion(sum, ticket);
-        setItemCount(ticket);
-    }
-
-    private void setItemCount(int ticket[]) {
-        tvTicket1.setText(ticket[0] + "票");
-        tvTicket2.setText(ticket[1] + "票");
-        tvTicket3.setText(ticket[2] + "票");
-        tvTicket4.setText(ticket[3] + "票");
-        tvTicket5.setText(ticket[4] + "票");
-    }
 }
