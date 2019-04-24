@@ -37,6 +37,10 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
 
     private UserInfo userInfo;
 
+    Calendar calendar = Calendar.getInstance();
+
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public void setClickListener(OnItemClickListener mListener) {
         this.mListener = mListener;
     }
@@ -87,8 +91,6 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         private TextView tvIntroduce;
         private View view;
         private View line;
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);

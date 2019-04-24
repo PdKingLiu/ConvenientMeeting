@@ -214,11 +214,11 @@ public class TitleView extends RelativeLayout {
         this(context, attrs);
     }
 
-    public LinearLayout getLayoutLeft() {
-        return layoutLeft;
-    }
-
     public LinearLayout getLayoutRight() {
         return layoutRight;
+    }
+
+    public void setRightText(String text) {
+        btnMenuText.setText(text);
     }
 }

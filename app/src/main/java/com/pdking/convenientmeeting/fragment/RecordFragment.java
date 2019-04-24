@@ -33,6 +33,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.activity.AbsenceMeetingListActivity;
 import com.pdking.convenientmeeting.activity.BookRoomDetailActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.common.Api;
@@ -118,6 +119,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlOrganize;
     private RelativeLayout rlJoin;
     private RelativeLayout rlCancel;
+
+    private int year = calendar.get(Calendar.YEAR);
 
     private float[] chartStatus = {10, 20, 30, 40};
     private float[] chartIdentity = {0, 0};
@@ -348,9 +351,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 }
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
                 if (bean != null && bean.status == 0) {
-                    for (MeetingMessage message : bean.data) {
-                        message.meetingType = 1;
-                    }
                     smartRefreshLayout.finishRefresh(true);
                     beanList.clear();
                     beanList.addAll(bean.data);
@@ -371,7 +371,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private void changeUIByDataAndDate() {
         yearList.clear();
         calendar.setTime(date);
-        int year = calendar.get(Calendar.YEAR);
+        year = calendar.get(Calendar.YEAR);
         Date dateTem;
         try {
             for (int i = 0; i < beanList.size(); i++) {
@@ -472,7 +472,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_absence:
-                Toast.makeText(getContext(), "rl_absence", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), AbsenceMeetingListActivity.class);
+                intent.putExtra("year", year);
+                startActivity(intent);
                 break;
             case R.id.rl_leave:
                 Toast.makeText(getContext(), "rl_leave", Toast.LENGTH_SHORT).show();

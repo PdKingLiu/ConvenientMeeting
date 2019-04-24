@@ -103,17 +103,12 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
             }
             dt.setTime(data.startTime);
             calendar.setTime(dt);
-//            String startTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar
-// .MINUTE);
             String startTime = String.format("%d:%02d", calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE));
             dt.setTime(data.endTime);
             calendar.setTime(dt);
             String endTime = String.format("%d:%02d", calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE));
-            ;
-//            String endTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar
-// .MINUTE);
             tvMeetingTime.setText(startTime + "  -  " + endTime);
         }
     }

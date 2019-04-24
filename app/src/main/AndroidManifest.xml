@@ -82,7 +82,8 @@
         <activity android:name=".activity.HistoryMeetingActivity" />
         <activity android:name=".activity.MeetingNoteActivity" />
         <activity android:name=".activity.MeetingMemberListActivity" />
-        <activity android:name=".activity.MeetingRoomHistoryMeetingActivity"></activity>
+        <activity android:name=".activity.MeetingRoomHistoryMeetingActivity" />
+        <activity android:name=".activity.AbsenceMeetingListActivity"></activity>
     </application>
 
 </manifest>
