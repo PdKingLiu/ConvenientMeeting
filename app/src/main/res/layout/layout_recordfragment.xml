@@ -66,6 +66,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/tv_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="刘沛栋"
@@ -276,6 +277,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_absence"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 
@@ -315,6 +317,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_leave"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 
@@ -354,6 +357,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_late"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 
@@ -393,6 +397,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_normal"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 
@@ -442,6 +447,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_organize"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 
@@ -481,6 +487,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_join"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 
@@ -530,6 +537,7 @@
                         android:background="#d2d2d2" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_cancel"
                         android:layout_width="match_parent"
                         android:layout_height="50dp">
 

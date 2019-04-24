@@ -13,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
@@ -83,44 +85,39 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     final private int UPDATE_USER_DATA = 1;
 
     private View mView;
-
     private PieChart pieChart;
-
     private CircleImageView civUserIcon;
-
     private UserInfo userInfo;
-
     private File iconFile;
-
     private LinearLayout llUserData;
-
     private LinearLayout llSwitchoverChart;
-
     private LinearLayout llYear;
-
     private TextView tvSwitchoverChart;
-
     private TextView tvYear;
-
     private TextView tvProportion;
-
     private SmartRefreshLayout smartRefreshLayout;
-
     private static RecordFragment INSTANCE = null;
-
     private boolean chartTimeFlag = true;
-
     private Calendar calendar = Calendar.getInstance();
-
     private UserToken userToken;
-
     private List<MeetingMessage> beanList;
-
     private List<MeetingMessage> yearList;
-
     private Date date = new Date();
-
-    private int year;
+    private TextView tvSumAbsence;
+    private TextView tvSumLeave;
+    private TextView tvSumLate;
+    private TextView tvSumNormal;
+    private TextView tvSumOrganize;
+    private TextView tvSumJoin;
+    private TextView tvSumCancel;
+    private TextView tvName;
+    private RelativeLayout rlAbsence;
+    private RelativeLayout rlLeave;
+    private RelativeLayout rlLate;
+    private RelativeLayout rlNormal;
+    private RelativeLayout rlOrganize;
+    private RelativeLayout rlJoin;
+    private RelativeLayout rlCancel;
 
     private float[] chartStatus = {10, 20, 30, 40};
     private float[] chartIdentity = {0, 0};
@@ -140,7 +137,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d("Lpp", "onCreateView: ");
         mView = inflater.inflate(R.layout.layout_recordfragment, container, false);
         init();
         initView(mView);
@@ -181,6 +177,10 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pieCharts.add(pieEntry3);
         pieCharts.add(pieEntry4);
         PieDataSet pieDataSet = new PieDataSet(pieCharts, "");
+        if (chartStatus[0] + chartStatus[1] + chartStatus[2] + chartStatus[3] == 0) {
+            pieDataSet = new PieDataSet(pieCharts, "暂无数据");
+        } else {
+        }
         PieData data = new PieData(pieDataSet);
         data.setValueTextColor(Color.WHITE);
         data.setValueTextSize(14f);
@@ -201,7 +201,14 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pieChart.setHighlightPerTapEnabled(true);
         pieChart.animateX(2000, Easing.EaseOutCirc);
         Description description = new Description();
-        description.setText("");
+        if ((int) chartStatus[0] + (int) chartStatus[1] + (int) chartStatus[2] + (int)
+                chartStatus[3] == 0) {
+            description.setText("暂无数据");
+        } else {
+            description.setText("");
+        }
+        description.setXOffset(20f);
+        description.setYOffset(20f);
         pieChart.setDescription(description);
         Legend l = pieChart.getLegend();
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
@@ -222,12 +229,39 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         llSwitchoverChart = view.findViewById(R.id.ll_switchover_chart);
         tvSwitchoverChart = view.findViewById(R.id.tv_switchover_chart);
         llYear = view.findViewById(R.id.ll_year);
+        tvSumAbsence = view.findViewById(R.id.tv_sum_absence);
+        tvSumLeave = view.findViewById(R.id.tv_sum_leave);
+        tvSumLate = view.findViewById(R.id.tv_sum_late);
+        tvSumNormal = view.findViewById(R.id.tv_sum_normal);
+        tvSumOrganize = view.findViewById(R.id.tv_sum_organize);
+        tvSumJoin = view.findViewById(R.id.tv_sum_join);
+        tvSumCancel = view.findViewById(R.id.tv_sum_cancel);
+        rlAbsence = view.findViewById(R.id.rl_absence);
+        rlLeave = view.findViewById(R.id.rl_leave);
+        rlLate = view.findViewById(R.id.rl_late);
+        rlNormal = view.findViewById(R.id.rl_normal);
+        rlOrganize = view.findViewById(R.id.rl_organize);
+        rlJoin = view.findViewById(R.id.rl_join);
+        rlCancel = view.findViewById(R.id.rl_cancel);
+        tvSumCancel = view.findViewById(R.id.tv_sum_cancel);
+        tvName = view.findViewById(R.id.tv_name);
         tvYear = view.findViewById(R.id.tv_year);
         tvProportion = view.findViewById(R.id.tv_proportion);
         smartRefreshLayout = view.findViewById(R.id.srl_flush);
+        rlAbsence.setOnClickListener(this);
+        rlLeave.setOnClickListener(this);
+        rlLate.setOnClickListener(this);
+        rlNormal.setOnClickListener(this);
+        rlOrganize.setOnClickListener(this);
+        rlJoin.setOnClickListener(this);
+        rlCancel.setOnClickListener(this);
+        tvName.setOnClickListener(this);
+        civUserIcon.setOnClickListener(this);
         llSwitchoverChart.setOnClickListener(this);
         llYear.setOnClickListener(this);
         llUserData.setOnClickListener(this);
+        calendar.setTime(date);
+        tvYear.setText(calendar.get(Calendar.YEAR) + "年");
     }
 
     @Override
@@ -267,7 +301,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.d("Lpp", "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
         beanList = new ArrayList<>();
         yearList = new ArrayList<>();
@@ -280,7 +313,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             }
         });
         smartRefreshLayout.autoRefresh();
-//        refreshData();
         loadUserData();
     }
 
@@ -375,6 +407,13 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 parter++;
             }
         }
+        tvSumAbsence.setText(absenteeism + "次");
+        tvSumLeave.setText(leave + "次");
+        tvSumLate.setText(late + "次");
+        tvSumNormal.setText(normal + "次");
+        tvSumOrganize.setText(master + "次");
+        tvSumJoin.setText(parter + "次");
+        tvSumCancel.setText(0 + "次");
         chartStatus[0] = (float) ((((absenteeism * 1.0) / total) * 1000) / 10.0);
         chartStatus[1] = (float) ((((leave * 1.0) / total) * 1000) / 10.0);
         chartStatus[2] = (float) ((((late * 1.0) / total) * 1000) / 10.0);
@@ -432,6 +471,29 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_absence:
+                Toast.makeText(getContext(), "rl_absence", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rl_leave:
+                Toast.makeText(getContext(), "rl_leave", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rl_late:
+                Toast.makeText(getContext(), "rl_late", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rl_normal:
+                Toast.makeText(getContext(), "rl_normal", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rl_organize:
+                Toast.makeText(getContext(), "rl_organize", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rl_join:
+                Toast.makeText(getContext(), "rl_join", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rl_cancel:
+                Toast.makeText(getContext(), "rl_cancel", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_name:
+            case R.id.civ_user_icon:
             case R.id.ll_user_data:
                 startActivityForResult(new Intent(getContext(), ModificationUserDataActivity
                         .class), UPDATE_USER_DATA);
@@ -462,13 +524,16 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         }).setType(new boolean[]{true, false, false, false, false, false})
                 .setTitleText("注：")
                 .build();
-        pvTime.setDate(Calendar.getInstance());
+        calendar.setTime(date);
+        pvTime.setDate(calendar);
         pvTime.show();
     }
 
     private void queryData(Date date) {
+        this.date = date;
         calendar.setTime(date);
         tvYear.setText(calendar.get(Calendar.YEAR) + "年");
+        changeUIByDataAndDate();
     }
 
     private void initIdentityChart() {
@@ -494,7 +559,13 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pieChart.setHighlightPerTapEnabled(true);
         pieChart.animateX(2000, Easing.EaseOutCirc);
         Description description = new Description();
-        description.setText("");
+        if ((int) chartIdentity[0] + (int) chartIdentity[1] == 0) {
+            description.setText("暂无数据");
+        } else {
+            description.setText("");
+        }
+        description.setXOffset(20f);
+        description.setYOffset(20f);
         pieChart.setDescription(description);
         Legend l = pieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
