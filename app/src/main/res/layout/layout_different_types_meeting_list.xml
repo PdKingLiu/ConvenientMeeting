@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.AbsenceMeetingListActivity">
+    tools:context=".activity.DifferentTypesMeetingListActivity">
 
     <com.pdking.convenientmeeting.weight.TitleView
-        app:rightTextVisibility="true"
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         app:leftTextVisibility="false"
-        app:titleText="缺勤">
+        app:rightTextVisibility="true"
+        app:titleText="">
 
     </com.pdking.convenientmeeting.weight.TitleView>
 
@@ -25,15 +25,15 @@
         app:srlAccentColor="@android:color/white"
         app:srlEnablePreviewInEditMode="true">
 
-    <com.scwang.smartrefresh.layout.header.ClassicsHeader
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <android.support.v7.widget.RecyclerView
-            android:background="#f8f8f8"
             android:id="@+id/rv_absence"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#f8f8f8">
 
         </android.support.v7.widget.RecyclerView>
 

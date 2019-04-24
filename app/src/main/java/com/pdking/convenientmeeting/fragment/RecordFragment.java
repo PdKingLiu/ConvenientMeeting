@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
@@ -27,14 +26,16 @@ import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.activity.AbsenceMeetingListActivity;
-import com.pdking.convenientmeeting.activity.BookRoomDetailActivity;
+import com.pdking.convenientmeeting.activity.DifferentTypesMeetingListActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
@@ -44,7 +45,6 @@ import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
-import com.pdking.convenientmeeting.weight.TitleView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -55,12 +55,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -69,10 +66,7 @@ import id.zelory.compressor.Compressor;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android.app.Activity.RESULT_OK;
@@ -171,19 +165,15 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private void initChart() {
         List<PieEntry> pieCharts = new ArrayList<>();
-        PieEntry pieEntry1 = new PieEntry(chartStatus[0], "缺勤");
-        PieEntry pieEntry2 = new PieEntry(chartStatus[1], "请假");
-        PieEntry pieEntry3 = new PieEntry(chartStatus[2], "迟到");
-        PieEntry pieEntry4 = new PieEntry(chartStatus[3], "正常");
+        final PieEntry pieEntry1 = new PieEntry(chartStatus[0], "缺勤");
+        final PieEntry pieEntry2 = new PieEntry(chartStatus[1], "请假");
+        final PieEntry pieEntry3 = new PieEntry(chartStatus[2], "迟到");
+        final PieEntry pieEntry4 = new PieEntry(chartStatus[3], "正常");
         pieCharts.add(pieEntry1);
         pieCharts.add(pieEntry2);
         pieCharts.add(pieEntry3);
         pieCharts.add(pieEntry4);
         PieDataSet pieDataSet = new PieDataSet(pieCharts, "");
-        if (chartStatus[0] + chartStatus[1] + chartStatus[2] + chartStatus[3] == 0) {
-            pieDataSet = new PieDataSet(pieCharts, "暂无数据");
-        } else {
-        }
         PieData data = new PieData(pieDataSet);
         data.setValueTextColor(Color.WHITE);
         data.setValueTextSize(14f);
@@ -200,6 +190,27 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pieChart.setData(data);
         pieChart.invalidate(); // refresh
         pieChart.getLegend();
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if (e.equalTo(pieEntry1)) {
+                    rlAbsence.callOnClick();
+                }
+                if (e.equalTo(pieEntry2)) {
+                    rlLeave.callOnClick();
+                }
+                if (e.equalTo(pieEntry3)) {
+                    rlLate.callOnClick();
+                }
+                if (e.equalTo(pieEntry4)) {
+                    rlNormal.callOnClick();
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
         pieChart.setRotationEnabled(false);
         pieChart.setHighlightPerTapEnabled(true);
         pieChart.animateX(2000, Easing.EaseOutCirc);
@@ -470,29 +481,49 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.rl_absence:
-                Intent intent = new Intent(getContext(), AbsenceMeetingListActivity.class);
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
                 intent.putExtra("year", year);
+                intent.putExtra("userStatus", 2);
                 startActivity(intent);
                 break;
             case R.id.rl_leave:
-                Toast.makeText(getContext(), "rl_leave", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("userStatus", 4);
+                startActivity(intent);
                 break;
             case R.id.rl_late:
-                Toast.makeText(getContext(), "rl_late", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("userStatus", 3);
+                startActivity(intent);
                 break;
             case R.id.rl_normal:
-                Toast.makeText(getContext(), "rl_normal", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("userStatus", 1);
+                startActivity(intent);
                 break;
             case R.id.rl_organize:
-                Toast.makeText(getContext(), "rl_organize", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("userKind", 1);
+                startActivity(intent);
                 break;
             case R.id.rl_join:
-                Toast.makeText(getContext(), "rl_join", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("userKind", 2);
+                startActivity(intent);
                 break;
             case R.id.rl_cancel:
-                Toast.makeText(getContext(), "rl_cancel", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getContext(), DifferentTypesMeetingListActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("isCancel", 1);
+                startActivity(intent);
                 break;
             case R.id.tv_name:
             case R.id.civ_user_icon:
@@ -540,8 +571,10 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private void initIdentityChart() {
         List<PieEntry> pieCharts = new ArrayList<>();
-        pieCharts.add(new PieEntry(chartIdentity[0], "组织者"));
-        pieCharts.add(new PieEntry(chartIdentity[1], "参与者"));
+        final PieEntry pieEntry1 = new PieEntry(chartIdentity[0], "组织者");
+        final PieEntry pieEntry2 = new PieEntry(chartIdentity[1], "参与者");
+        pieCharts.add(pieEntry1);
+        pieCharts.add(pieEntry2);
         PieDataSet pieDataSet = new PieDataSet(pieCharts, "");
         PieData data = new PieData(pieDataSet);
         data.setValueTextColor(Color.WHITE);
@@ -560,6 +593,21 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pieChart.setRotationEnabled(false);
         pieChart.setHighlightPerTapEnabled(true);
         pieChart.animateX(2000, Easing.EaseOutCirc);
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if (e.equalTo(pieEntry1)) {
+                    rlOrganize.callOnClick();
+                }
+                if (e.equalTo(pieEntry2)) {
+                    rlJoin.callOnClick();
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
         Description description = new Description();
         if ((int) chartIdentity[0] + (int) chartIdentity[1] == 0) {
             description.setText("暂无数据");

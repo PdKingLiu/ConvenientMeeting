@@ -45,7 +45,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AbsenceMeetingListActivity extends AppCompatActivity implements TitleView
+public class DifferentTypesMeetingListActivity extends AppCompatActivity implements TitleView
         .LeftClickListener {
 
     @BindView(R.id.title)
@@ -63,14 +63,37 @@ public class AbsenceMeetingListActivity extends AppCompatActivity implements Tit
     private Date dateTem;
     private int year;
     private QueryMeetingAdapter adapter;
+    private int userStatus = -1;
+    private int userKind = -1;
+    private int isCancel = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_absence_meeting_list);
+        setContentView(R.layout.layout_different_types_meeting_list);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         year = getIntent().getIntExtra("year", -1);
+        userStatus = getIntent().getIntExtra("userStatus", -1);
+        userKind = getIntent().getIntExtra("userKind", -1);
+        isCancel = getIntent().getIntExtra("isCancel", -1);
+        if (userStatus == 1) {
+            title.setTitleText("正常");
+        } else if (userStatus == 2) {
+            title.setTitleText("缺勤");
+        } else if (userStatus == 3) {
+            title.setTitleText("迟到");
+        } else if (userStatus == 4) {
+            title.setTitleText("请假");
+        }
+        if (userKind == 1) {
+            title.setTitleText("组织");
+        } else if (userKind == 2) {
+            title.setTitleText("参与");
+        }
+        if (isCancel == 1) {
+            title.setTitleText("取消");
+        }
         title.setLeftClickListener(this);
         title.setRightText(year + "年");
         userInfo = LitePal.findAll(UserInfo.class).get(0);
@@ -118,7 +141,7 @@ public class AbsenceMeetingListActivity extends AppCompatActivity implements Tit
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 if (msg.contains("token过期!")) {
-                    LoginStatusUtils.stateFailure(AbsenceMeetingListActivity.this, new
+                    LoginStatusUtils.stateFailure(DifferentTypesMeetingListActivity.this, new
                             LoginCallBack() {
                                 @Override
                                 public void newMessageCallBack(UserInfo newInfo, UserToken
@@ -137,16 +160,26 @@ public class AbsenceMeetingListActivity extends AppCompatActivity implements Tit
                         for (int i = 0; i < bean.data.size(); i++) {
                             dateTem = format.parse(bean.data.get(i).startTime);
                             calendar.setTime(dateTem);
-                            if (calendar.get(Calendar.YEAR) == year && bean.data.get(i)
-                                    .userStatus == 2) {
-                                beanList.add(bean.data.get(i));
+                            if (calendar.get(Calendar.YEAR) == year) {
+                                if (bean.data.get(i).userStatus == userStatus) {
+                                    beanList.add(bean.data.get(i));
+                                }
+                                if (userKind == 1 && bean.data.get(i).masterId == userInfo.userId) {
+                                    beanList.add(bean.data.get(i));
+                                }
+                                if (userKind == 2 && bean.data.get(i).masterId != userInfo.userId) {
+                                    beanList.add(bean.data.get(i));
+                                }
+                                if (isCancel == 1 && bean.data.get(i).status == 5) {
+                                    beanList.add(bean.data.get(i));
+                                }
                             }
                         }
                     } catch (Exception e) {
 
                     }
                     if (beanList == null || beanList.size() == 0) {
-                        UIUtils.showToast(AbsenceMeetingListActivity.this, "暂无数据记录！");
+                        UIUtils.showToast(DifferentTypesMeetingListActivity.this, "暂无数据记录！");
                         return;
                     }
                     Collections.sort(beanList, new Comparator<MeetingMessage>() {
