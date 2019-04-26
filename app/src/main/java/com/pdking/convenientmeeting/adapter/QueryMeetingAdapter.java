@@ -122,7 +122,7 @@ public class QueryMeetingAdapter extends RecyclerView.Adapter<QueryMeetingAdapte
             @SuppressLint("DefaultLocale")
             String string2 = String.format("%d:%02d", calendar.get
                     (Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-            String s = string + "  -  " + string2;
+            String s = string + " - " + string2;
             tvTime.setText(s);
             if (i == list.size() - 1) {
                 viewLine.setVisibility(View.GONE);

@@ -39,6 +39,7 @@ import com.pdking.convenientmeeting.utils.IOUtil;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import org.litepal.LitePal;
@@ -69,13 +70,8 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
 
     private UserDataBean dataBean;
 
-    private UserInfo userInfo;
-
-    private UserToken token;
-
     private boolean iconUpdateFlag = false;
     private boolean iconUpdateFlag2 = false;
-    private boolean haveUpdateOnce = false;
 
     private final int ALBUM_REQUEST = 1;
     private final int CLIP_REQUEST = 2;
@@ -151,7 +147,8 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         if (!file.exists()) {
             file.mkdirs();
         }
-        cameraFile = new File(file, "user_icon_camera_" + userInfo.getPhone() + ".jpg");
+        cameraFile = new File(file, "user_icon_camera_" + UserAccountUtils.getUserInfo
+                (getApplication()).getPhone() + ".jpg");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             cameraUri = FileProvider.getUriForFile(ModificationUserDataActivity
@@ -255,10 +252,10 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
     }
 
     private void saveUserData() {
-        String email = userInfo.getEmail();
+        String email = UserAccountUtils.getUserInfo(getApplication()).getEmail();
         String emailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\" +
                 ".[a-zA-Z0-9]{2,6}$";
-        String sex = userInfo.getSex();
+        String sex = UserAccountUtils.getUserInfo(getApplication()).getSex();
         switch (edUserEmail.getText().toString()) {
             case "":
                 email = "";
@@ -287,8 +284,10 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         showProgressBar();
         OkHttpClient client = new OkHttpClient();
         MultipartBody.Builder body = new MultipartBody.Builder();
-        body.addFormDataPart(Api.UpDateUserInfoBody[0], userInfo.getUserId() + "");
-        body.addFormDataPart(Api.UpDateUserInfoBody[1], userInfo.getPhone() + "");
+        body.addFormDataPart(Api.UpDateUserInfoBody[0], UserAccountUtils.getUserInfo
+                (getApplication()).getUserId() + "");
+        body.addFormDataPart(Api.UpDateUserInfoBody[1], UserAccountUtils.getUserInfo
+                (getApplication()).getPhone() + "");
         body.addFormDataPart(Api.UpDateUserInfoBody[2], email);
         body.addFormDataPart(Api.UpDateUserInfoBody[3], sex);
         if (updateFlag[2]) {
@@ -298,7 +297,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         final Request request = new Request.Builder()
                 .url(Api.UpDateUserInfoApi)
                 .post(body.build())
-                .header("token", token.getToken())
+                .header("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .addHeader(Api.UpDateUserInfoHeader[0], Api.UpDateUserInfoHeader[1])
                 .build();
 
@@ -307,7 +306,6 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
                 showToast("修改失败");
-                Log.d("Lpp", "修改失败" + e.getMessage());
             }
 
             @Override
@@ -319,13 +317,12 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                                 @Override
                                 public void newMessageCallBack(UserInfo newInfo, UserToken
                                         newToken) {
-                                    userInfo = newInfo;
-                                    token = newToken;
+                                    UserAccountUtils.setUserInfo(newInfo, getApplication());
+                                    UserAccountUtils.setUserToken(newToken, getApplication());
                                 }
                             });
                     return;
                 }
-                Log.d("Lpp", "onResponse: " + msg);
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 1) {
                     hideProgressBar();
@@ -344,10 +341,10 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         updateFlag[2] = false;
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.GetUserInfoBody[0], userInfo.getPhone());
+        body.add(Api.GetUserInfoBody[0], UserAccountUtils.getUserInfo(getApplication()).getPhone());
         Request request = new Request.Builder()
                 .url(Api.GetUserInfoApi)
-                .addHeader("token", token.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -364,12 +361,13 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(ModificationUserDataActivity.this, new
                             LoginCallBack() {
-                        @Override
-                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            token = newToken;
-                        }
-                    });
+                                @Override
+                                public void newMessageCallBack(UserInfo newInfo, UserToken
+                                        newToken) {
+                                    UserAccountUtils.setUserInfo(newInfo, getApplication());
+                                    UserAccountUtils.setUserToken(newToken, getApplication());
+                                }
+                            });
                     return;
                 }
                 dataBean = new Gson().fromJson(msg, UserDataBean.class);
@@ -379,14 +377,13 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                             .show();
                 } else {
                     LitePal.deleteAll(UserInfo.class);
-                    userInfo = dataBean.data;
                     dataBean.data.save();
+                    UserAccountUtils.setUserInfo(dataBean.data, getApplication());
                     Intent intent = new Intent();
                     intent.putExtra("status", 1);
                     setResult(RESULT_OK, intent);
                     showToast("修改成功");
                     iconUpdateFlag = true;
-                    haveUpdateOnce = true;
                     saveNewIcon();
                 }
             }
@@ -401,7 +398,8 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                 if (!f.exists()) {
                     f.mkdirs();
                 }
-                File file = new File(f, "user_icon_clip_" + userInfo.getPhone()
+                File file = new File(f, "user_icon_clip_" + UserAccountUtils.getUserInfo
+                        (getApplication()).getPhone()
                         + ".jpg");
                 if (file.exists()) {
                     file.delete();
@@ -421,8 +419,8 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
     }
 
     private boolean isHaveChange() {
-        String email = userInfo.getEmail();
-        String sex = userInfo.getSex();
+        String email = UserAccountUtils.getUserInfo(getApplication()).getEmail();
+        String sex = UserAccountUtils.getUserInfo(getApplication()).getSex();
         email = edUserEmail.getText().toString();
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.male:
@@ -432,10 +430,10 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                 sex = "woman";
                 break;
         }
-        if (!email.equals(userInfo.email)) {
+        if (!email.equals(UserAccountUtils.getUserInfo(getApplication()).email)) {
             updateFlag[0] = true;
         }
-        if (!sex.equals(userInfo.sex)) {
+        if (!sex.equals(UserAccountUtils.getUserInfo(getApplication()).sex)) {
             updateFlag[1] = true;
         }
         return (updateFlag[0] || updateFlag[1] || updateFlag[2]);
@@ -448,14 +446,12 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
     }
 
     private void requestUserData() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        token = LitePal.findAll(UserToken.class).get(0);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.GetUserInfoBody[0], userInfo.getPhone());
+        body.add(Api.GetUserInfoBody[0], UserAccountUtils.getUserInfo(getApplication()).getPhone());
         Request request = new Request.Builder()
                 .url(Api.GetUserInfoApi)
-                .addHeader("token", token.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .post(body.build())
                 .build();
         showProgressBar();
@@ -474,12 +470,13 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(ModificationUserDataActivity.this, new
                             LoginCallBack() {
-                        @Override
-                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            token = newToken;
-                        }
-                    });
+                                @Override
+                                public void newMessageCallBack(UserInfo newInfo, UserToken
+                                        newToken) {
+                                    UserAccountUtils.setUserInfo(newInfo, getApplication());
+                                    UserAccountUtils.setUserToken(newToken, getApplication());
+                                }
+                            });
                     return;
                 }
                 Log.d("Lpp", "onResponse: " + msg);

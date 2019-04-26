@@ -48,7 +48,6 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
     public MeetingHistoryAdapter(List<MeetingMessage> meetingBeanList, Context mContext) {
         this.meetingBeanList = meetingBeanList;
         this.mContext = mContext;
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
     }
 
     @NonNull

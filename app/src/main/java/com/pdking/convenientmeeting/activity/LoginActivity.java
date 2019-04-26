@@ -28,6 +28,7 @@ import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.PermissionUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
 import org.litepal.LitePal;
 
@@ -60,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.ed_input_password)
     TextInputEditText edPassword;
 
-    private UserInfo userInfo;
     private ProgressDialog dialog;
     private AlertDialog dia;
     private boolean[] flag = {false, false};
@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.layout_login);
         ButterKnife.bind(this);
         SystemUtil.setTitleMode(getWindow());
-        LitePal.getDatabase();
         btLogin.setEnabled(false);
         dialog = new ProgressDialog(this);
         dialog.setMessage("正在登录...");
@@ -190,7 +189,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
-                Log.d("Lpp", "登录失败: " + e.getMessage());
                 showToast("登录失败");
             }
 
@@ -203,24 +201,21 @@ public class LoginActivity extends AppCompatActivity {
                     showToast("账号或密码错误");
                 } else {
                     LitePal.deleteAll(UserAccount.class);
-                    UserAccount account = new UserAccount();
-                    account.setPhone(phone);
-                    account.setPassword(password);
+                    UserAccount account = new UserAccount(phone, password);
                     account.save();
 
                     LitePal.deleteAll(UserToken.class);
-                    UserToken userToken = new UserToken();
-                    userToken.setToken(loginBean.msg);
+                    UserToken userToken = new UserToken(loginBean.msg);
+                    UserAccountUtils.setUserToken(userToken, getApplication());
                     userToken.save();
 
                     LitePal.deleteAll(UserInfo.class);
-                    UserInfo userInfo = new UserInfo();
-                    userInfo = loginBean.data;
+                    UserInfo userInfo = loginBean.data;
+                    UserAccountUtils.setUserInfo(userInfo, getApplication());
                     userInfo.save();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("userInfo", userInfo);
-                    intent.putExtra("userToken", userToken);
+                    intent.putExtra("where", 1);
                     startActivity(intent);
                     ActivityContainer.removeAllActivity();
                 }

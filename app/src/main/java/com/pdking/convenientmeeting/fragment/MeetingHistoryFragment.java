@@ -30,6 +30,8 @@ import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -63,9 +65,6 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     private RelativeLayout rlHaveNothing;
     private List<MeetingMessage> beanList;
     private MeetingHistoryAdapter mAdapter;
-    private UserInfo userInfo;
-    private UserToken userToken;
-
     public MeetingHistoryFragment() {
     }
 
@@ -120,16 +119,17 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     }
 
     private void refresh() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
+        if (!UserAccountUtils.accountIsValid(getActivity().getApplication())) {
+            UIUtils.showToast(getActivity(),"未知错误");
+            return;
+        }
         FormBody.Builder body = new FormBody.Builder()
-                .add("token", userToken.getToken())
-                .add(Api.RequestUserMeetingListBody[0], userInfo.getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication()).getUserId() + "")
                 .add(Api.RequestUserMeetingListBody[1], 2 + "");
         Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
                 .url(Api.RequestUserMeetingListApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -141,13 +141,12 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
                     return;

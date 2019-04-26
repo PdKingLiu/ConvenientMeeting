@@ -45,6 +45,8 @@ import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -82,7 +84,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private View mView;
     private PieChart pieChart;
     private CircleImageView civUserIcon;
-    private UserInfo userInfo;
     private File iconFile;
     private LinearLayout llUserData;
     private LinearLayout llSwitchoverChart;
@@ -94,7 +95,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private static RecordFragment INSTANCE = null;
     private boolean chartTimeFlag = true;
     private Calendar calendar = Calendar.getInstance();
-    private UserToken userToken;
     private List<MeetingMessage> beanList;
     private List<MeetingMessage> yearList;
     private Date date = new Date();
@@ -113,6 +113,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlOrganize;
     private RelativeLayout rlJoin;
     private RelativeLayout rlCancel;
+
+    private String email;
+    private String avatarUrl;
 
     private int year = calendar.get(Calendar.YEAR);
 
@@ -143,12 +146,11 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     }
 
     private void init() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
         File file = new File(getContext().getExternalFilesDir(null), "/user/userIcon");
         if (!file.exists()) {
             file.mkdirs();
         }
-        iconFile = new File(file, "user_icon_clip_" + userInfo.getPhone() + ".jpg");
+        iconFile = new File(file, "user_icon_clip_" + UserAccountUtils.getUserInfo(getActivity().getApplication()).getPhone() + ".jpg");
     }
 
     @Override
@@ -292,12 +294,11 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     }
 
     private void changeFragmentUI() {
-        final UserInfo info = LitePal.findAll(UserInfo.class).get(0);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 boolean flag = false;
-                if (!info.avatarUrl.equals(userInfo.avatarUrl)) {
+                if (! avatarUrl.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl)) {
                     try {
                         Bitmap bitmap = new Compressor(getContext()).compressToBitmap(iconFile);
                         civUserIcon.setImageBitmap(bitmap);
@@ -307,7 +308,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                     flag = true;
                 }
                 if (flag) {
-                    userInfo = info;
+                    avatarUrl = UserAccountUtils.getUserInfo(getActivity().getApplication())
+                            .avatarUrl;
                 }
             }
         });
@@ -316,10 +318,10 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        email = UserAccountUtils.getUserInfo(getActivity().getApplication()).getEmail();
+        avatarUrl = UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl;
         beanList = new ArrayList<>();
         yearList = new ArrayList<>();
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -331,14 +333,18 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     }
 
     private void refreshData() {
+        if (!UserAccountUtils.accountIsValid(getActivity().getApplication())) {
+            UIUtils.showToast(getActivity(),"未知错误");
+            return;
+        }
         FormBody.Builder body = new FormBody.Builder()
-                .add("token", userToken.getToken())
-                .add(Api.RequestUserMeetingListBody[0], userInfo.getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication()).getUserId() + "")
                 .add(Api.RequestUserMeetingListBody[1], 2 + "");
         Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token",
+                        UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
                 .url(Api.RequestUserMeetingListApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -354,8 +360,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
                     return;
@@ -412,7 +418,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             } else if (yearList.get(i).userStatus == 4) {
                 leave++;
             }
-            if (yearList.get(i).masterId == userInfo.userId) {
+            if (yearList.get(i).masterId == UserAccountUtils.getUserInfo(getActivity().getApplication()).userId) {
                 master++;
             } else {
                 parter++;
@@ -431,6 +437,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         chartStatus[3] = (float) ((((normal * 1.0) / total) * 1000) / 10.0);
         chartIdentity[0] = (float) ((((master * 1.0) / master + parter) * 1000) / 10.0);
         chartIdentity[1] = (float) ((((parter * 1.0) / master + parter) * 1000) / 10.0);
+        tvName.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).getUsername());
         tvProportion.setText(normal + " / " + total);
         pieChart.setVisibility(View.VISIBLE);
         initChart();
@@ -445,7 +452,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                     .into(civUserIcon);
         } else {
             Request request = new Request.Builder()
-                    .url(userInfo.avatarUrl)
+                    .url(UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl)
                     .build();
             OkHttpUtils.requestHelper(request, new Callback() {
                 @Override

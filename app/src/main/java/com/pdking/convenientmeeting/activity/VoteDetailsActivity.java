@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.pdking.convenientmeeting.App;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -263,18 +264,21 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
             proportions[i] = thisMessage.optionList.get(i).num;
         }
         tvTicketSum.setText("共" + sum + "票");
-        llTicket1.setVisibility(View.VISIBLE);
         tvOptionResult1.setText(thisMessage.optionList.get(0).optionName);
         tvOptionResult2.setText(thisMessage.optionList.get(1).optionName);
+        llTicket1.setVisibility(View.VISIBLE);
         llTicket2.setVisibility(View.VISIBLE);
+        llTicket3.setVisibility(View.GONE);
+        llTicket4.setVisibility(View.GONE);
+        llTicket5.setVisibility(View.GONE);
         tvTicket1.setText(thisMessage.optionList.get(0).num + " 票");
         tvTicket2.setText(thisMessage.optionList.get(1).num + " 票");
         Log.d("Lpp", "thisMessage.optionList.size(): " + thisMessage.optionList.size());
         switch (thisMessage.optionList.size() - 2) {
             case 1:
                 tvTicket3.setText(thisMessage.optionList.get(2).num + " 票");
-                llTicket3.setVisibility(View.VISIBLE);
                 tvOptionResult3.setText(thisMessage.optionList.get(2).optionName);
+                llTicket3.setVisibility(View.VISIBLE);
                 llTicket4.setVisibility(View.GONE);
                 llTicket5.setVisibility(View.GONE);
                 break;
@@ -367,9 +371,12 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
         }
         tvTicketSum.setText("共" + sum + "票");
         llTicket1.setVisibility(View.VISIBLE);
+        llTicket2.setVisibility(View.VISIBLE);
+        llTicket3.setVisibility(View.GONE);
+        llTicket4.setVisibility(View.GONE);
+        llTicket5.setVisibility(View.GONE);
         tvOptionResult1.setText(thisMessage.optionList.get(0).optionName);
         tvOptionResult2.setText(thisMessage.optionList.get(1).optionName);
-        llTicket2.setVisibility(View.VISIBLE);
         tvTicket1.setText(thisMessage.optionList.get(0).num + " 票");
         tvTicket2.setText(thisMessage.optionList.get(1).num + " 票");
         Log.d("Lpp", "thisMessage.optionList.size(): " + thisMessage.optionList.size());
@@ -453,14 +460,17 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
     private void loadChoosePage() {
         tvTicketSum.setVisibility(View.GONE);
         isVote = false;
-        ll1.setVisibility(View.VISIBLE);
         tvOption1.setText(thisMessage.optionList.get(0).optionName);
         tvOption2.setText(thisMessage.optionList.get(1).optionName);
+        ll1.setVisibility(View.VISIBLE);
         ll2.setVisibility(View.VISIBLE);
+        ll3.setVisibility(View.GONE);
+        ll4.setVisibility(View.GONE);
+        ll5.setVisibility(View.GONE);
         switch (thisMessage.optionList.size() - 2) {
             case 1:
-                ll3.setVisibility(View.VISIBLE);
                 tvOption3.setText(thisMessage.optionList.get(2).optionName);
+                ll3.setVisibility(View.VISIBLE);
                 ll4.setVisibility(View.GONE);
                 ll5.setVisibility(View.GONE);
                 break;

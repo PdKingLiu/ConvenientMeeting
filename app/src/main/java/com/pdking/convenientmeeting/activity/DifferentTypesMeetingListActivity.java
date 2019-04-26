@@ -1,14 +1,17 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
 import com.pdking.convenientmeeting.adapter.QueryMeetingAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
@@ -111,6 +114,16 @@ public class DifferentTypesMeetingListActivity extends AppCompatActivity impleme
     private void initPage() {
         beanList = new ArrayList<>();
         adapter = new QueryMeetingAdapter(this, beanList);
+        adapter.setItemClickListener(new MeetingRoomAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                beanList.get(position);
+                Intent intent = new Intent(DifferentTypesMeetingListActivity.this,
+                        MeetingDetailsActivity.class);
+                intent.putExtra("meetingId", beanList.get(position).meetingId + "");
+                startActivity(intent);
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }

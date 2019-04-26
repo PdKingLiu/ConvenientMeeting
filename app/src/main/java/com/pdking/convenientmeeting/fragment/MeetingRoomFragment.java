@@ -28,6 +28,7 @@ import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -54,8 +55,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     private RelativeLayout rlHaveNothing;
     private List<OneMeetingRoomMessage> roomMessageList;
     private AllMeetingRoomMessageBean roomMessageBean;
-    private UserInfo userInfo;
-    private UserToken userToken;
     private ProgressDialog dialog;
     private List<RoomOfMeetingMessage> allMeetingList;
     private OneMeetingRoomMessageBean meetingRoomMessageBean;
@@ -91,8 +90,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         initDataAndList();
         initRecycleViewAndRefresh();
     }
@@ -141,7 +138,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         body.add(Api.GetOneMeetingRoomMessageBody[0], meetingRoomMessage.meetingRoomId + "");
         Request request = new Request.Builder()
                 .url(Api.GetOneMeetingRoomMessageApi)
-                .header("token", userToken.getToken())
+                .header("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -156,13 +153,12 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
-                Log.d("Lpp", "msg: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
                     return;
@@ -216,12 +212,10 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     private void requestRefresh() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
         Request request = new Request.Builder()
-                .header("token", userToken.getToken())
+                .header("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
                 .url(Api.GetMeetingRoomApi)
                 .post(body.build())
                 .build();
@@ -234,16 +228,14 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
-                    refreshLayout.finishRefresh(false);
                     return;
                 }
                 roomMessageBean = new Gson().fromJson(msg, AllMeetingRoomMessageBean.class);

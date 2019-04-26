@@ -23,6 +23,7 @@ import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
 import org.litepal.LitePal;
 
@@ -54,13 +55,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private CircleImageView civUserIcon;
 
-    private UserInfo userInfo;
-
     private File iconFile;
 
     private TextView tvUserEmail;
 
     private RelativeLayout rlAboutApp;
+
+    private String email;
+    private String avatarUrl;
 
     final private int UPDATE_USER_DATA = 1;
 
@@ -92,12 +94,11 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void init() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
         File file = new File(getContext().getExternalFilesDir(null), "/user/userIcon");
         if (!file.exists()) {
             file.mkdirs();
         }
-        iconFile = new File(file, "user_icon_clip_" + userInfo.getPhone() + ".jpg");
+        iconFile = new File(file, "user_icon_clip_" + UserAccountUtils.getUserInfo(getActivity().getApplication()).getPhone() + ".jpg");
     }
 
     private void initListener() {
@@ -139,16 +140,15 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void changeFragmentUI() {
-        final UserInfo info = LitePal.findAll(UserInfo.class).get(0);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 boolean flag[] = {false, false};
-                if (!info.email.equals(userInfo.email)) {
-                    tvUserEmail.setText("邮箱：" + info.email);
+                if (! email.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()).email)) {
+                    tvUserEmail.setText("邮箱：" + UserAccountUtils.getUserInfo(getActivity().getApplication()).email);
                     flag[0] = true;
                 }
-                if (!info.avatarUrl.equals(userInfo.avatarUrl)) {
+                if (! avatarUrl.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl)) {
                     try {
                         Bitmap bitmap = new Compressor(getContext()).compressToBitmap(iconFile);
                         civUserIcon.setImageBitmap(bitmap);
@@ -158,7 +158,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     flag[1] = true;
                 }
                 if (flag[0] || flag[1]) {
-                    userInfo = info;
+                    email = UserAccountUtils.getUserInfo(getActivity().getApplication()).email;
+                    avatarUrl = UserAccountUtils.getUserInfo(getActivity().getApplication())
+                            .avatarUrl;
                 }
             }
         });
@@ -167,21 +169,21 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        email = UserAccountUtils.getUserInfo(getActivity().getApplication()).getEmail();
+        avatarUrl = UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl;
         loadUserData();
     }
 
     private void loadUserData() {
         if (iconFile.exists()) {
-            Log.d("Lpp", "civUserIcon:file ");
             Glide.with(this)
                     .load(iconFile)
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
                             .NONE).skipMemoryCache(true))
                     .into(civUserIcon);
         } else {
-            Log.d("Lpp", "civUserIcon:avatarUrl ");
             Request request = new Request.Builder()
-                    .url(userInfo.avatarUrl)
+                    .url(UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl)
                     .build();
             OkHttpUtils.requestHelper(request, new Callback() {
                 @Override
@@ -219,6 +221,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                             .NONE).skipMemoryCache(true))
                     .into(civUserIcon);
         }
-        tvUserEmail.setText(userInfo.email);
+        tvUserEmail.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).email);
     }
 }

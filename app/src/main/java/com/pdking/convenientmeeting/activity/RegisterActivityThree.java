@@ -37,6 +37,7 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
+import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.IOUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -123,7 +124,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         ButterKnife.bind(this);
         applyPermission();
         endClipUri = null;
-        LitePal.getDatabase();
         ActivityContainer.addActivity(this);
         mTitleView.setLeftClickListener(this);
         btnLogin.setEnabled(false);
@@ -330,14 +330,15 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                Log.d(TAG, "onResponse: " + string);
                 hideDialog();
                 RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
                 if (bean.status == 0) {
                     showToast("注册成功");
-                    userInfo.save();
                     Intent intent = new Intent(RegisterActivityThree.this, MainActivity.class);
-                    intent.putExtra("user", userInfo);
+                    UserAccount account = new UserAccount(userInfo.getPhone(), userInfo
+                            .getPassword());
+                    LitePal.deleteAll(UserAccount.class);
+                    account.save();
                     startActivity(intent);
                     ActivityContainer.removeAllActivity();
                 } else {
