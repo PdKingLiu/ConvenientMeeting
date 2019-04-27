@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
@@ -38,7 +39,12 @@ public class App extends Application {
             public void onViewInitFinished(boolean b) {
             }
         });
+    }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        Log.d("Lpp", "onTerminate: ");
     }
 
     public UserInfo getUserInfo() {

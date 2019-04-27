@@ -51,11 +51,6 @@
         </provider>
 
         <activity android:name=".activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.RegisterActivityOne" />
@@ -83,7 +78,13 @@
         <activity android:name=".activity.MeetingNoteActivity" />
         <activity android:name=".activity.MeetingMemberListActivity" />
         <activity android:name=".activity.MeetingRoomHistoryMeetingActivity" />
-        <activity android:name=".activity.DifferentTypesMeetingListActivity"></activity>
+        <activity android:name=".activity.DifferentTypesMeetingListActivity" />
+        <activity android:name=".activity.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter></activity>
     </application>
 
 </manifest>
