@@ -6,12 +6,38 @@
     android:background="@drawable/shape_gradient_title"
     tools:context=".activity.WelcomeActivity">
 
+    <Button
+        android:onClick="enter"
+        android:id="@+id/btn_enter"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentRight="true"
+        android:text="跳过"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/welcome_ctn_background"
+        android:layout_width="70dp"
+        android:layout_height="35dp" />
 
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@mipmap/icon_welcome_1" />
+        android:orientation="vertical"
+        android:paddingBottom="100dp">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/app_icon" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:src="@mipmap/icon_welcome_1" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

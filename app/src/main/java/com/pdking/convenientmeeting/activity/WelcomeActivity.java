@@ -3,28 +3,20 @@ package com.pdking.convenientmeeting.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.utils.CountDownTimerUtils;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    CountDownTimer timer = new CountDownTimer(2000, 1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
+    private Button btnEnter;
 
-        }
-
-        @Override
-        public void onFinish() {
-            startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
-            finish();
-        }
-    };
+    CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +31,24 @@ public class WelcomeActivity extends AppCompatActivity {
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+        btnEnter = findViewById(R.id.btn_enter);
+        timer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                btnEnter.setText(millisUntilFinished / 1000 + " 跳过");
+            }
+
+            @Override
+            public void onFinish() {
+                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                finish();
+            }
+        };
         timer.start();
+    }
+
+    public void enter(View view) {
+        timer.onFinish();
+        timer.cancel();
     }
 }
