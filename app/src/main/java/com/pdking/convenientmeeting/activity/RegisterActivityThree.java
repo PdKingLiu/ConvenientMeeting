@@ -49,7 +49,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,53 +67,41 @@ import okhttp3.Response;
 
 public class RegisterActivityThree extends AppCompatActivity implements TitleView
         .LeftClickListener {
-    private String TAG = "Lpp";
     private final int ALBUM_REQUEST = 1;
     private final int CLIP_REQUEST = 2;
     private final int CAMERA_REQUEST = 3;
     private final int FACE_REQUEST = 4;
     private final int FACE_ACTIVITY = 5;
+    @BindView(R.id.title)
+    TitleView mTitleView;
+    @BindView(R.id.civ_user_icon)
+    CircleImageView userImageView;
+    @BindView(R.id.tv_phone_number)
+    TextView tvPhoneNumber;
+    @BindView(R.id.rg_sex)
+    RadioGroup radioGroup;
+    @BindView(R.id.btn_login)
+    Button btnLogin;
+    @BindView(R.id.ed_register_user_name)
+    EditText etUserName;
+    @BindView(R.id.ed_register_email)
+    EditText etUserEmail;
+    @BindView(R.id.tv_start_get_face)
+    TextView tvGetFace;
+    @BindView(R.id.stv_status_get_face)
+    SlantedTextView stvGetFaceStatus;
+    AlertDialog dialog;
+    private String TAG = "Lpp";
     private Uri endClipUri;
     private Uri faceFileUri;
     private Uri cameraFileUri;
-
     private File cameraSavePath;
     private File faceSavePath;
     private File endClipFile;
-
     private UserInfo userInfo;
     private String emailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\" +
             ".[a-zA-Z0-9]{2,6}$";
     private boolean[] flags = {false, false};
-
-    @BindView(R.id.title)
-    TitleView mTitleView;
-
-    @BindView(R.id.civ_user_icon)
-    CircleImageView userImageView;
-
-    @BindView(R.id.tv_phone_number)
-    TextView tvPhoneNumber;
-
-    @BindView(R.id.rg_sex)
-    RadioGroup radioGroup;
-
-    @BindView(R.id.btn_login)
-    Button btnLogin;
-
-    @BindView(R.id.ed_register_user_name)
-    EditText etUserName;
-
-    @BindView(R.id.ed_register_email)
-    EditText etUserEmail;
-
-    @BindView(R.id.tv_start_get_face)
-    TextView tvGetFace;
-
-    @BindView(R.id.stv_status_get_face)
-    SlantedTextView stvGetFaceStatus;
-
-    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

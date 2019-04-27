@@ -34,12 +34,12 @@ import java.io.IOException;
 
 public class ScanQRActivity extends AppCompatActivity {
 
+    private final int ALBUM_REQUEST = 1;
     private CaptureManager capture;
     private DecoratedBarcodeView barcodeScannerView;
     private boolean openFlag = false;
     private ImageView mImageView;
     private TextView mTextView;
-    private final int ALBUM_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

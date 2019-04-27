@@ -25,11 +25,11 @@ import java.util.List;
 public class QueryMeetingAdapter extends RecyclerView.Adapter<QueryMeetingAdapter.ViewHolder>
         implements View.OnClickListener {
 
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Context mContext;
     private List<MeetingMessage> list;
     private MeetingRoomAdapter.OnItemClickListener itemClickListener;
-    Calendar calendar = Calendar.getInstance();
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public QueryMeetingAdapter(Context mContext, List<MeetingMessage> list) {
         this.mContext = mContext;
@@ -45,10 +45,6 @@ public class QueryMeetingAdapter extends RecyclerView.Adapter<QueryMeetingAdapte
         if (itemClickListener != null) {
             itemClickListener.onItemClick(v, (Integer) v.getTag());
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
     }
 
     @NonNull
@@ -68,6 +64,10 @@ public class QueryMeetingAdapter extends RecyclerView.Adapter<QueryMeetingAdapte
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

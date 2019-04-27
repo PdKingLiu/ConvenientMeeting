@@ -1,9 +1,7 @@
 package com.pdking.convenientmeeting.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,14 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingHistoryAdapter;
 import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.MeetingBean;
 import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.MeetingMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -47,10 +43,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -65,7 +58,15 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     private RelativeLayout rlHaveNothing;
     private List<MeetingMessage> beanList;
     private MeetingHistoryAdapter mAdapter;
+
     public MeetingHistoryFragment() {
+    }
+
+    public static MeetingHistoryFragment newInstance() {
+        if (meetingHistoryFragment == null) {
+            meetingHistoryFragment = new MeetingHistoryFragment();
+        }
+        return meetingHistoryFragment;
     }
 
     public void autoRefresh() {
@@ -77,13 +78,6 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
         });
     }
 
-    public static MeetingHistoryFragment newInstance() {
-        if (meetingHistoryFragment == null) {
-            meetingHistoryFragment = new MeetingHistoryFragment();
-        }
-        return meetingHistoryFragment;
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -92,7 +86,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     }
 
     private void initRecyclerAndRefresh() {
-        mAdapter = new MeetingHistoryAdapter(beanList, getContext());
+        mAdapter = new MeetingHistoryAdapter(beanList, getActivity());
         mAdapter.setClickListener(new MeetingHistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -120,16 +114,18 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
 
     private void refresh() {
         if (!UserAccountUtils.accountIsValid(getActivity().getApplication())) {
-            UIUtils.showToast(getActivity(),"未知错误");
+            UIUtils.showToast(getActivity(), "未知错误");
             return;
         }
         FormBody.Builder body = new FormBody.Builder()
-                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication()).getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity
+                        ().getApplication()).getUserId() + "")
                 .add(Api.RequestUserMeetingListBody[1], 2 + "");
         Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
-                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
                 .url(Api.RequestUserMeetingListApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -145,7 +141,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });

@@ -1,8 +1,7 @@
 package com.pdking.convenientmeeting.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,9 +16,8 @@ import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
-
-import org.litepal.LitePal;
 
 import java.io.IOException;
 
@@ -96,6 +94,7 @@ public class MeetingNoteActivity extends AppCompatActivity implements TitleView
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -136,6 +135,7 @@ public class MeetingNoteActivity extends AppCompatActivity implements TitleView
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;

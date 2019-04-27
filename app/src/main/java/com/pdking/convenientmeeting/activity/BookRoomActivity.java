@@ -29,7 +29,7 @@ public class BookRoomActivity extends AppCompatActivity {
     @BindView(R.id.btn_scan)
     Button btnScan;
     @BindView(R.id.btn_input)
-    Button btninput;
+    Button btnInput;
     @BindView(R.id.title)
     TitleView title;
     @BindView(R.id.ed_input)

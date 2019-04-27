@@ -7,14 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.MeetingMessage;
-import com.pdking.convenientmeeting.db.MineMeetingBean;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,14 +54,6 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
 
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public interface OnMoreClickListener {
-        void onMoreClick(View view, int position);
-    }
-
     public void setListener(OnItemClickListener listener) {
         this.listener = listener;
     }
@@ -89,6 +78,14 @@ public class MeetingMineAdapter extends RecyclerView.Adapter<MeetingMineAdapter.
     @Override
     public int getItemCount() {
         return beanList.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public interface OnMoreClickListener {
+        void onMoreClick(View view, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

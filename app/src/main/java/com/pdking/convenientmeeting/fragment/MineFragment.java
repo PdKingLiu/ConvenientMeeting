@@ -18,14 +18,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.AboutAppActivity;
-import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
+import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
-import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
-
-import org.litepal.LitePal;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,23 +45,15 @@ import static android.app.Activity.RESULT_OK;
 public class MineFragment extends Fragment implements View.OnClickListener {
 
     private static MineFragment INSTANCE = null;
-
+    final private int UPDATE_USER_DATA = 1;
     private RelativeLayout rlUserData;
-
     private RelativeLayout rlSettingSafety;
-
     private CircleImageView civUserIcon;
-
     private File iconFile;
-
     private TextView tvUserEmail;
-
     private RelativeLayout rlAboutApp;
-
     private String email;
     private String avatarUrl;
-
-    final private int UPDATE_USER_DATA = 1;
 
     public static MineFragment getINSTANCE() {
         if (INSTANCE == null) {
@@ -98,7 +87,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         if (!file.exists()) {
             file.mkdirs();
         }
-        iconFile = new File(file, "user_icon_clip_" + UserAccountUtils.getUserInfo(getActivity().getApplication()).getPhone() + ".jpg");
+        iconFile = new File(file, "user_icon_clip_" + UserAccountUtils.getUserInfo(getActivity()
+                .getApplication()).getPhone() + ".jpg");
     }
 
     private void initListener() {
@@ -144,11 +134,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 boolean flag[] = {false, false};
-                if (! email.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()).email)) {
-                    tvUserEmail.setText("邮箱：" + UserAccountUtils.getUserInfo(getActivity().getApplication()).email);
+                if (!email.equals(UserAccountUtils.getUserInfo(getActivity().getApplication())
+                        .email)) {
+                    tvUserEmail.setText("邮箱：" + UserAccountUtils.getUserInfo(getActivity()
+                            .getApplication()).email);
                     flag[0] = true;
                 }
-                if (! avatarUrl.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl)) {
+                if (!avatarUrl.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()
+                ).avatarUrl)) {
                     try {
                         Bitmap bitmap = new Compressor(getContext()).compressToBitmap(iconFile);
                         civUserIcon.setImageBitmap(bitmap);

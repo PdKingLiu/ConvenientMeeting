@@ -42,7 +42,6 @@ import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 import butterknife.BindView;
@@ -74,13 +73,9 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
 
     @BindView(R.id.tv_status)
     TextView tvStatus;
-
-    private AlertDialog progressDialog;
-
-    private Bitmap mBitmap;
-
     String TAG = "Lpp";
-
+    private AlertDialog progressDialog;
+    private Bitmap mBitmap;
     private FaceEngine faceEngine;
 
     private int faceEngineCode = -1;

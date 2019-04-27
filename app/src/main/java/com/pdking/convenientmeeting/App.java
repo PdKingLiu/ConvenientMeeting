@@ -1,13 +1,7 @@
 package com.pdking.convenientmeeting;
 
-import android.Manifest;
 import android.app.Application;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
-import com.pdking.convenientmeeting.common.Constant;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.tencent.smtt.sdk.QbSdk;
@@ -51,16 +45,16 @@ public class App extends Application {
         return userInfo;
     }
 
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
     public UserToken getUserToken() {
         return userToken;
     }
 
     public void setUserToken(UserToken userToken) {
         this.userToken = userToken;
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.pdking.convenientmeeting.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,11 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.db.MeetingBean;
 import com.pdking.convenientmeeting.db.MeetingMessage;
-import com.pdking.convenientmeeting.db.UserInfo;
-
-import org.litepal.LitePal;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,25 +26,19 @@ import java.util.List;
 public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAdapter.ViewHolder>
         implements View.OnClickListener {
 
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private List<MeetingMessage> meetingBeanList;
-
-    private Context mContext;
-
+    private Activity activity;
     private OnItemClickListener mListener;
 
-    private UserInfo userInfo;
-
-    Calendar calendar = Calendar.getInstance();
-
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public MeetingHistoryAdapter(List<MeetingMessage> meetingBeanList, Activity activity) {
+        this.meetingBeanList = meetingBeanList;
+        this.activity = activity;
+    }
 
     public void setClickListener(OnItemClickListener mListener) {
         this.mListener = mListener;
-    }
-
-    public MeetingHistoryAdapter(List<MeetingMessage> meetingBeanList, Context mContext) {
-        this.meetingBeanList = meetingBeanList;
-        this.mContext = mContext;
     }
 
     @NonNull
@@ -75,6 +66,10 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         if (mListener != null) {
             mListener.onItemClick(v, (int) v.getTag());
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -110,13 +105,14 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         void setDate(MeetingMessage meetingBean, int i) {
             view.setTag(i);
             tvMeetingName.setText(meetingBean.meetingName);
-            if (userInfo.userId == meetingBean.masterId) {
+            if (UserAccountUtils.getUserInfo(activity.getApplication()).userId == meetingBean
+                    .masterId) {
                 tvUserKind.setText("组织者");
-                tvUserKind.setBackground(mContext.getResources().getDrawable(R.drawable
+                tvUserKind.setBackground(activity.getResources().getDrawable(R.drawable
                         .shape_history_meeting_user_kind_master));
             } else {
                 tvUserKind.setText("参与者");
-                tvUserKind.setBackground(mContext.getResources().getDrawable(R.drawable
+                tvUserKind.setBackground(activity.getResources().getDrawable(R.drawable
                         .shape_history_meeting_user_kind_member));
             }
             tvPeopleNumber.setText(meetingBean.peopleNum + "");
@@ -168,9 +164,5 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                 line.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
     }
 }

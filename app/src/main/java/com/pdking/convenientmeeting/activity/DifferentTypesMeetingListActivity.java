@@ -2,9 +2,9 @@ package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -23,12 +23,11 @@ import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -58,8 +57,6 @@ public class DifferentTypesMeetingListActivity extends AppCompatActivity impleme
     @BindView(R.id.rv_absence)
     RecyclerView recyclerView;
     private List<MeetingMessage> beanList;
-    private UserToken userToken;
-    private UserInfo userInfo;
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Calendar calendar = Calendar.getInstance();
@@ -99,8 +96,6 @@ public class DifferentTypesMeetingListActivity extends AppCompatActivity impleme
         }
         title.setLeftClickListener(this);
         title.setRightText(year + "年");
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         initPage();
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -135,13 +130,13 @@ public class DifferentTypesMeetingListActivity extends AppCompatActivity impleme
 
     private void refresh() {
         FormBody.Builder body = new FormBody.Builder()
-                .add("token", userToken.getToken())
-                .add(Api.RequestUserMeetingListBody[0], userInfo.getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo
+                        (getApplication()).getUserId() + "")
                 .add(Api.RequestUserMeetingListBody[1], 2 + "");
         Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .url(Api.RequestUserMeetingListApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -159,8 +154,8 @@ public class DifferentTypesMeetingListActivity extends AppCompatActivity impleme
                                 @Override
                                 public void newMessageCallBack(UserInfo newInfo, UserToken
                                         newToken) {
-                                    userInfo = newInfo;
-                                    userToken = newToken;
+                                    UserAccountUtils.setUserInfo(newInfo, getApplication());
+                                    UserAccountUtils.setUserToken(newToken, getApplication());
                                 }
                             });
                     return;
@@ -177,10 +172,12 @@ public class DifferentTypesMeetingListActivity extends AppCompatActivity impleme
                                 if (bean.data.get(i).userStatus == userStatus) {
                                     beanList.add(bean.data.get(i));
                                 }
-                                if (userKind == 1 && bean.data.get(i).masterId == userInfo.userId) {
+                                if (userKind == 1 && bean.data.get(i).masterId ==
+                                        UserAccountUtils.getUserInfo(getApplication()).userId) {
                                     beanList.add(bean.data.get(i));
                                 }
-                                if (userKind == 2 && bean.data.get(i).masterId != userInfo.userId) {
+                                if (userKind == 2 && bean.data.get(i).masterId !=
+                                        UserAccountUtils.getUserInfo(getApplication()).userId) {
                                     beanList.add(bean.data.get(i));
                                 }
                                 if (isCancel == 1 && bean.data.get(i).status == 5) {

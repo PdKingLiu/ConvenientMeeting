@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +30,7 @@ import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -62,7 +63,6 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
     @BindView(R.id.srl_flush)
     SmartRefreshLayout smartRefreshLayout;
 
-
     private String meetingID;
     private String userId;
     private String token;
@@ -72,6 +72,55 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
 
     private FileDataListBean fileDataListBean;
     private List<FileData> fileList;
+
+    public static File uriToFile(Uri uri, Context context) {
+        String path = null;
+        if ("file".equals(uri.getScheme())) {
+            path = uri.getEncodedPath();
+            if (path != null) {
+                path = Uri.decode(path);
+                ContentResolver cr = context.getContentResolver();
+                StringBuffer buff = new StringBuffer();
+                buff.append("(").append(MediaStore.Images.ImageColumns.DATA).append("=").append
+                        ("'" + path + "'").append(")");
+                Cursor cur = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new
+                        String[]{MediaStore.Images.ImageColumns._ID, MediaStore.Images
+                        .ImageColumns.DATA}, buff.toString(), null, null);
+                int index = 0;
+                int dataIdx = 0;
+                for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                    index = cur.getColumnIndex(MediaStore.Images.ImageColumns._ID);
+                    index = cur.getInt(index);
+                    dataIdx = cur.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    path = cur.getString(dataIdx);
+                }
+                cur.close();
+                if (index == 0) {
+                } else {
+                    Uri u = Uri.parse("content://media/external/images/media/" + index);
+                    System.out.println("temp uri is :" + u);
+                }
+            }
+            if (path != null) {
+                return new File(path);
+            }
+        } else if ("content".equals(uri.getScheme())) {
+            // 4.2.2以后
+            String[] proj = {MediaStore.Images.Media.DATA};
+            Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                path = cursor.getString(columnIndex);
+            }
+            cursor.close();
+            if (path != null) {
+                return new File(path);
+            } else return null;
+        } else {
+            //Log.i(TAG, "Uri Scheme:" + uri.getScheme());
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +185,7 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             userId = newInfo.getUserId() + "";
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -188,6 +238,7 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             userId = newInfo.getUserId() + "";
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -276,6 +327,7 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             userId = newInfo.getUserId() + "";
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -394,55 +446,6 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
             dialog.dismiss();
         }
         super.onDestroy();
-    }
-
-    public static File uriToFile(Uri uri, Context context) {
-        String path = null;
-        if ("file".equals(uri.getScheme())) {
-            path = uri.getEncodedPath();
-            if (path != null) {
-                path = Uri.decode(path);
-                ContentResolver cr = context.getContentResolver();
-                StringBuffer buff = new StringBuffer();
-                buff.append("(").append(MediaStore.Images.ImageColumns.DATA).append("=").append
-                        ("'" + path + "'").append(")");
-                Cursor cur = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new
-                        String[]{MediaStore.Images.ImageColumns._ID, MediaStore.Images
-                        .ImageColumns.DATA}, buff.toString(), null, null);
-                int index = 0;
-                int dataIdx = 0;
-                for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-                    index = cur.getColumnIndex(MediaStore.Images.ImageColumns._ID);
-                    index = cur.getInt(index);
-                    dataIdx = cur.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    path = cur.getString(dataIdx);
-                }
-                cur.close();
-                if (index == 0) {
-                } else {
-                    Uri u = Uri.parse("content://media/external/images/media/" + index);
-                    System.out.println("temp uri is :" + u);
-                }
-            }
-            if (path != null) {
-                return new File(path);
-            }
-        } else if ("content".equals(uri.getScheme())) {
-            // 4.2.2以后
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
-            if (cursor.moveToFirst()) {
-                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                path = cursor.getString(columnIndex);
-            }
-            cursor.close();
-            if (path != null) {
-                return new File(path);
-            } else return null;
-        } else {
-            //Log.i(TAG, "Uri Scheme:" + uri.getScheme());
-        }
-        return null;
     }
 
     @Override

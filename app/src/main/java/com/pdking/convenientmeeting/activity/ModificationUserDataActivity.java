@@ -18,8 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,28 +62,10 @@ import okhttp3.Response;
 public class ModificationUserDataActivity extends AppCompatActivity implements TitleView
         .LeftClickListener, TitleView.RightClickListener {
 
-    private ProgressDialog dialog;
-
-    private AlertDialog dialogLeave;
-
-    private UserDataBean dataBean;
-
-    private boolean iconUpdateFlag = false;
-    private boolean iconUpdateFlag2 = false;
-
     private final int ALBUM_REQUEST = 1;
     private final int CLIP_REQUEST = 2;
     private final int CAMERA_REQUEST = 3;
-
     public boolean error = false;
-
-
-    private Uri clipUri;
-    private Uri cameraUri;
-
-    private File clipFile;
-    private File cameraFile;
-
     @BindView(R.id.tv_net_error)
     RelativeLayout tvNetError;
     @BindView(R.id.title)
@@ -102,6 +82,15 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
     EditText edUserEmail;
     @BindView(R.id.rg_sex)
     RadioGroup radioGroup;
+    private ProgressDialog dialog;
+    private AlertDialog dialogLeave;
+    private UserDataBean dataBean;
+    private boolean iconUpdateFlag = false;
+    private boolean iconUpdateFlag2 = false;
+    private Uri clipUri;
+    private Uri cameraUri;
+    private File clipFile;
+    private File cameraFile;
     private boolean[] updateFlag = {false, false, false};
 
     @OnClick(R.id.civ_user_icon)

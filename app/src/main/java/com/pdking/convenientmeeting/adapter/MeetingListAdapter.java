@@ -30,10 +30,6 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
         this.meetingList = meetingList;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
@@ -63,6 +59,10 @@ public class MeetingListAdapter extends RecyclerView.Adapter<MeetingListAdapter.
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(v, (Integer) v.getTag());
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

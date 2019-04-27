@@ -58,21 +58,6 @@ public class PopMenu {
      */
     private PopupWindow mPopupWindow;
 
-    public interface OnItemSelectedListener {
-        /**
-         * 菜单被选择时的回调接口.
-         *
-         * @param view     被选择的内容的View.
-         * @param item     被选择的菜单项.
-         * @param position 被选择的位置.
-         */
-        void selected(View view, PopMenuItem item, int position);
-    }
-
-    public PopupWindow getmPopupWindow() {
-        return mPopupWindow;
-    }
-
     public PopMenu(final Context context) {
         mContext = context;
         mItemList = new ArrayList<>();
@@ -107,6 +92,10 @@ public class PopMenu {
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
         setBackgroundColor(Color.parseColor("#ffffff"));
         setCorner(R.mipmap.ic_pop_menu_up_icon);
+    }
+
+    public PopupWindow getmPopupWindow() {
+        return mPopupWindow;
     }
 
     /**
@@ -186,7 +175,6 @@ public class PopMenu {
         mAdapter.notifyDataSetChanged();
     }
 
-
     /**
      * 作为指定View的下拉控制显示.
      *
@@ -196,7 +184,7 @@ public class PopMenu {
         mPopupWindow.showAsDropDown(parent);
     }
 
-    public void showAsDropDown(View parent,int bindId) {
+    public void showAsDropDown(View parent, int bindId) {
         mPopupWindow.showAsDropDown(parent);
         this.bindId = bindId;
     }
@@ -228,6 +216,17 @@ public class PopMenu {
      */
     public boolean isShowing() {
         return mPopupWindow.isShowing();
+    }
+
+    public interface OnItemSelectedListener {
+        /**
+         * 菜单被选择时的回调接口.
+         *
+         * @param view     被选择的内容的View.
+         * @param item     被选择的菜单项.
+         * @param position 被选择的位置.
+         */
+        void selected(View view, PopMenuItem item, int position);
     }
 
 

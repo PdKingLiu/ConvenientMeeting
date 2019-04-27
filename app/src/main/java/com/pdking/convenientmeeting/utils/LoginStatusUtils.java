@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.activity.LoginActivity;

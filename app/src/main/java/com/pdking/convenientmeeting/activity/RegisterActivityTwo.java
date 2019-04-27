@@ -37,28 +37,40 @@ import okhttp3.Response;
 
 public class RegisterActivityTwo extends AppCompatActivity implements TitleView.LeftClickListener {
 
-    private String phoneNumber;
-
-    private String password;
-
-    private CountDownTimerUtils mCountDownTimerUtils;
-
     @BindView(R.id.title)
     TitleView mTitleView;
-
     @BindView(R.id.tv_message_verify)
     TextView tv_Message;
-
     @BindView(R.id.tv_phone_number)
     TextView tv_Phone;
-
     @BindView(R.id.bt_register_two_new_verify)
     Button bt_Verify;
-
     @BindView((R.id.ed_register_two_verify))
     TextInputEditText ed_Verify;
-
+    private String phoneNumber;
+    private String password;
+    private CountDownTimerUtils mCountDownTimerUtils;
     private boolean verifyFlag = true;
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            mCountDownTimerUtils = new CountDownTimerUtils(bt_Verify, 60000, 1000);
+            mCountDownTimerUtils.start();
+            switch (msg.what) {
+                case 1:
+                    tv_Phone.setText((String) msg.obj);
+                    break;
+                case 2:
+                    tv_Message.setText("发送验证码成功");
+                    break;
+                case 3:
+                    tv_Message.setText((String) msg.obj);
+                    verifyFlag = false;
+                    break;
+            }
+            return true;
+        }
+    });
 
     @OnClick(R.id.bt_register_two_new_verify)
     void onClick(View view) {
@@ -103,27 +115,6 @@ public class RegisterActivityTwo extends AppCompatActivity implements TitleView.
                 break;
         }
     }
-
-    private Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            mCountDownTimerUtils = new CountDownTimerUtils(bt_Verify, 60000, 1000);
-            mCountDownTimerUtils.start();
-            switch (msg.what) {
-                case 1:
-                    tv_Phone.setText((String) msg.obj);
-                    break;
-                case 2:
-                    tv_Message.setText("发送验证码成功");
-                    break;
-                case 3:
-                    tv_Message.setText((String) msg.obj);
-                    verifyFlag = false;
-                    break;
-            }
-            return true;
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

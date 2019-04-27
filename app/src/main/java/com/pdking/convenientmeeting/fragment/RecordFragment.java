@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +50,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import org.litepal.LitePal;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -79,8 +76,11 @@ import static android.app.Activity.RESULT_OK;
  */
 public class RecordFragment extends Fragment implements View.OnClickListener {
 
+    private static RecordFragment INSTANCE = null;
     final private int UPDATE_USER_DATA = 1;
-
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat format = new
+            SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private View mView;
     private PieChart pieChart;
     private CircleImageView civUserIcon;
@@ -92,7 +92,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private TextView tvYear;
     private TextView tvProportion;
     private SmartRefreshLayout smartRefreshLayout;
-    private static RecordFragment INSTANCE = null;
     private boolean chartTimeFlag = true;
     private Calendar calendar = Calendar.getInstance();
     private List<MeetingMessage> beanList;
@@ -113,18 +112,11 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlOrganize;
     private RelativeLayout rlJoin;
     private RelativeLayout rlCancel;
-
     private String email;
     private String avatarUrl;
-
     private int year = calendar.get(Calendar.YEAR);
-
     private float[] chartStatus = {10, 20, 30, 40};
     private float[] chartIdentity = {0, 0};
-
-    @SuppressLint("SimpleDateFormat")
-    SimpleDateFormat format = new
-            SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static RecordFragment getINSTANCE() {
         if (INSTANCE == null) {
@@ -150,7 +142,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         if (!file.exists()) {
             file.mkdirs();
         }
-        iconFile = new File(file, "user_icon_clip_" + UserAccountUtils.getUserInfo(getActivity().getApplication()).getPhone() + ".jpg");
+        iconFile = new File(file, "user_icon_clip_" + UserAccountUtils.getUserInfo(getActivity()
+                .getApplication()).getPhone() + ".jpg");
     }
 
     @Override
@@ -298,7 +291,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 boolean flag = false;
-                if (! avatarUrl.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()).avatarUrl)) {
+                if (!avatarUrl.equals(UserAccountUtils.getUserInfo(getActivity().getApplication()
+                ).avatarUrl)) {
                     try {
                         Bitmap bitmap = new Compressor(getContext()).compressToBitmap(iconFile);
                         civUserIcon.setImageBitmap(bitmap);
@@ -334,11 +328,12 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private void refreshData() {
         if (!UserAccountUtils.accountIsValid(getActivity().getApplication())) {
-            UIUtils.showToast(getActivity(),"未知错误");
+            UIUtils.showToast(getActivity(), "未知错误");
             return;
         }
         FormBody.Builder body = new FormBody.Builder()
-                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication()).getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity
+                        ().getApplication()).getUserId() + "")
                 .add(Api.RequestUserMeetingListBody[1], 2 + "");
         Request request = new Request.Builder()
                 .post(body.build())
@@ -360,7 +355,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
@@ -418,7 +413,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             } else if (yearList.get(i).userStatus == 4) {
                 leave++;
             }
-            if (yearList.get(i).masterId == UserAccountUtils.getUserInfo(getActivity().getApplication()).userId) {
+            if (yearList.get(i).masterId == UserAccountUtils.getUserInfo(getActivity()
+                    .getApplication()).userId) {
                 master++;
             } else {
                 parter++;

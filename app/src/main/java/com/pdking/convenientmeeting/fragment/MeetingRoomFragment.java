@@ -21,9 +21,9 @@ import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingRoomAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.AllMeetingRoomMessageBean;
-import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
@@ -59,16 +59,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     private List<RoomOfMeetingMessage> allMeetingList;
     private OneMeetingRoomMessageBean meetingRoomMessageBean;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     public MeetingRoomFragment() {
     }
 
@@ -77,6 +67,16 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             meetingRoomFragment = new MeetingRoomFragment();
         }
         return meetingRoomFragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -138,7 +138,8 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         body.add(Api.GetOneMeetingRoomMessageBody[0], meetingRoomMessage.meetingRoomId + "");
         Request request = new Request.Builder()
                 .url(Api.GetOneMeetingRoomMessageApi)
-                .header("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
+                .header("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -157,7 +158,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
@@ -215,7 +216,8 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder body = new FormBody.Builder();
         Request request = new Request.Builder()
-                .header("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
+                .header("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
                 .url(Api.GetMeetingRoomApi)
                 .post(body.build())
                 .build();
@@ -232,7 +234,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });

@@ -1,6 +1,6 @@
 package com.pdking.convenientmeeting.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,12 +23,12 @@ import java.util.List;
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> implements View
         .OnClickListener {
 
-    private Context mContext;
+    private Activity activity;
     private List<FileData> dataList;
     private OnItemClickListener mListener;
 
-    public FileAdapter(Context mContext, List<FileData> dataList) {
-        this.mContext = mContext;
+    public FileAdapter(Activity activity, List<FileData> dataList) {
+        this.activity = activity;
         this.dataList = dataList;
     }
 
@@ -62,6 +62,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> im
         this.mListener = mListener;
     }
 
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -144,10 +148,5 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> im
                 }
             }
         }
-    }
-
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
     }
 }

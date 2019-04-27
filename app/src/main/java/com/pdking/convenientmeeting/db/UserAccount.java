@@ -8,6 +8,9 @@ import org.litepal.crud.LitePalSupport;
  */
 public class UserAccount extends LitePalSupport {
 
+    private String phone;
+    private String password;
+
     public UserAccount() {
     }
 
@@ -16,23 +19,19 @@ public class UserAccount extends LitePalSupport {
         this.password = password;
     }
 
-    private String phone;
-
-    private String password;
+    public String getPhone() {
+        return phone;
+    }
 
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

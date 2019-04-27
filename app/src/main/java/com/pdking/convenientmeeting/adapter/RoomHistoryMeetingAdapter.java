@@ -10,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.db.RoomHistoryMeetingMessage;
 import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,8 +59,18 @@ public class RoomHistoryMeetingAdapter extends RecyclerView.Adapter<RoomHistoryM
         }
     }
 
+    public void setClickListener(OnItemClickListener mListener) {
+        this.mListener = mListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         View viewSum;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         private TextView tvMeetingName;
         private TextView tvStatus;
         private TextView tvMeetingTimeLength;
@@ -70,8 +78,6 @@ public class RoomHistoryMeetingAdapter extends RecyclerView.Adapter<RoomHistoryM
         private TextView tvTime;
         private TextView tvIntroduce;
         private View line;
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -133,13 +139,5 @@ public class RoomHistoryMeetingAdapter extends RecyclerView.Adapter<RoomHistoryM
                 line.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    public void setClickListener(OnItemClickListener mListener) {
-        this.mListener = mListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
     }
 }

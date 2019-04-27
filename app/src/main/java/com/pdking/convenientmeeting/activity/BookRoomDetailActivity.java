@@ -5,11 +5,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,17 +20,15 @@ import com.bigkoo.pickerview.view.TimePickerView;
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.RoomOfMeetingMessageBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
+import com.pdking.convenientmeeting.db.RoomOfMeetingMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
-import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
-
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -74,9 +71,6 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
 
     private String roomNumber;
     private int meetingRoomId;
-
-    private UserInfo userInfo;
-    private UserToken userToken;
 
     private ProgressDialog dialog;
     private AlertDialog dialogHint;
@@ -229,12 +223,9 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
         title.setRightTextSize(18);
         roomNumber = getIntent().getStringExtra("roomNumber");
         meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
-        Log.d("Lpp", "initPage: " + meetingRoomId + roomNumber);
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         tvRoomNumber.setText(roomNumber);
-        tvMasterName.setText(userInfo.getUsername());
-        tvMemberMaster.setText(userInfo.getUsername());
+        tvMasterName.setText(UserAccountUtils.getUserInfo(getApplication()).getUsername());
+        tvMemberMaster.setText(UserAccountUtils.getUserInfo(getApplication()).getUsername());
         title.setLeftClickListener(this);
         title.setRightClickListener(this);
     }
@@ -304,7 +295,7 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                 .post(body.build())
                 .url(Api.WhetherBookApi)
                 .header(Api.WhetherBookHeader[0], Api.WhetherBookHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -321,8 +312,8 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     LoginStatusUtils.stateFailure(BookRoomDetailActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;
@@ -344,13 +335,14 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
         body.add(Api.RequestBookBody[0], meetingName);
         body.add(Api.RequestBookBody[1], meetingIntroduce);
         body.add(Api.RequestBookBody[2], meetingRoomId + "");
-        body.add(Api.RequestBookBody[3], userInfo.getUserId() + "");
+        body.add(Api.RequestBookBody[3], UserAccountUtils.getUserInfo(getApplication()).getUserId
+                () + "");
         body.add(Api.RequestBookBody[4], getDateString(startDate));
         body.add(Api.RequestBookBody[5], getDateString(endDate));
         final Request request = new Request.Builder()
                 .header(Api.RequestBookHeader[0], Api.RequestBookHeader[1])
                 .url(Api.RequestBookApi)
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .post(body.build())
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -367,8 +359,8 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     LoginStatusUtils.stateFailure(BookRoomDetailActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;

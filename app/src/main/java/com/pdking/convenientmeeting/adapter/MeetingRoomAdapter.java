@@ -1,11 +1,9 @@
 package com.pdking.convenientmeeting.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +12,8 @@ import android.widget.TextView;
 
 import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.db.MeetingRoomBean;
 import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,8 +26,11 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
     private Context mContext;
     private List<OneMeetingRoomMessage> roomMessageList;
     private OnItemClickListener itemClickListener;
-    Calendar calendar = Calendar.getInstance();
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public MeetingRoomAdapter(Context mContext, List<OneMeetingRoomMessage> roomMessageList) {
+        this.mContext = mContext;
+        this.roomMessageList = roomMessageList;
+    }
 
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -45,16 +41,6 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
         if (itemClickListener != null) {
             itemClickListener.onItemClick(v, (Integer) v.getTag());
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-
-    public MeetingRoomAdapter(Context mContext, List<OneMeetingRoomMessage> roomMessageList) {
-        this.mContext = mContext;
-        this.roomMessageList = roomMessageList;
     }
 
     @NonNull
@@ -75,6 +61,10 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
     @Override
     public int getItemCount() {
         return roomMessageList.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

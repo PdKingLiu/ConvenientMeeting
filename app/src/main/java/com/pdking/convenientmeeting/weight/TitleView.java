@@ -31,12 +31,20 @@ public class TitleView extends RelativeLayout {
 
     private View viewLine;
 
-    public interface LeftClickListener {
-        void OnLeftButtonClick();
+    public TitleView(Context context) {
+        super(context, null);
     }
 
-    public interface RightClickListener {
-        void OnRightButtonClick();
+    public TitleView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        LayoutInflater.from(context).inflate(R.layout.layout_titleview, this);
+        initView();
+        initAttrs(context, attrs);
+        onButtonClick();
+    }
+
+    public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this(context, attrs);
     }
 
     public void setLeftClickListener(LeftClickListener leftClickListener) {
@@ -49,18 +57,6 @@ public class TitleView extends RelativeLayout {
 
     public void setTitleText(String title) {
         tvTitle.setText(title);
-    }
-
-    public TitleView(Context context) {
-        super(context, null);
-    }
-
-    public TitleView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.layout_titleview, this);
-        initView();
-        initAttrs(context, attrs);
-        onButtonClick();
     }
 
     public void setRightTextSize(float size) {
@@ -209,16 +205,19 @@ public class TitleView extends RelativeLayout {
         }
     }
 
-
-    public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs);
-    }
-
     public LinearLayout getLayoutRight() {
         return layoutRight;
     }
 
     public void setRightText(String text) {
         btnMenuText.setText(text);
+    }
+
+    public interface LeftClickListener {
+        void OnLeftButtonClick();
+    }
+
+    public interface RightClickListener {
+        void OnRightButtonClick();
     }
 }

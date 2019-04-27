@@ -1,8 +1,8 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.pdking.convenientmeeting.App;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -25,6 +24,7 @@ import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.IOException;
@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -225,6 +224,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -332,6 +332,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -517,6 +518,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -785,6 +787,7 @@ public class VoteDetailsActivity extends AppCompatActivity implements CompoundBu
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;

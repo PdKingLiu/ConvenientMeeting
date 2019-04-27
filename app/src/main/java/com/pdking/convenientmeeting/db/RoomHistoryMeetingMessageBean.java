@@ -13,6 +13,7 @@ public class RoomHistoryMeetingMessageBean {
     public int status;
     @SerializedName("data")
     public DataBean data;
+
     public static class DataBean {
         @SerializedName("total")
         public int total;

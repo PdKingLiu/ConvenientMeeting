@@ -12,6 +12,17 @@ import org.litepal.crud.LitePalSupport;
  * Created on 2019/2/7 12:19
  */
 public class UserInfo extends LitePalSupport implements Parcelable {
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
     @SerializedName("id")
     public int userId;
     @SerializedName("username")
@@ -37,6 +48,28 @@ public class UserInfo extends LitePalSupport implements Parcelable {
     @SerializedName("faceData")
     public String faceData;
 
+    public UserInfo() {
+    }
+
+    protected UserInfo(Parcel in) {
+        userId = in.readInt();
+        username = in.readString();
+        password = in.readString();
+        sex = in.readString();
+        role = in.readInt();
+        phone = in.readString();
+        email = in.readString();
+        avatarUrl = in.readString();
+        faceUrl = in.readString();
+        createTime = in.readLong();
+        updateTime = in.readLong();
+        faceData = in.readString();
+    }
+
+    public static Creator<UserInfo> getCREATOR() {
+        return CREATOR;
+    }
+
     @Override
     public String toString() {
         return "UserInfo{" +
@@ -59,50 +92,6 @@ public class UserInfo extends LitePalSupport implements Parcelable {
         this.userId = userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public void setFaceUrl(String faceUrl) {
-        this.faceUrl = faceUrl;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public void setFaceData(String faceData) {
-        this.faceData = faceData;
-    }
-
     public int getUserId() {
         return userId;
     }
@@ -111,79 +100,89 @@ public class UserInfo extends LitePalSupport implements Parcelable {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSex() {
         return sex;
     }
 
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     public int getRole() {
         return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 
     public String getPhone() {
         return phone;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAvatarUrl() {
         return avatarUrl;
     }
 
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     public String getFaceUrl() {
         return faceUrl;
+    }
+
+    public void setFaceUrl(String faceUrl) {
+        this.faceUrl = faceUrl;
     }
 
     public long getCreateTime() {
         return createTime;
     }
 
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
     public long getUpdateTime() {
         return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getFaceData() {
         return faceData;
     }
 
-    public static Creator<UserInfo> getCREATOR() {
-        return CREATOR;
+    public void setFaceData(String faceData) {
+        this.faceData = faceData;
     }
-
-    public UserInfo() {
-    }
-
-    protected UserInfo(Parcel in) {
-        userId = in.readInt();
-        username = in.readString();
-        password = in.readString();
-        sex = in.readString();
-        role = in.readInt();
-        phone = in.readString();
-        email = in.readString();
-        avatarUrl = in.readString();
-        faceUrl = in.readString();
-        createTime = in.readLong();
-        updateTime = in.readLong();
-        faceData = in.readString();
-    }
-
-    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
-        @Override
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        @Override
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
 
     @Override
     public int describeContents() {

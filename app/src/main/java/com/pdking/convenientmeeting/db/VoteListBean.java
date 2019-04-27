@@ -16,21 +16,6 @@ public class VoteListBean {
     public List<VoteBean> data;
 
     public static class VoteBean {
-        @Override
-        public String toString() {
-            return "VoteBean{" +
-                    "kind=" + kind +
-                    ", voteId=" + voteId +
-                    ", topic='" + topic + '\'' +
-                    ", selectWay=" + selectWay +
-                    ", userInfo=" + userInfo +
-                    ", createTime=" + createTime +
-                    ", endTime=" + endTime +
-                    ", optionList=" + optionList +
-                    ", userSelectList=" + userSelectList +
-                    '}';
-        }
-
         public int kind;
         @SerializedName("voteId")
         public int voteId;
@@ -49,6 +34,21 @@ public class VoteListBean {
         @SerializedName("userSelectList")
         public List<Integer> userSelectList;
 
+        @Override
+        public String toString() {
+            return "VoteBean{" +
+                    "kind=" + kind +
+                    ", voteId=" + voteId +
+                    ", topic='" + topic + '\'' +
+                    ", selectWay=" + selectWay +
+                    ", userInfo=" + userInfo +
+                    ", createTime=" + createTime +
+                    ", endTime=" + endTime +
+                    ", optionList=" + optionList +
+                    ", userSelectList=" + userSelectList +
+                    '}';
+        }
+
         public static class UserInfoBean {
             @SerializedName("userId")
             public int userId;
@@ -59,6 +59,15 @@ public class VoteListBean {
         }
 
         public static class OptionListBean {
+            @SerializedName("id")
+            public int id;
+            @SerializedName("voteId")
+            public int voteId;
+            @SerializedName("optionName")
+            public String optionName;
+            @SerializedName("num")
+            public int num;
+
             @Override
             public String toString() {
                 return "OptionListBean{" +
@@ -68,15 +77,6 @@ public class VoteListBean {
                         ", num=" + num +
                         '}';
             }
-
-            @SerializedName("id")
-            public int id;
-            @SerializedName("voteId")
-            public int voteId;
-            @SerializedName("optionName")
-            public String optionName;
-            @SerializedName("num")
-            public int num;
         }
     }
 }

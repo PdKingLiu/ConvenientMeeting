@@ -1,13 +1,12 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,10 +21,11 @@ import com.pdking.convenientmeeting.db.SMSSendStatusBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.CountDownTimerUtils;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
-
-import org.litepal.LitePal;
 
 import java.io.IOException;
 
@@ -36,11 +36,9 @@ import butterknife.OnTextChanged;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class UpdatePhoneActivity extends AppCompatActivity {
@@ -68,8 +66,6 @@ public class UpdatePhoneActivity extends AppCompatActivity {
     @BindView(R.id.btn_update_phone)
     Button btnUpdatePhone;
 
-    private UserToken userToken;
-    private UserInfo userInfo;
     private CountDownTimerUtils timerUtils;
     private AlertDialog dialog;
 
@@ -105,16 +101,15 @@ public class UpdatePhoneActivity extends AppCompatActivity {
     }
 
     private void getLocalData() {
-        userToken = LitePal.findAll(UserToken.class).get(0);
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        tvOldPhone.setText("原手机号：" + userInfo.getPhone());
+        tvOldPhone.setText("原手机号：" + UserAccountUtils.getUserInfo(getApplication()).getPhone());
     }
 
     @OnClick({R.id.btn_update_phone, R.id.btn_old_phone_send_code, R.id.btn_new_phone_send_code})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_old_phone_send_code:
-                sendPhoneCode(userInfo.getPhone(), btnOldPhoneSendCode, tvOldPhoneSendStatus);
+                sendPhoneCode(UserAccountUtils.getUserInfo(getApplication()).getPhone(),
+                        btnOldPhoneSendCode, tvOldPhoneSendStatus);
                 break;
             case R.id.btn_new_phone_send_code:
                 if (edNewPhone.getText().toString().length() != 11) {
@@ -145,7 +140,7 @@ public class UpdatePhoneActivity extends AppCompatActivity {
                 .create();
         showProgressBar();
 
-        String oldPhone = userInfo.getPhone();
+        String oldPhone = UserAccountUtils.getUserInfo(getApplication()).getPhone();
         final String newPhone = edNewPhone.getText().toString();
         String oldCode = edOldPhoneCode.getText().toString();
         final String newCode = edNewPhoneCode.getText().toString();
@@ -214,14 +209,17 @@ public class UpdatePhoneActivity extends AppCompatActivity {
     private void requestChange(String newPhone) {
         OkHttpClient client = new OkHttpClient();
         MultipartBody.Builder body = new MultipartBody.Builder();
-        body.addFormDataPart(Api.UpDateUserInfoBody[0], userInfo.getUserId() + "");
+        body.addFormDataPart(Api.UpDateUserInfoBody[0], UserAccountUtils.getUserInfo
+                (getApplication()).getUserId() + "");
         body.addFormDataPart(Api.UpDateUserInfoBody[1], newPhone);
-        body.addFormDataPart(Api.UpDateUserInfoBody[2], userInfo.getEmail());
-        body.addFormDataPart(Api.UpDateUserInfoBody[3], userInfo.getSex());
+        body.addFormDataPart(Api.UpDateUserInfoBody[2], UserAccountUtils.getUserInfo
+                (getApplication()).getEmail());
+        body.addFormDataPart(Api.UpDateUserInfoBody[3], UserAccountUtils.getUserInfo
+                (getApplication()).getSex());
         final Request request = new Request.Builder()
                 .url(Api.UpDateUserInfoApi)
                 .post(body.build())
-                .header("token", userToken.getToken())
+                .header("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .addHeader(Api.UpDateUserInfoHeader[0], Api.UpDateUserInfoHeader[1])
                 .build();
 
@@ -230,13 +228,21 @@ public class UpdatePhoneActivity extends AppCompatActivity {
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
                 showToast("修改失败");
-                Log.d("Lpp", "修改失败" + e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期!")) {
+                    LoginStatusUtils.stateFailure(UpdatePhoneActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
+                        }
+                    });
+                    return;
+                }
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 1) {
                     hideProgressBar();
@@ -246,6 +252,7 @@ public class UpdatePhoneActivity extends AppCompatActivity {
                     showToast("修改成功");
                     startActivity(new Intent(UpdatePhoneActivity.this, LoginActivity.class));
                     ActivityContainer.removeAllActivity();
+                    finish();
                 }
             }
         });

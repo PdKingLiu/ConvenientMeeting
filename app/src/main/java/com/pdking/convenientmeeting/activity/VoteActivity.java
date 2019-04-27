@@ -1,10 +1,10 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,12 +17,12 @@ import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.db.VoteListBean;
-import com.pdking.convenientmeeting.db.VoteTest;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -38,7 +38,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -134,6 +133,7 @@ public class VoteActivity extends AppCompatActivity implements TitleView.LeftCli
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     smartRefreshLayout.finishRefresh(false);

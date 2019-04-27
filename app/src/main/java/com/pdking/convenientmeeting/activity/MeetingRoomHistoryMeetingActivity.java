@@ -1,12 +1,11 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -14,29 +13,20 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.adapter.RoomHistoryMeetingAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.AllMeetingRoomMessageBean;
-import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
-import com.pdking.convenientmeeting.db.RoomHistoryMeetingMessage;
-import com.pdking.convenientmeeting.db.RoomHistoryMeetingMessageBean;
 import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
-import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
-import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -240,6 +230,7 @@ public class MeetingRoomHistoryMeetingActivity extends AppCompatActivity {
                                 public void newMessageCallBack(UserInfo newInfo, UserToken
                                         newToken) {
                                     token = newToken.getToken();
+                                    UserAccountUtils.getUserToken(getApplication()).setToken(token);
                                 }
                             });
                     smartRefreshLayout.finishRefresh(false);

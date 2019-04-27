@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.MeetingMessageBean;
-import com.pdking.convenientmeeting.db.OneMeetingRoomMessage;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
@@ -107,7 +105,8 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                         break;
                     case 1:
                         Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
-                        intent.putExtra("meetingId", beanList.get(mPopMenu.getBindId()).meetingId + "");
+                        intent.putExtra("meetingId", beanList.get(mPopMenu.getBindId()).meetingId
+                                + "");
                         startActivity(intent);
                         break;
                 }
@@ -154,12 +153,14 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
 
     private void refresh() {
         FormBody.Builder body = new FormBody.Builder()
-                .add(Api.RequestUserMeetingListBody[0],UserAccountUtils.getUserInfo(getActivity().getApplication()).getUserId() + "")
+                .add(Api.RequestUserMeetingListBody[0], UserAccountUtils.getUserInfo(getActivity
+                        ().getApplication()).getUserId() + "")
                 .add(Api.RequestUserMeetingListBody[1], 1 + "");
         Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.RequestUserMeetingListHeader[0], Api.RequestUserMeetingListHeader[1])
-                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication()).getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
                 .url(Api.RequestUserMeetingListApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -175,7 +176,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            UserAccountUtils.setUserInfo(newInfo,getActivity().getApplication());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });

@@ -11,13 +11,17 @@ import org.litepal.crud.LitePalSupport;
  */
 public class UserToken extends LitePalSupport implements Parcelable {
 
-    @Override
-    public String toString() {
-        return "UserToken{" +
-                "token='" + token + '\'' +
-                '}';
-    }
+    public static final Creator<UserToken> CREATOR = new Creator<UserToken>() {
+        @Override
+        public UserToken createFromParcel(Parcel in) {
+            return new UserToken(in);
+        }
 
+        @Override
+        public UserToken[] newArray(int size) {
+            return new UserToken[size];
+        }
+    };
     private String token;
 
     public UserToken(String token) {
@@ -31,24 +35,19 @@ public class UserToken extends LitePalSupport implements Parcelable {
         token = in.readString();
     }
 
-    public static final Creator<UserToken> CREATOR = new Creator<UserToken>() {
-        @Override
-        public UserToken createFromParcel(Parcel in) {
-            return new UserToken(in);
-        }
-
-        @Override
-        public UserToken[] newArray(int size) {
-            return new UserToken[size];
-        }
-    };
-
-    public void setToken(String token) {
-        this.token = token;
+    @Override
+    public String toString() {
+        return "UserToken{" +
+                "token='" + token + '\'' +
+                '}';
     }
 
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

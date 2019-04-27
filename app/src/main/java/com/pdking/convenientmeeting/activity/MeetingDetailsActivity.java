@@ -1,20 +1,15 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,21 +18,17 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.FileDataListBean;
 import com.pdking.convenientmeeting.db.MeetingByIdMessage;
 import com.pdking.convenientmeeting.db.MeetingByIdMessageBean;
-import com.pdking.convenientmeeting.db.MeetingNoteBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -47,18 +38,14 @@ import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 
-import org.litepal.LitePal;
-import org.litepal.crud.LitePalSupport;
-
-import java.io.File;
 import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -98,8 +85,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private FloatingActionMenu actionMenu;
 
     private String meetingId;
-    private UserInfo userInfo;
-    private UserToken userToken;
     private MeetingByIdMessageBean bean;
     private String TAG = "Lpp";
     private StringBuilder stringBuilder = new StringBuilder();
@@ -119,8 +104,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.setTitle("加载中");
         dialog.setMessage("正在加载...");
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         titleView.setLeftClickListener(new TitleView.LeftClickListener() {
             @Override
             public void OnLeftButtonClick() {
@@ -183,7 +166,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         final Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.FinishMeetingHeader[0], Api.FinishMeetingHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .url(Api.FinishMeetingApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -197,12 +180,12 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Log.d(TAG, "会议结束: " + msg);
-                if (msg.contains("token过期")) {
+                if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userToken = newToken;
-                            userInfo = newInfo;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;
@@ -223,7 +206,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         final Request request = new Request.Builder()
                 .post(body.build())
                 .header(Api.StartMeetingHeader[0], Api.StartMeetingHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .url(Api.StartMeetingApi)
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
@@ -237,12 +220,12 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Log.d("Lpp", "会议开启" + msg);
-                if (msg.contains("token过期")) {
+                if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userToken = newToken;
-                            userInfo = newInfo;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;
@@ -298,7 +281,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         body.add(Api.GetMeetingByIdBody[0], meetingId);
         Request request = new Request.Builder()
                 .header(Api.GetMeetingByIdHeader[0], Api.GetMeetingByIdHeader[1])
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .url(Api.GetMeetingByIdApi)
                 .post(body.build())
                 .build();
@@ -315,12 +298,13 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;
@@ -355,8 +339,10 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             case R.id.ll_meeting_files:
                 Intent intent = new Intent(this, FileListActivity.class);
                 intent.putExtra("meetingID", meetingId);
-                intent.putExtra("userId", userInfo.getUserId() + "");
-                intent.putExtra("token", userToken.getToken());
+                intent.putExtra("userId", UserAccountUtils.getUserInfo(getApplication())
+                        .getUserId() + "");
+                intent.putExtra("token", UserAccountUtils.getUserToken(getApplication()).getToken
+                        ());
                 startActivity(intent);
                 break;
             case R.id.rl_vote:
@@ -364,9 +350,11 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 break;
             case R.id.rl_note:
                 Intent intent1 = new Intent(MeetingDetailsActivity.this, MeetingNoteActivity.class);
-                intent1.putExtra("userId", userInfo.getUserId() + "");
+                intent1.putExtra("userId", UserAccountUtils.getUserInfo(getApplication())
+                        .getUserId() + "");
                 intent1.putExtra("meetingId", meetingId);
-                intent1.putExtra("token", userToken.getToken());
+                intent1.putExtra("token", UserAccountUtils.getUserToken(getApplication())
+                        .getToken());
                 startActivity(intent1);
                 break;
         }
@@ -374,9 +362,9 @@ public class MeetingDetailsActivity extends AppCompatActivity {
 
     private void enterVote() {
         Intent intent = new Intent(this, VoteActivity.class);
-        intent.putExtra("userId", userInfo.getUserId() + "");
+        intent.putExtra("userId", UserAccountUtils.getUserInfo(getApplication()).getUserId() + "");
         intent.putExtra("meetingId", meetingId);
-        intent.putExtra("token", userToken.getToken());
+        intent.putExtra("token", UserAccountUtils.getUserToken(getApplication()).getToken());
         startActivity(intent);
     }
 
@@ -412,7 +400,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         FormBody.Builder body = new FormBody.Builder();
         body.add(Api.GetUserInfoBody[0], phone);
         Request request = new Request.Builder()
-                .header("token", userToken.getToken())
+                .header("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .post(body.build())
                 .url(Api.GetUserInfoApi)
                 .build();
@@ -432,8 +420,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                     LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;
@@ -460,7 +448,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 .url(Api.MeetingAddMemberApi)
                 .header(Api.MeetingAddMemberHeader[0], Api.MeetingAddMemberHeader[1])
                 .post(body.build())
-                .addHeader("token", userToken.getToken())
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
             @Override
@@ -478,8 +466,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                     LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            userInfo = newInfo;
-                            userToken = newToken;
+                            UserAccountUtils.setUserInfo(newInfo, getApplication());
+                            UserAccountUtils.setUserToken(newToken, getApplication());
                         }
                     });
                     return;
@@ -532,7 +520,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 tvEndTime.setText("结束时间：" + bean.data.endTime);
                 tvPlace.setText("地点：" + bean.data.roomName);
                 tvIntroduce.setText(bean.data.meetingIntro);
-                if (userInfo.userId != bean.data.masterId) {
+                if (UserAccountUtils.getUserInfo(getApplication()).userId != bean.data.masterId) {
                     btnAddMember.setVisibility(View.GONE);
                     fabStartOrEnd.setVisibility(View.GONE);
                 }

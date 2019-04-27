@@ -2,8 +2,8 @@ package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +27,7 @@ import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.IOException;
@@ -237,6 +238,7 @@ public class ReleaseVoteActivity extends AppCompatActivity implements TitleView
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
                             token = newToken.getToken();
+                            UserAccountUtils.getUserToken(getApplication()).setToken(token);
                         }
                     });
                     return;
@@ -245,7 +247,7 @@ public class ReleaseVoteActivity extends AppCompatActivity implements TitleView
                     UIUtils.showToast(ReleaseVoteActivity.this, "发布成功");
                     Intent intent = new Intent();
                     intent.putExtra("result", 1);
-                    setResult(RESULT_OK,intent);
+                    setResult(RESULT_OK, intent);
                     isSucceed = true;
                 } else {
                     UIUtils.showToast(ReleaseVoteActivity.this, "发布失败");

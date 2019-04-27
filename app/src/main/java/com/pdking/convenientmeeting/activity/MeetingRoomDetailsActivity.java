@@ -26,10 +26,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.RoomOfMeetingMessage;
-import com.pdking.convenientmeeting.db.UserInfo;
-import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.DayMeetingListFragment;
 import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
 import com.pdking.convenientmeeting.weight.TitleView;
@@ -75,8 +74,6 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     private PopMenu mPopMenu;
     private int meetingRoomId;
     private ProgressDialog dialog;
-    private UserToken userToken;
-    private UserInfo userInfo;
     private String roomNumber;
     private int roomStatus;
     private int roomContent;
@@ -121,8 +118,6 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
     }
 
     private void requestData() {
-        userInfo = LitePal.findAll(UserInfo.class).get(0);
-        userToken = LitePal.findAll(UserToken.class).get(0);
         allMeetingList = LitePal.findAll(RoomOfMeetingMessage.class);
     }
 
@@ -227,7 +222,8 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
                     case 1:
                         Intent intent = new Intent(MeetingRoomDetailsActivity.this,
                                 MeetingRoomHistoryMeetingActivity.class);
-                        intent.putExtra("token", userToken.getToken());
+                        intent.putExtra("token", UserAccountUtils.getUserToken(getApplication())
+                                .getToken());
                         intent.putExtra("roomId", meetingRoomId + "");
                         startActivity(intent);
                         break;

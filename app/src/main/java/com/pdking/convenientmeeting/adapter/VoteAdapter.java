@@ -7,13 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.VoteListBean;
-import com.pdking.convenientmeeting.db.VoteTest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,6 +61,14 @@ public class VoteAdapter extends RecyclerView.Adapter<VoteAdapter.ViewHolder> im
         if (itemClickListener != null) {
             itemClickListener.onItemClick(v, (Integer) v.getTag());
         }
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -133,14 +139,6 @@ public class VoteAdapter extends RecyclerView.Adapter<VoteAdapter.ViewHolder> im
                 viewLineUp.setVisibility(View.GONE);
             }
         }
-    }
-
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
     }
 
 }

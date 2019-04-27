@@ -2,7 +2,6 @@ package com.pdking.convenientmeeting.db;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
 /**

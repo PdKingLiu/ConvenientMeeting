@@ -12,18 +12,6 @@ import org.litepal.crud.LitePalSupport;
  * Created on 2019/3/16 10:35
  */
 public class LoginBean extends LitePalSupport implements Parcelable {
-    @SerializedName("status")
-    public int status;
-    @SerializedName("msg")
-    public String msg;
-    @SerializedName("data")
-    public UserInfo data;
-
-    protected LoginBean(Parcel in) {
-        status = in.readInt();
-        msg = in.readString();
-    }
-
     public static final Creator<LoginBean> CREATOR = new Creator<LoginBean>() {
         @Override
         public LoginBean createFromParcel(Parcel in) {
@@ -35,6 +23,17 @@ public class LoginBean extends LitePalSupport implements Parcelable {
             return new LoginBean[size];
         }
     };
+    @SerializedName("status")
+    public int status;
+    @SerializedName("msg")
+    public String msg;
+    @SerializedName("data")
+    public UserInfo data;
+
+    protected LoginBean(Parcel in) {
+        status = in.readInt();
+        msg = in.readString();
+    }
 
     @Override
     public String toString() {
