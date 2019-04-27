@@ -111,7 +111,7 @@ public class MeetingFragment extends Fragment {
             if (i == 1) {
                 tab.select();
                 tab.getCustomView().findViewById(R.id.tv_tab).setSelected(true);
-                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(21);
+                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(22);
                 ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTypeface(Typeface
                         .defaultFromStyle(Typeface.BOLD));
             }
@@ -186,7 +186,7 @@ public class MeetingFragment extends Fragment {
         if (b) {
             if (tab != null) {
                 tab.select();
-                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(21);
+                ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTextSize(22);
                 ((TextView) tab.getCustomView().findViewById(R.id.tv_tab)).setTypeface(Typeface
                         .defaultFromStyle(Typeface.BOLD));
             }

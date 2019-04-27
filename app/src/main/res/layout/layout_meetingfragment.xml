@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -27,12 +26,12 @@
                 android:id="@+id/tl_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                app:tabIndicatorHeight="0dp"
-                app:tabIndicatorColor="#08b9fd"
-                android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
                 app:tabGravity="center"
+                app:tabIndicatorColor="#08b9fd"
+                app:tabIndicatorHeight="0dp"
                 app:tabTextColor="@android:color/white">
 
                 <android.support.design.widget.TabItem
@@ -54,20 +53,20 @@
 
 
             <LinearLayout
-                android:background="@android:color/transparent"
                 android:id="@+id/ll_pop"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:layout_gravity="center_vertical"
                 android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
                 android:padding="10dp">
 
                 <Button
-                    android:clickable="false"
-                    android:layout_width="21dp"
-                    android:layout_height="21dp"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@mipmap/pop_menu_more" />
+                    android:background="@mipmap/pop_menu_more"
+                    android:clickable="false" />
 
             </LinearLayout>
 
@@ -76,12 +75,11 @@
     </LinearLayout>
 
 
-
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_meeting_content"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
     </android.support.v4.view.ViewPager>
 

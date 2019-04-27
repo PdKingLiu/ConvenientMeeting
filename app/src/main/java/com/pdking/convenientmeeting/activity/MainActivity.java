@@ -26,7 +26,9 @@ import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MeetingRoomFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
+import com.pdking.convenientmeeting.service.RemindMeetingStartService;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.PollUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
@@ -87,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
         init();
         initFragment();
         initUser();
+        initPoll();
+    }
+
+    private void initPoll() {
+        Log.d(TAG, "initPoll: ");
+        PollUtils.startPoll(this, RemindMeetingStartService.class, 10);
     }
 
     private void init() {
@@ -184,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
                 int len;
                 try {
                     long total = response.body().contentLength();
-                    Log.d("Lpp", "onResponse: " + total);
                     inputStream = response.body().byteStream();
                     fileOutputStream = new FileOutputStream(iconFile);
                     while ((len = inputStream.read(bytes)) != -1) {
@@ -199,6 +206,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        if (getIntent().getIntExtra("isComePoll", -1) == 1) {
+            Intent intent = new Intent(this, MeetingDetailsActivity.class);
+            intent.putExtra("meetingId", getIntent().getStringExtra("meetingId"));
+            startActivity(intent);
+        }
     }
 
     private void showToast(final String text) {

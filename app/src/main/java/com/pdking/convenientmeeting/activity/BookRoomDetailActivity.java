@@ -220,7 +220,6 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
     }
 
     private void initPage() {
-        title.setRightTextSize(18);
         roomNumber = getIntent().getStringExtra("roomNumber");
         meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
         tvRoomNumber.setText(roomNumber);

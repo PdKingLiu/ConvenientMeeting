@@ -57,7 +57,6 @@ public class ScanQRActivity extends AppCompatActivity {
 
     private void initTitle() {
         TitleView mTitleView = findViewById(R.id.title);
-        mTitleView.setRightTextSize(18);
         mTitleView.setLeftClickListener(new TitleView.LeftClickListener() {
             @Override
             public void OnLeftButtonClick() {

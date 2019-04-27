@@ -49,9 +49,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/paths" />
         </provider>
-
-        <activity android:name=".activity.MainActivity">
-        </activity>
+        <activity android:name=".activity.MainActivity"
+            android:exported="true"/>
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.RegisterActivityOne" />
         <activity android:name=".activity.RegisterActivityTwo" />
@@ -84,7 +83,16 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter></activity>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".service.RemindMeetingStartService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.RemindMeetingStartIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

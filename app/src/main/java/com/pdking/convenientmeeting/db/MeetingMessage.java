@@ -11,6 +11,7 @@ import java.util.List;
  * Created on 2019/4/1 16:35
  */
 public class MeetingMessage extends LitePalSupport {
+    public int isPoll = -1;
     public int meetingType;
     @SerializedName("meetingId")
     public int meetingId;

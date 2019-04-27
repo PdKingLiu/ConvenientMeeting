@@ -237,15 +237,6 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
         });
     }
 
-    private void showToast(final String text) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void initList() {
         beanList = new ArrayList<>();
         beanList = LitePal.where("meetingType = ?", "1").find(MeetingMessage.class);
@@ -286,7 +277,6 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_have_nothing:
-//                autoRefresh();
                 autoRefresh();
                 break;
         }

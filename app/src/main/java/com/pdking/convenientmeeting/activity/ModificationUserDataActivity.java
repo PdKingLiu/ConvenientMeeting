@@ -223,10 +223,8 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
         dialog.setMessage("正在加载...");
         dialog.setTitle("加载中");
         dialog.setCancelable(false);
-
         title.setLeftClickListener(this);
         title.setRightClickListener(this);
-        title.setRightTextSize(18f);
         dialogLeave = new AlertDialog.Builder(ModificationUserDataActivity.this)
                 .setCancelable(false)
                 .setTitle("退出将不会做任何保存，确定要退出吗？")
