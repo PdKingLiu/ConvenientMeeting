@@ -52,7 +52,7 @@ public class RemindMeetingStartService extends Service {
                         for (int i = 0; i < beanList.size(); i++) {
                             MeetingMessage message = beanList.get(i);
                             long startTime = format.parse(message.startTime).getTime();
-                            if ((startTime - now) / 1000 / 60 <= 10
+                            if ((startTime - now) / 1000 / 60 <= 20
                                     && (startTime - now) / 1000 / 60 > 0
                                     && message.isPoll == -1) {
                                 message.isPoll = 1;
@@ -64,7 +64,6 @@ public class RemindMeetingStartService extends Service {
                         LitePal.deleteAll(MeetingMessage.class, "meetingType = ?", "1");
                         LitePal.saveAll(beanList);
                     } catch (Exception e) {
-                        Log.d("Lpp", "e.getMessage(): " + e.getMessage());
                     }
                 }
             }
@@ -83,7 +82,7 @@ public class RemindMeetingStartService extends Service {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.putExtra("isComePoll", 1);
         intent.putExtra("meetingId", message.meetingId + "");
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         notification = new NotificationCompat.Builder(this)
                 .setContentText(text)
                 .setContentTitle("通知")
