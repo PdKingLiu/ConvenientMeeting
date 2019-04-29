@@ -64,7 +64,7 @@
             <EditText
                 android:id="@+id/ed_note"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
@@ -73,7 +73,6 @@
                 android:gravity="left|top"
                 android:hint="请输入对该会议的相关笔记（1000字以内）"
                 android:maxLength="1000"
-                android:minHeight="200dp"
                 android:textSize="16sp" />
         </LinearLayout>
 

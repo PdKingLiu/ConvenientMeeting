@@ -1,12 +1,16 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +40,8 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
 
     @BindView(R.id.ed_phone)
     EditText edPhoneNumber;
+    @BindView(R.id.scroll_view)
+    ScrollView scrollView;
     @BindView(R.id.ed_new_password)
     EditText edNewPassword;
     @BindView(R.id.ed_new_password_again)
@@ -50,6 +56,8 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
     TitleView title;
     @BindView(R.id.btn_start_find)
     Button btnStart;
+    @BindView(R.id.ll_scroll)
+    LinearLayout linearLayout;
 
     private CountDownTimerUtils timerUtils;
 
@@ -63,6 +71,38 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
         SystemUtil.setTitleMode(getWindow());
         title.setLeftClickListener(this);
         btnStart.setEnabled(false);
+        edPhoneCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("lpp", "onFocusChange: " + hasFocus);
+            }
+        });
+    }
+
+    public void addLayoutListener(final View main, final View scroll) {
+        main.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect rect = new Rect();
+                //1、获取main在窗体的可视区域
+                scroll.getWindowVisibleDisplayFrame(rect);
+                int mainInvisibleHeight = scroll.getRootView().getHeight() - rect.bottom;
+                int screenHeight = scroll.getRootView().getHeight();//屏幕高度
+                //3、不可见区域大于屏幕本身高度的1/4：说明键盘弹起了
+                if (mainInvisibleHeight > screenHeight / 4) {
+                    int[] location = new int[2];
+                    scroll.getLocationInWindow(location);
+                    // 4､获取Scroll的窗体坐标，算出main需要滚动的高度
+                    int srollHeight = (location[1] + scroll.getHeight()) - rect.bottom;
+                    //5､让界面整体上移键盘的高度
+                    main.scrollTo(0, srollHeight);
+                } else {
+                    //3、不可见区域小于屏幕高度1/4时,说明键盘隐藏了，把界面下移，移回到原有高度
+                    main.scrollTo(0, 0);
+                }
+            }
+        });
     }
 
     @Override
@@ -85,10 +125,6 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
                 sendPhoneCode(edPhoneNumber.getText().toString(), btnSendCode, tvCodeSendStatus);
                 break;
         }
-    }
-
-    private void startSendPhoneCode() {
-
     }
 
     @OnTextChanged(R.id.ed_phone)
