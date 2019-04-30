@@ -71,6 +71,7 @@ public class FindPasswordActivity extends AppCompatActivity implements TitleView
         SystemUtil.setTitleMode(getWindow());
         title.setLeftClickListener(this);
         btnStart.setEnabled(false);
+        addLayoutListener(linearLayout, edPhoneCode);
         edPhoneCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

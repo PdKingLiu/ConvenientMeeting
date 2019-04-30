@@ -1,6 +1,8 @@
 package com.pdking.convenientmeeting.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,13 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
@@ -23,11 +25,13 @@ import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.MeetingMessageBean;
+import com.pdking.convenientmeeting.db.SMSSendStatusBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UIUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
@@ -101,7 +105,17 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
             public void selected(View view, PopMenuItem item, int position) {
                 switch (item.id) {
                     case 0:
-                        Toast.makeText(getContext(), "等待实现", Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder dia = new AlertDialog.Builder(getContext())
+                                .setCancelable(true)
+                                .setTitle("提示")
+                                .setMessage("确定要请假吗？")
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        setLeave(beanList.get(mPopMenu.getBindId()));
+                                    }
+                                });
+                        dia.show();
                         break;
                     case 1:
                         Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
@@ -109,6 +123,47 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                                 + "");
                         startActivity(intent);
                         break;
+                }
+            }
+        });
+    }
+
+    private void setLeave(MeetingMessage meetingMessage) {
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.LeaveBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication())
+                .getUserId() + "");
+        body.add(Api.LeaveBody[1], meetingMessage.meetingId + "");
+        Request request = new Request.Builder()
+                .put(body.build())
+                .header(Api.LeaveHeader[0], Api.LeaveHeader[1])
+                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
+                .url(Api.LeaveApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(getActivity(), "请假失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "msg: " + msg);
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
+                        }
+                    });
+                    return;
+                }
+                SMSSendStatusBean bean = new Gson().fromJson(msg, SMSSendStatusBean.class);
+                if (bean == null || bean.status != 0) {
+                    UIUtils.showToast(getActivity(), "请假失败");
+                } else {
+                    UIUtils.showToast(getActivity(), "请假成功");
                 }
             }
         });

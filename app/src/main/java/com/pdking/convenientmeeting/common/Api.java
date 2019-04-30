@@ -189,4 +189,11 @@ public class Api {
 
     public static String[] VoteBody = {"userId", "voteId", "optionIds"};
 
+    public static String LeaveApi = "http://www.shidongxuan.top/smartMeeting_Web/user/applyLeave.do";
+
+    public static String[] LeaveHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] LeaveBody = {"userId", "meetingId"};
+
 }
