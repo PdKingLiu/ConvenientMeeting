@@ -1,96 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        app:cardCornerRadius="4dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_user_icon"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="10dp"
+            android:src="@mipmap/user_default_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/civ_user_icon"
-                android:padding="8dp"
-                android:layout_width="70dp"
-                android:src="@mipmap/user_default_icon"
-                android:layout_height="70dp" />
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:text="刘沛栋"
+                android:textColor="@android:color/black"
+                android:textSize="19sp" />
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_username"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    android:text="刘沛栋"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:id="@+id/ll_user_kind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@mipmap/icon_query_master" />
+
+                    <TextView
+                        android:id="@+id/tv_user_kind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:minWidth="80dp"
+                        android:text="组织者" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <ImageView
+                        android:id="@+id/iv_user_kind"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@mipmap/icon_user_status_normal" />
+
+                    <TextView
+                        android:id="@+id/tv_status"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:src="@mipmap/icon_query_master"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp" />
-
-                        <TextView
-                            android:id="@+id/tv_user_kind"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp"
-                            android:text="组织者"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-                    <LinearLayout
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:text="正常签到" />
 
-                        <ImageView
-                            android:src="@mipmap/icon_user_status_normal"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp" />
-
-                        <TextView
-                            android:id="@+id/tv_status"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp"
-                            android:text="正常签到"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
 
         </LinearLayout>
 
-
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
 </LinearLayout>

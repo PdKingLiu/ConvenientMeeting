@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         initFragment();
         initUser();
         initPoll();
+        Log.d(TAG, "here");
     }
 
     private void initPoll() {

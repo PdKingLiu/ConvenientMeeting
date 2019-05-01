@@ -368,6 +368,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private void scanMemberList() {
         Intent intent = new Intent(this, ScanMeetingMemberListActivity.class);
         intent.putExtra("meetingId", meetingId);
+        intent.putExtra("masterId", bean.data.masterId + "");
         startActivity(intent);
     }
 
@@ -509,7 +510,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     }
 
     private void changePage(final MeetingByIdMessageBean bean) {
-
         runOnUiThread(new Runnable() {
             @SuppressLint("RestrictedApi")
             @Override
