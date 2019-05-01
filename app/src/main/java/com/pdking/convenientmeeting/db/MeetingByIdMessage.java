@@ -43,5 +43,7 @@ public class MeetingByIdMessage {
         public String username;
         @SerializedName("userStatus")
         public int userStatus;
+        @SerializedName("avatarUrl")
+        public String avatarUrl;
     }
 }

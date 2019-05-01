@@ -114,7 +114,8 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                                     public void onClick(DialogInterface dialog, int which) {
                                         setLeave(beanList.get(mPopMenu.getBindId()));
                                     }
-                                });
+                                })
+                                .setNegativeButton("取消", null);
                         dia.show();
                         break;
                     case 1:
@@ -130,11 +131,14 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
 
     private void setLeave(MeetingMessage meetingMessage) {
         FormBody.Builder body = new FormBody.Builder();
+        Log.d("Lpp", "setLeave: " + UserAccountUtils.getUserInfo(getActivity().getApplication())
+                .getUserId() + UserAccountUtils.getUserToken(getActivity().getApplication())
+                .getToken());
         body.add(Api.LeaveBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication())
                 .getUserId() + "");
         body.add(Api.LeaveBody[1], meetingMessage.meetingId + "");
         Request request = new Request.Builder()
-                .put(body.build())
+                .post(body.build())
                 .header(Api.LeaveHeader[0], Api.LeaveHeader[1])
                 .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication())
                         .getToken())

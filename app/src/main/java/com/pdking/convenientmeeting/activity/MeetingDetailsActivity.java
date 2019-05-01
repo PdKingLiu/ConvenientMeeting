@@ -81,6 +81,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     FloatingActionButton fabStartOrEnd;
     @BindView(R.id.ll_meeting_files)
     LinearLayout rlMeetingFiles;
+    @BindView(R.id.fl_member_list)
+    FrameLayout flMemberList;
 
     private FloatingActionMenu actionMenu;
 
@@ -323,7 +325,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files, R.id.rl_vote, R
-            .id.rl_note})
+            .id.rl_note,R.id.fl_member_list})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -332,6 +334,9 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_add_member:
                 addMember();
+                break;
+            case R.id.fl_member_list:
+                scanMemberList();
                 break;
             case R.id.fab_start_or_end:
                 fabClick();
@@ -358,6 +363,12 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 startActivity(intent1);
                 break;
         }
+    }
+
+    private void scanMemberList() {
+        Intent intent = new Intent(this, ScanMeetingMemberListActivity.class);
+        intent.putExtra("meetingId", meetingId);
+        startActivity(intent);
     }
 
     private void enterVote() {
@@ -529,6 +540,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 for (int i = 0; i < bean.data.memberStatus.size(); i++) {
                     if (i == 6) {
                         stringBuilder.append("\n").append("···");
+                        tvMemberList.setText(stringBuilder.toString());
                         break;
                     }
                     MeetingByIdMessage.MemberStatusBean memberStatusBean = bean.data.memberStatus

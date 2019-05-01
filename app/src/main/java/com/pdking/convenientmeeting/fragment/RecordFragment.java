@@ -359,6 +359,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
+                    smartRefreshLayout.finishRefresh(false);
                     return;
                 }
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
@@ -431,8 +432,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         chartStatus[1] = (float) ((((leave * 1.0) / total) * 1000) / 10.0);
         chartStatus[2] = (float) ((((late * 1.0) / total) * 1000) / 10.0);
         chartStatus[3] = (float) ((((normal * 1.0) / total) * 1000) / 10.0);
-        chartIdentity[0] = (float) ((((master * 1.0) / master + parter) * 1000) / 10.0);
-        chartIdentity[1] = (float) ((((parter * 1.0) / master + parter) * 1000) / 10.0);
+        chartIdentity[0] = (float) ((((master * 1.0) / (master + parter)) * 1000) / 10.0);
+        chartIdentity[1] = (float) ((((parter * 1.0) / (master + parter)) * 1000) / 10.0);
         tvName.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).getUsername());
         tvProportion.setText(normal + " / " + total);
         pieChart.setVisibility(View.VISIBLE);

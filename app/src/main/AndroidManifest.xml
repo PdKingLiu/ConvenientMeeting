@@ -97,6 +97,8 @@
             android:name=".service.RemindMeetingStartService"
             android:enabled="true"
             android:exported="true" />
+
+        <activity android:name=".activity.ScanMeetingMemberListActivity"></activity>
     </application>
 
 </manifest>
