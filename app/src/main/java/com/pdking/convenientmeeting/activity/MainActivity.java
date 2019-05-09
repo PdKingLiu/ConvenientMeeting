@@ -26,6 +26,7 @@ import com.pdking.convenientmeeting.fragment.MeetingFragment;
 import com.pdking.convenientmeeting.fragment.MeetingRoomFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
+import com.pdking.convenientmeeting.fragment.VideoFragment;
 import com.pdking.convenientmeeting.service.RemindMeetingStartService;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.PollUtils;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MeetingFragment mMeetingFragment;
 
+    private VideoFragment mVideoFragment;
+
     private RecordFragment mRecordFragment;
 
     private MineFragment mMineFragment;
@@ -90,11 +93,9 @@ public class MainActivity extends AppCompatActivity {
         initFragment();
         initUser();
         initPoll();
-        Log.d(TAG, "here");
     }
 
     private void initPoll() {
-        Log.d(TAG, "initPoll: ");
         PollUtils.startPoll(this, RemindMeetingStartService.class, 10);
     }
 
@@ -258,6 +259,13 @@ public class MainActivity extends AppCompatActivity {
                         setFragmentPage(R.id.bnv_meet);
                         bottomFlag = R.id.bnv_meet;
                         break;
+                    case R.id.bnv_video:
+                        if (bottomFlag == R.id.bnv_video) {
+                            break;
+                        }
+                        setFragmentPage(R.id.bnv_video);
+                        bottomFlag = R.id.bnv_video;
+                        break;
                     case R.id.bnv_record:
                         if (bottomFlag == R.id.bnv_record) {
                             break;
@@ -298,6 +306,14 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.show(mMeetingFragment);
                 }
                 break;
+            case R.id.bnv_video:
+                if (mVideoFragment == null) {
+                    mVideoFragment = VideoFragment.getINSTANCE();
+                    fragmentTransaction.add(R.id.fl_main, mVideoFragment);
+                } else {
+                    fragmentTransaction.show(mVideoFragment);
+                }
+                break;
             case R.id.bnv_record:
                 if (mRecordFragment == null) {
                     mRecordFragment = RecordFragment.getINSTANCE();
@@ -324,7 +340,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bnv_meet:
                 if (mMeetingFragment != null && !mMeetingFragment.isHidden()) {
                     fragmentTransaction.hide(mMeetingFragment);
-                    Log.d(TAG, "hideFragmentPage: ");
+                }
+                break;
+            case R.id.bnv_video:
+                if (mVideoFragment != null && !mVideoFragment.isHidden()) {
+                    fragmentTransaction.hide(mVideoFragment);
                 }
                 break;
             case R.id.bnv_record:

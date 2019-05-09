@@ -468,7 +468,7 @@ public class ModificationUserDataActivity extends AppCompatActivity implements T
                 }
                 Log.d("Lpp", "onResponse: " + msg);
                 dataBean = new Gson().fromJson(msg, UserDataBean.class);
-                if (dataBean.status == 1) {
+                if (dataBean == null || dataBean.status == 1 || dataBean.data == null) {
                     setErrorPage(true);
                 } else {
                     setErrorPage(false);

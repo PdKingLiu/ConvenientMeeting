@@ -195,8 +195,24 @@ public class ReleaseVoteActivity extends AppCompatActivity implements TitleView
         body.add(Api.SetVoteBody[0], meetingId + "");
         body.add(Api.SetVoteBody[1], userId + "");
         body.add(Api.SetVoteBody[2], theme);
+        int timeSum = 0;
+        switch (remind) {
+            case 1:
+                timeSum = 30;
+                break;
+            case 2:
+                timeSum = 12 * 60;
+                break;
+            case 3:
+                timeSum = 24 * 60;
+                break;
+            case 4:
+                timeSum = 0;
+                break;
+
+        }
         body.add(Api.SetVoteBody[3], kind + "");
-        body.add(Api.SetVoteBody[4], remind + "");
+        body.add(Api.SetVoteBody[4], timeSum + "");
         body.add(Api.SetVoteBody[5], new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format
                 (createTime));
         body.add(Api.SetVoteBody[6], new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(endTime));

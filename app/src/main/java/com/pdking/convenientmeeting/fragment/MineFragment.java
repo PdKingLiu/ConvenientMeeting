@@ -51,6 +51,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private CircleImageView civUserIcon;
     private File iconFile;
     private TextView tvUserEmail;
+    private TextView tvUserName;
     private RelativeLayout rlAboutApp;
     private String email;
     private String avatarUrl;
@@ -76,6 +77,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         civUserIcon = view.findViewById(R.id.civ_user_icon);
         tvUserEmail = view.findViewById(R.id.tv_user_email);
         rlSettingSafety = view.findViewById(R.id.rl_setting_safety);
+        tvUserName = view.findViewById(R.id.tv_user_name);
         rlAboutApp = view.findViewById(R.id.rl_about_app);
         rlAboutApp.setOnClickListener(this);
         init();
@@ -215,5 +217,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     .into(civUserIcon);
         }
         tvUserEmail.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).email);
+        tvUserName.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).username);
     }
 }

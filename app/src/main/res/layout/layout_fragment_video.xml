@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragment.VideoFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/shape_gradient_title"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@android:color/transparent">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tl_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                app:tabGravity="center"
+                app:tabIndicatorColor="#08b9fd"
+                app:tabIndicatorHeight="0dp"
+                app:tabTextColor="@android:color/white">
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="正在进行" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="历史会议" />
+
+            </android.support.design.widget.TabLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_video_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_add_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:clickable="true"
+            android:src="@mipmap/icon_fab_add_video"
+            app:backgroundTint="#08b9fd"
+            app:elevation="8dp"
+            app:pressedTranslationZ="20dp"
+            app:useCompatPadding="true" />
+
+    </FrameLayout>
+
+</LinearLayout>

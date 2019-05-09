@@ -5,10 +5,17 @@
         android:id="@+id/bnv_meet"
         android:icon="@mipmap/bnv_meeting"
         android:title="@string/string_bnv_meeting" />
+
+    <item
+        android:id="@+id/bnv_video"
+        android:icon="@mipmap/bnv_video"
+        android:title="@string/string_bnv_video" />
+
     <item
         android:id="@+id/bnv_record"
         android:icon="@mipmap/bnv_record"
         android:title="@string/string_bnv_record" />
+
     <item
         android:id="@+id/bnv_mine"
         android:icon="@mipmap/bnv_mine"
