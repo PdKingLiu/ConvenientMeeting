@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.livemeeting.openlive.model.WorkerThread;
 import com.tencent.smtt.sdk.QbSdk;
 
 import org.litepal.LitePal;
@@ -20,6 +21,8 @@ public class App extends Application {
     private UserToken userToken;
 
     private UserInfo userInfo;
+
+    private WorkerThread mWorkerThread;
 
     @Override
     public void onCreate() {
@@ -44,7 +47,6 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        Log.d("Lpp", "onTerminate: ");
     }
 
     public UserInfo getUserInfo() {
@@ -61,6 +63,29 @@ public class App extends Application {
 
     public void setUserToken(UserToken userToken) {
         this.userToken = userToken;
+    }
+
+    public synchronized void initWorkerThread() {
+        if (mWorkerThread == null) {
+            mWorkerThread = new WorkerThread(getApplicationContext());
+            mWorkerThread.start();
+
+            mWorkerThread.waitForReady();
+        }
+    }
+
+    public synchronized WorkerThread getWorkerThread() {
+        return mWorkerThread;
+    }
+
+    public synchronized void deInitWorkerThread() {
+        mWorkerThread.exit();
+        try {
+            mWorkerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mWorkerThread = null;
     }
 
 }

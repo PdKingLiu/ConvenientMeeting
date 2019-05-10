@@ -12,5 +12,8 @@
     <color name="pie_yellow">#fff78c</color>
     <color name="color_gray_background">#f8f8f8</color>
     <color name="color_view_line">#d2d2d2</color>
-
+    <color name="agora_blue">#FF00A0EB</color>
+    <color name="grey_a">#FF878787</color>
+    <color name="lightColorAccent">#30FF4081</color>
+    <color name="dark_black">#CC262626</color>
 </resources>
