@@ -1,14 +1,12 @@
 package com.pdking.convenientmeeting.fragment;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +14,9 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
-import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
 import com.pdking.convenientmeeting.adapter.OnItemClickListener;
 import com.pdking.convenientmeeting.adapter.VideoListAdapter;
 import com.pdking.convenientmeeting.common.Api;
-import com.pdking.convenientmeeting.db.MeetingMessage;
 import com.pdking.convenientmeeting.db.QueryVideoMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
@@ -178,7 +173,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                     refreshLayout.finishRefresh(false);
                     return;
                 }
-               QueryVideoMessageBean bean = new Gson().fromJson(msg, QueryVideoMessageBean.class);
+                QueryVideoMessageBean bean = new Gson().fromJson(msg, QueryVideoMessageBean.class);
                 if (!(bean == null || bean.status != 0 || bean.data == null)) {
                     beanList.clear();
                     for (int i = 0; i < bean.data.size(); i++) {
@@ -190,7 +185,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public int compare(QueryVideoMessageBean.DataBean o1,
                                            QueryVideoMessageBean.DataBean o2) {
-                            return (int) (o1.startTime-o2.startTime);
+                            return (int) (o2.startTime - o1.startTime);
                         }
                     });
                     notifyDataChanged();

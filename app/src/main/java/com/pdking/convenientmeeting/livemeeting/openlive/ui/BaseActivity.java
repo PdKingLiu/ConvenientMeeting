@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -81,9 +82,12 @@ public abstract class BaseActivity extends AppCompatActivity implements AGEventH
     }
 
     private boolean checkSelfPermissions() {
-        return checkSelfPermission(Manifest.permission.RECORD_AUDIO, ConstantApp.PERMISSION_REQ_ID_RECORD_AUDIO) &&
-                checkSelfPermission(Manifest.permission.CAMERA, ConstantApp.PERMISSION_REQ_ID_CAMERA) &&
-                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, ConstantApp.PERMISSION_REQ_ID_WRITE_EXTERNAL_STORAGE);
+        return checkSelfPermission(Manifest.permission.RECORD_AUDIO, ConstantApp
+                .PERMISSION_REQ_ID_RECORD_AUDIO) &&
+                checkSelfPermission(Manifest.permission.CAMERA, ConstantApp
+                        .PERMISSION_REQ_ID_CAMERA) &&
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, ConstantApp
+                        .PERMISSION_REQ_ID_WRITE_EXTERNAL_STORAGE);
     }
 
     @Override
@@ -110,7 +114,8 @@ public abstract class BaseActivity extends AppCompatActivity implements AGEventH
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    InputMethodManager mgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    InputMethodManager mgr = (InputMethodManager) getSystemService
+                            (INPUT_METHOD_SERVICE);
                     boolean result = mgr.showSoftInput(v, InputMethodManager.SHOW_FORCED);
                     log.debug("openIME " + focus + " " + result);
                 }
@@ -164,13 +169,16 @@ public abstract class BaseActivity extends AppCompatActivity implements AGEventH
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        log.debug("onRequestPermissionsResult " + requestCode + " " + Arrays.toString(permissions) + " " + Arrays.toString(grantResults));
+                                           @NonNull String permissions[], @NonNull int[]
+                                                       grantResults) {
+        log.debug("onRequestPermissionsResult " + requestCode + " " + Arrays.toString
+                (permissions) + " " + Arrays.toString(grantResults));
         switch (requestCode) {
             case ConstantApp.PERMISSION_REQ_ID_RECORD_AUDIO: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    checkSelfPermission(Manifest.permission.CAMERA, ConstantApp.PERMISSION_REQ_ID_CAMERA);
+                    checkSelfPermission(Manifest.permission.CAMERA, ConstantApp
+                            .PERMISSION_REQ_ID_CAMERA);
                 } else {
                     finish();
                 }
@@ -179,7 +187,8 @@ public abstract class BaseActivity extends AppCompatActivity implements AGEventH
             case ConstantApp.PERMISSION_REQ_ID_CAMERA: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, ConstantApp.PERMISSION_REQ_ID_WRITE_EXTERNAL_STORAGE);
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, ConstantApp
+                            .PERMISSION_REQ_ID_WRITE_EXTERNAL_STORAGE);
                     ((App) getApplication()).initWorkerThread();
                     workThreadInited();
                 } else {
@@ -197,7 +206,8 @@ public abstract class BaseActivity extends AppCompatActivity implements AGEventH
             }
         }
     }
-    protected void workThreadInited(){
+
+    protected void workThreadInited() {
 
     }
 

@@ -1,10 +1,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     tools:context=".livemeeting.openlive.ui.LiveRoomActivity">
+
+    <include
+        layout="@layout/layout_live_video_no_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.pdking.convenientmeeting.livemeeting.openlive.ui.GridVideoViewContainer
         android:id="@+id/grid_video_view_container"
@@ -34,23 +38,24 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_marginStart="6dp"
-                android:background="@drawable/rounded_bg"
-                android:orientation="vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingStart="12dp"
-                app:paddingEnd="12dp">
+                android:layout_width="110dp"
+                android:layout_height="54dp">
 
                 <TextView
                     android:id="@+id/room_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text="房间名字房间名字"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="20sp" />
+
             </LinearLayout>
 
             <View
@@ -58,12 +63,22 @@
                 android:layout_height="match_parent"
                 android:layout_weight="20" />
 
-            <ImageView
-                android:layout_width="54dp"
-                android:layout_height="match_parent"
-                android:onClick="onClickClose"
-                android:scaleType="center"
-                android:src="@drawable/btn_close" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:onClick="onClickClose">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:text="退出"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
 
         </com.pdking.convenientmeeting.livemeeting.ui.AGLinearLayout>
 
@@ -85,31 +100,31 @@
 
                 <ImageView
                     android:layout_width="54dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="54dp"
                     android:onClick="onShowHideClicked"
-                    android:scaleType="center"
+                    android:padding="14dp"
                     android:src="@drawable/btn_hide" />
 
                 <ImageView
                     android:id="@+id/btn_1"
                     android:layout_width="54dp"
-                    android:layout_height="match_parent"
-                    android:scaleType="center"
+                    android:layout_height="54dp"
+                    android:padding="14dp"
                     android:src="@drawable/btn_request_broadcast" />
-
-                <ImageView
-                    android:id="@+id/btn_2"
-                    android:layout_width="54dp"
-                    android:layout_height="match_parent"
-                    android:scaleType="center"
-                    android:src="@drawable/btn_switch_camera" />
 
                 <ImageView
                     android:id="@+id/btn_3"
                     android:layout_width="54dp"
-                    android:layout_height="match_parent"
-                    android:scaleType="center"
+                    android:layout_height="54dp"
+                    android:padding="14dp"
                     android:src="@drawable/btn_mute" />
+
+                <ImageView
+                    android:id="@+id/btn_2"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:padding="14dp"
+                    android:src="@drawable/btn_switch_camera" />
 
                 <View
                     android:layout_width="0dp"
@@ -119,9 +134,9 @@
                 <ImageView
                     android:id="@+id/btn_4"
                     android:layout_width="54dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="54dp"
                     android:onClick="onBtn4Clicked"
-                    android:scaleType="center"
+                    android:padding="14dp"
                     android:src="@drawable/btn_beautification" />
             </com.pdking.convenientmeeting.livemeeting.ui.AGLinearLayout>
 

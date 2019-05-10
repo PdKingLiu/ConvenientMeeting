@@ -209,4 +209,11 @@ public class Api {
     public static String[] GetVideoListHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
+    public static String[] ExitLiveRoomBody = {"liveId", "userId" };
+
+    public static String ExitLiveRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/live/quitLive";
+
+    public static String[] ExitLiveRoomHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
 }

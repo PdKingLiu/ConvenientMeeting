@@ -16,13 +16,13 @@
 
     <string name="label_confirm">Confirm</string>
 
-    <string name="label_beauty_effect">Beauty</string>
+    <string name="label_beauty_effect">美颜</string>
 
-    <string name="label_lightness">Lightness</string>
+    <string name="label_lightness">亮度</string>
 
-    <string name="label_smoothness">Smoothness</string>
+    <string name="label_smoothness">平滑度</string>
 
-    <string name="label_redness">Redness</string>
+    <string name="label_redness">红润度</string>
 
     <string-array
         name="string_array_resolutions">

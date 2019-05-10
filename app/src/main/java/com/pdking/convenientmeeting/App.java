@@ -69,7 +69,6 @@ public class App extends Application {
         if (mWorkerThread == null) {
             mWorkerThread = new WorkerThread(getApplicationContext());
             mWorkerThread.start();
-
             mWorkerThread.waitForReady();
         }
     }

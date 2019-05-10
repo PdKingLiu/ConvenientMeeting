@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -18,20 +19,33 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.livemeeting.common.Constant;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.AGEventHandler;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.VideoStatusData;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
@@ -41,7 +55,10 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
     private RelativeLayout mSmallVideoViewDock;
 
-    private final HashMap<Integer, SurfaceView> mUidsList = new HashMap<>(); // uid = 0 || uid == EngineConfig.mUid
+    private String liveId;
+
+    private final HashMap<Integer, SurfaceView> mUidsList = new HashMap<>(); // uid = 0 || uid ==
+    // EngineConfig.mUid
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +99,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
         doConfigEngine(cRole);
 
-        mGridVideoViewContainer = (GridVideoViewContainer) findViewById(R.id.grid_video_view_container);
+        mGridVideoViewContainer = (GridVideoViewContainer) findViewById(R.id
+                .grid_video_view_container);
         mGridVideoViewContainer.setItemEventHandler(new VideoViewEventListener() {
             @Override
             public void onItemDoubleClick(View v, Object item) {
@@ -105,11 +123,13 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
         if (isBroadcaster(cRole)) {
             SurfaceView surfaceV = RtcEngine.CreateRendererView(getApplicationContext());
-            rtcEngine().setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, 0));
+            rtcEngine().setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN,
+                    0));
 
             mUidsList.put(0, surfaceV); // get first surface view
 
-            mGridVideoViewContainer.initViewContainer(getApplicationContext(), 0, mUidsList); // first is now full view
+            mGridVideoViewContainer.initViewContainer(getApplicationContext(), 0, mUidsList); //
+            // first is now full view
             worker().preview(true, surfaceV, 0);
             broadcasterUI(button1, button2, button3);
         } else {
@@ -136,7 +156,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 }
             }
         });
-        button1.setColorFilter(getResources().getColor(R.color.agora_blue), PorterDuff.Mode.MULTIPLY);
+        button1.setColorFilter(getResources().getColor(R.color.agora_blue), PorterDuff.Mode
+                .MULTIPLY);
 
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +178,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 ImageView button = (ImageView) v;
                 button.setTag(flag);
                 if (flag) {
-                    button.setColorFilter(getResources().getColor(R.color.agora_blue), PorterDuff.Mode.MULTIPLY);
+                    button.setColorFilter(getResources().getColor(R.color.agora_blue), PorterDuff
+                            .Mode.MULTIPLY);
                 } else {
                     button.clearColorFilter();
                 }
@@ -188,21 +210,59 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
     private void doConfigEngine(int cRole) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        int prefIndex = pref.getInt(ConstantApp.PrefManager.PREF_PROPERTY_PROFILE_IDX, ConstantApp.DEFAULT_PROFILE_IDX);
+        int prefIndex = pref.getInt(ConstantApp.PrefManager.PREF_PROPERTY_PROFILE_IDX,
+                ConstantApp.DEFAULT_PROFILE_IDX);
         if (prefIndex > ConstantApp.VIDEO_DIMENSIONS.length - 1) {
             prefIndex = ConstantApp.DEFAULT_PROFILE_IDX;
         }
-        VideoEncoderConfiguration.VideoDimensions dimension = ConstantApp.VIDEO_DIMENSIONS[prefIndex];
+        VideoEncoderConfiguration.VideoDimensions dimension = ConstantApp
+                .VIDEO_DIMENSIONS[prefIndex];
 
         worker().configEngine(cRole, dimension);
     }
 
     @Override
     protected void deInitUIandEvent() {
+        requestExit();
         doLeaveChannel();
         event().removeEventHandler(this);
-
         mUidsList.clear();
+    }
+
+    private void requestExit() {
+        String liveId = getIntent().getStringExtra("liveId");
+        String userId = String.valueOf(UserAccountUtils.getUserInfo(getApplication()).getUserId());
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.ExitLiveRoomBody[0], liveId);
+        body.add(Api.ExitLiveRoomBody[1], userId);
+        final Request request = new Request.Builder()
+                .url(Api.ExitLiveRoomApi)
+                .header(Api.ExitLiveRoomHeader[0], Api.ExitLiveRoomHeader[1])
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
+                .post(body.build())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("Lpp", "退出失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "退出msg: " + msg);
+                if (msg.contains("token")) {
+                    LoginStatusUtils.stateFailure(LiveRoomActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            UserAccountUtils.setUserToken(newToken, getApplication());
+                            requestExit();
+                        }
+                    });
+                    return;
+                }
+            }
+        });
     }
 
     private void doLeaveChannel() {
@@ -252,14 +312,16 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     public void onBtn4Clicked(View view) {
         if (isBroadcaster()) {
             if (mFaceBeautificationPopupWindow == null) {
-                mFaceBeautificationPopupWindow = new FaceBeautificationPopupWindow(this.getBaseContext());
+                mFaceBeautificationPopupWindow = new FaceBeautificationPopupWindow(this
+                        .getBaseContext());
             }
         } else {
             return;
         }
 
         if (!mFaceBeautificationPopupWindow.isShowing()) {
-            mFaceBeautificationPopupWindow.show(view, new FaceBeautificationPopupWindow.UserEventHandler() {
+            mFaceBeautificationPopupWindow.show(view, new FaceBeautificationPopupWindow
+                    .UserEventHandler() {
                 @Override
                 public void onFBSwitch(boolean on) {
                     if (on) {
@@ -273,17 +335,20 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
                 @Override
                 public void onLightnessSet(float lightness) {
-                    worker().setBeautyEffectParameters(lightness, Constant.BEAUTY_OPTIONS.smoothnessLevel, Constant.BEAUTY_OPTIONS.rednessLevel);
+                    worker().setBeautyEffectParameters(lightness, Constant.BEAUTY_OPTIONS
+                            .smoothnessLevel, Constant.BEAUTY_OPTIONS.rednessLevel);
                 }
 
                 @Override
                 public void onSmoothnessSet(float smoothness) {
-                    worker().setBeautyEffectParameters(Constant.BEAUTY_OPTIONS.lighteningLevel, smoothness, Constant.BEAUTY_OPTIONS.rednessLevel);
+                    worker().setBeautyEffectParameters(Constant.BEAUTY_OPTIONS.lighteningLevel,
+                            smoothness, Constant.BEAUTY_OPTIONS.rednessLevel);
                 }
 
                 @Override
                 public void onRednessSet(float redness) {
-                    worker().setBeautyEffectParameters(Constant.BEAUTY_OPTIONS.lighteningLevel, Constant.BEAUTY_OPTIONS.smoothnessLevel, redness);
+                    worker().setBeautyEffectParameters(Constant.BEAUTY_OPTIONS.lighteningLevel,
+                            Constant.BEAUTY_OPTIONS.smoothnessLevel, redness);
                 }
             });
         }
@@ -296,7 +361,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     private void doSwitchToBroadcaster(boolean broadcaster) {
         final int currentHostCount = mUidsList.size();
         final int uid = config().mUid;
-        log.debug("doSwitchToBroadcaster " + currentHostCount + " " + (uid & 0XFFFFFFFFL) + " " + broadcaster);
+        log.debug("doSwitchToBroadcaster " + currentHostCount + " " + (uid & 0XFFFFFFFFL) + " " +
+                broadcaster);
 
         final ImageView button1 = (ImageView) findViewById(R.id.btn_1);
         final ImageView button2 = (ImageView) findViewById(R.id.btn_2);
@@ -348,9 +414,11 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 SurfaceView surfaceV = RtcEngine.CreateRendererView(getApplicationContext());
                 mUidsList.put(uid, surfaceV);
                 if (config().mUid == uid) {
-                    rtcEngine().setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, uid));
+                    rtcEngine().setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas
+                            .RENDER_MODE_HIDDEN, uid));
                 } else {
-                    rtcEngine().setupRemoteVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, uid));
+                    rtcEngine().setupRemoteVideo(new VideoCanvas(surfaceV, VideoCanvas
+                            .RENDER_MODE_HIDDEN, uid));
                 }
 
                 if (mViewType == VIEW_TYPE_DEFAULT) {
@@ -358,7 +426,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                     switchToDefaultVideoView();
                 } else {
                     int bigBgUid = mSmallVideoViewAdapter.getExceptedUid();
-                    log.debug("doRenderRemoteUi VIEW_TYPE_SMALL" + " " + (uid & 0xFFFFFFFFL) + " " + (bigBgUid & 0xFFFFFFFFL));
+                    log.debug("doRenderRemoteUi VIEW_TYPE_SMALL" + " " + (uid & 0xFFFFFFFFL) + " " +
+                            "" + (bigBgUid & 0xFFFFFFFFL));
                     switchToSmallVideoView(bigBgUid);
                 }
             }
@@ -375,12 +444,14 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 }
 
                 if (mUidsList.containsKey(uid)) {
-                    log.debug("already added to UI, ignore it " + (uid & 0xFFFFFFFFL) + " " + mUidsList.get(uid));
+                    log.debug("already added to UI, ignore it " + (uid & 0xFFFFFFFFL) + " " +
+                            mUidsList.get(uid));
                     return;
                 }
 
                 final boolean isBroadcaster = isBroadcaster();
-                log.debug("onJoinChannelSuccess " + channel + " " + uid + " " + elapsed + " " + isBroadcaster);
+                log.debug("onJoinChannelSuccess " + channel + " " + uid + " " + elapsed + " " +
+                        isBroadcaster);
 
                 worker().getEngineConfig().mUid = uid;
 
@@ -410,21 +481,35 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
             public void run() {
                 HashMap.Entry<Integer, SurfaceView> highest = null;
                 for (HashMap.Entry<Integer, SurfaceView> pair : mUidsList.entrySet()) {
-                    log.debug("requestRemoteStreamType " + currentHostCount + " local " + (config().mUid & 0xFFFFFFFFL) + " " + (pair.getKey() & 0xFFFFFFFFL) + " " + pair.getValue().getHeight() + " " + pair.getValue().getWidth());
-                    if (pair.getKey() != config().mUid && (highest == null || highest.getValue().getHeight() < pair.getValue().getHeight())) {
+                    log.debug("requestRemoteStreamType " + currentHostCount + " local " + (config
+                            ().mUid & 0xFFFFFFFFL) + " " + (pair.getKey() & 0xFFFFFFFFL) + " " +
+                            pair.getValue().getHeight() + " " + pair.getValue().getWidth());
+                    if (pair.getKey() != config().mUid && (highest == null || highest.getValue()
+                            .getHeight() < pair.getValue().getHeight())) {
                         if (highest != null) {
-                            rtcEngine().setRemoteVideoStreamType(highest.getKey(), Constants.VIDEO_STREAM_LOW);
-                            log.debug("setRemoteVideoStreamType switch highest VIDEO_STREAM_LOW " + currentHostCount + " " + (highest.getKey() & 0xFFFFFFFFL) + " " + highest.getValue().getWidth() + " " + highest.getValue().getHeight());
+                            rtcEngine().setRemoteVideoStreamType(highest.getKey(), Constants
+                                    .VIDEO_STREAM_LOW);
+                            log.debug("setRemoteVideoStreamType switch highest VIDEO_STREAM_LOW "
+                                    + currentHostCount + " " + (highest.getKey() & 0xFFFFFFFFL) +
+                                    " " + highest.getValue().getWidth() + " " + highest.getValue
+                                    ().getHeight());
                         }
                         highest = pair;
-                    } else if (pair.getKey() != config().mUid && (highest != null && highest.getValue().getHeight() >= pair.getValue().getHeight())) {
-                        rtcEngine().setRemoteVideoStreamType(pair.getKey(), Constants.VIDEO_STREAM_LOW);
-                        log.debug("setRemoteVideoStreamType VIDEO_STREAM_LOW " + currentHostCount + " " + (pair.getKey() & 0xFFFFFFFFL) + " " + pair.getValue().getWidth() + " " + pair.getValue().getHeight());
+                    } else if (pair.getKey() != config().mUid && (highest != null && highest
+                            .getValue().getHeight() >= pair.getValue().getHeight())) {
+                        rtcEngine().setRemoteVideoStreamType(pair.getKey(), Constants
+                                .VIDEO_STREAM_LOW);
+                        log.debug("setRemoteVideoStreamType VIDEO_STREAM_LOW " + currentHostCount
+                                + " " + (pair.getKey() & 0xFFFFFFFFL) + " " + pair.getValue()
+                                .getWidth() + " " + pair.getValue().getHeight());
                     }
                 }
                 if (highest != null && highest.getKey() != 0) {
-                    rtcEngine().setRemoteVideoStreamType(highest.getKey(), Constants.VIDEO_STREAM_HIGH);
-                    log.debug("setRemoteVideoStreamType VIDEO_STREAM_HIGH " + currentHostCount + " " + (highest.getKey() & 0xFFFFFFFFL) + " " + highest.getValue().getWidth() + " " + highest.getValue().getHeight());
+                    rtcEngine().setRemoteVideoStreamType(highest.getKey(), Constants
+                            .VIDEO_STREAM_HIGH);
+                    log.debug("setRemoteVideoStreamType VIDEO_STREAM_HIGH " + currentHostCount +
+                            " " + (highest.getKey() & 0xFFFFFFFFL) + " " + highest.getValue()
+                            .getWidth() + " " + highest.getValue().getHeight());
                 }
             }
         }, 500);
@@ -445,7 +530,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                     bigBgUid = mSmallVideoViewAdapter.getExceptedUid();
                 }
 
-                log.debug("doRemoveRemoteUi " + (uid & 0xFFFFFFFFL) + " " + (bigBgUid & 0xFFFFFFFFL));
+                log.debug("doRemoveRemoteUi " + (uid & 0xFFFFFFFFL) + " " + (bigBgUid &
+                        0xFFFFFFFFL));
 
                 if (mViewType == VIEW_TYPE_DEFAULT || uid == bigBgUid) {
                     switchToDefaultVideoView();
@@ -461,7 +547,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     private void switchToDefaultVideoView() {
         if (mSmallVideoViewDock != null)
             mSmallVideoViewDock.setVisibility(View.GONE);
-        mGridVideoViewContainer.initViewContainer(getApplicationContext(), config().mUid, mUidsList);
+        mGridVideoViewContainer.initViewContainer(getApplicationContext(), config().mUid,
+                mUidsList);
 
         mViewType = VIEW_TYPE_DEFAULT;
 
@@ -473,7 +560,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
             int uid = mGridVideoViewContainer.getItem(i).mUid;
             if (config().mUid != uid) {
                 rtcEngine().setRemoteVideoStreamType(uid, Constants.VIDEO_STREAM_HIGH);
-                log.debug("setRemoteVideoStreamType VIDEO_STREAM_HIGH " + mUidsList.size() + " " + (uid & 0xFFFFFFFFL));
+                log.debug("setRemoteVideoStreamType VIDEO_STREAM_HIGH " + mUidsList.size() + " "
+                        + (uid & 0xFFFFFFFFL));
             }
         }
         boolean setRemoteUserPriorityFlag = false;
@@ -483,10 +571,12 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 if (!setRemoteUserPriorityFlag) {
                     setRemoteUserPriorityFlag = true;
                     rtcEngine().setRemoteUserPriority(uid, Constants.USER_PRIORITY_HIGH);
-                    log.debug("setRemoteUserPriority USER_PRIORITY_HIGH " + mUidsList.size() + " " + (uid & 0xFFFFFFFFL));
+                    log.debug("setRemoteUserPriority USER_PRIORITY_HIGH " + mUidsList.size() + " " +
+                            "" + (uid & 0xFFFFFFFFL));
                 } else {
                     rtcEngine().setRemoteUserPriority(uid, Constants.USER_PRIORITY_NORANL);
-                    log.debug("setRemoteUserPriority USER_PRIORITY_NORANL " + mUidsList.size() + " " + (uid & 0xFFFFFFFFL));
+                    log.debug("setRemoteUserPriority USER_PRIORITY_NORANL " + mUidsList.size() +
+                            " " + (uid & 0xFFFFFFFFL));
                 }
             }
         }
@@ -522,17 +612,19 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
         if (mSmallVideoViewAdapter == null) {
             create = true;
-            mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, exceptUid, mUidsList, new VideoViewEventListener() {
-                @Override
-                public void onItemDoubleClick(View v, Object item) {
-                    switchToDefaultVideoView();
-                }
-            });
+            mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, exceptUid, mUidsList, new
+                    VideoViewEventListener() {
+                        @Override
+                        public void onItemDoubleClick(View v, Object item) {
+                            switchToDefaultVideoView();
+                        }
+                    });
             mSmallVideoViewAdapter.setHasStableIds(true);
         }
         recycler.setHasFixedSize(true);
 
-        recycler.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
+        recycler.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,
+                false));
         recycler.setAdapter(mSmallVideoViewAdapter);
 
         recycler.setDrawingCacheEnabled(true);
@@ -545,10 +637,12 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
             if (config().mUid != tempUid) {
                 if (tempUid == exceptUid) {
                     rtcEngine().setRemoteUserPriority(tempUid, Constants.USER_PRIORITY_HIGH);
-                    log.debug("setRemoteUserPriority USER_PRIORITY_HIGH " + mUidsList.size() + " " + (tempUid & 0xFFFFFFFFL));
+                    log.debug("setRemoteUserPriority USER_PRIORITY_HIGH " + mUidsList.size() + " " +
+                            "" + (tempUid & 0xFFFFFFFFL));
                 } else {
                     rtcEngine().setRemoteUserPriority(tempUid, Constants.USER_PRIORITY_NORANL);
-                    log.debug("setRemoteUserPriority USER_PRIORITY_NORANL " + mUidsList.size() + " " + (tempUid & 0xFFFFFFFFL));
+                    log.debug("setRemoteUserPriority USER_PRIORITY_NORANL " + mUidsList.size() +
+                            " " + (tempUid & 0xFFFFFFFFL));
                 }
             }
         }

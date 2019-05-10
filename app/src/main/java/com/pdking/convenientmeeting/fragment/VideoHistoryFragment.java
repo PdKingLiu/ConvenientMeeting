@@ -184,7 +184,7 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
                         @Override
                         public int compare(QueryVideoMessageBean.DataBean o1,
                                            QueryVideoMessageBean.DataBean o2) {
-                            return (int) (o1.startTime - o2.startTime);
+                            return (int) (o2.startTime - o1.startTime);
                         }
                     });
                     notifyDataChanged();

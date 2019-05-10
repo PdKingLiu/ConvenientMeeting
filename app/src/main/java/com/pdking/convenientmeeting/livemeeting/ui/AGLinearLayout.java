@@ -7,7 +7,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
-public class AGLinearLayout extends LinearLayout {
+public class  AGLinearLayout extends LinearLayout {
     public AGLinearLayout(Context context) {
         super(context);
     }

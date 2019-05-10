@@ -1,6 +1,7 @@
 package com.pdking.convenientmeeting.fragment;
 
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,11 +16,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.pdking.convenientmeeting.App;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.AddVideoMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
+import com.pdking.convenientmeeting.livemeeting.openlive.ui.LiveRoomActivity;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
@@ -31,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.agora.rtc.Constants;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -198,6 +203,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     }
 
     private void addVideoMeeting(View v) {
+        ((App) getActivity().getApplication()).initWorkerThread();
         AddVideoDialog dialog = new AddVideoDialog(getContext(), R.style.DialogTheme);
         dialog.setListener(new AddVideoDialog.OnClickListener() {
             @Override
@@ -209,7 +215,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
-    private void addRoom(String room, String password) {
+    private void addRoom(final String room, final String password) {
         if (room.equals("") || password.equals("")) {
             UIUtils.showToast(getActivity(), "输入有误");
             return;
@@ -257,14 +263,20 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                 }
                 bean = new Gson().fromJson(msg, AddVideoMessageBean.class);
                 if (!(bean == null || bean.status != 0 || bean.data == null)) {
-                    enterRoom();
+                    enterRoom(room, password, bean.data.id);
                 } else {
-                    UIUtils.showToast(getActivity(),"创建失败");
+                    UIUtils.showToast(getActivity(), "创建失败");
                 }
             }
         });
     }
 
-    private void enterRoom() {
+    private void enterRoom(String room, String password, int id) {
+        int cRole = Constants.CLIENT_ROLE_BROADCASTER;
+        Intent i = new Intent(getActivity(), LiveRoomActivity.class);
+        i.putExtra(ConstantApp.ACTION_KEY_CROLE, cRole);
+        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, room);
+        i.putExtra("liveId", String.valueOf(id));
+        startActivity(i);
     }
 }
