@@ -1,12 +1,14 @@
 package com.pdking.convenientmeeting.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +19,18 @@ import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.adapter.OnItemClickListener;
 import com.pdking.convenientmeeting.adapter.VideoListAdapter;
 import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.EnterLiveVideoBean;
 import com.pdking.convenientmeeting.db.QueryVideoMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
+import com.pdking.convenientmeeting.livemeeting.openlive.ui.LiveRoomActivity;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UIUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
+import com.pdking.convenientmeeting.weight.EnterLiveMeetingDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -35,8 +42,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.agora.rtc.Constants;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -121,7 +130,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
         videoListAdapter.setListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                enterRoom(position);
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -139,6 +148,83 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                 refresh();
             }
         });
+    }
+
+    private void enterRoom(final int position) {
+        EnterLiveMeetingDialog dialog = new EnterLiveMeetingDialog(getContext(), R.style
+                .DialogTheme);
+        dialog.setListener(new EnterLiveMeetingDialog.OnClickListener() {
+            @Override
+            public void onClick(String password) {
+                enterRoom(password, position);
+            }
+        });
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+
+    private void enterRoom(String password, int position) {
+        final QueryVideoMessageBean.DataBean bean = beanList.get(position);
+        if (bean.status == 1) {
+            FormBody.Builder body = new FormBody.Builder();
+            body.add(Api.EnterLiveRoomBody[0], String.valueOf(bean.id));
+            body.add(Api.EnterLiveRoomBody[1], String.valueOf(UserAccountUtils.getUserInfo
+                    (getActivity().getApplication()).userId));
+            body.add(Api.EnterLiveRoomBody[2], password);
+            Log.d("Lpp", "enterRoom: " + String.valueOf(bean.id) + String.valueOf
+                    (UserAccountUtils.getUserInfo
+                    (getActivity().getApplication()).userId) + password);
+            Request request = new Request.Builder()
+                    .post(body.build())
+                    .url(Api.EnterLiveRoomApi)
+                    .header(Api.EnterLiveRoomHeader[0], Api.EnterLiveRoomHeader[1])
+                    .addHeader("token", UserAccountUtils.getUserToken(getActivity()
+                            .getApplication()).getToken())
+                    .build();
+            OkHttpUtils.requestHelper(request, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    UIUtils.showToast(getActivity(), "网络错误");
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String msg = response.body().string();
+                    Log.d("Lpp", "进入房间: " + msg);
+                    if (msg.contains("token")) {
+                        LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                            @Override
+                            public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                                UserAccountUtils.setUserToken(newToken, getActivity()
+                                        .getApplication());
+                            }
+                        });
+                        return;
+                    }
+                    EnterLiveVideoBean bean1 = new Gson().fromJson(msg, EnterLiveVideoBean.class);
+                    if (bean1 == null) {
+                        UIUtils.showToast(getActivity(), "未知错误");
+                    } else {
+                        if (bean1.status != 0) {
+                            UIUtils.showToast(getActivity(), "密码错误");
+                        } else {
+                            enterRoomActivity(bean.id);
+                        }
+                    }
+                }
+            });
+        } else {
+            UIUtils.showToast(getActivity(), "次会议已结束，请刷新后重新查看");
+        }
+    }
+
+    private void enterRoomActivity(int id) {
+        int cRole = Constants.CLIENT_ROLE_BROADCASTER;
+        Intent i = new Intent(getActivity(), LiveRoomActivity.class);
+        i.putExtra(ConstantApp.ACTION_KEY_CROLE, cRole);
+        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, String.valueOf(id));
+        i.putExtra("liveId", String.valueOf(id));
+        startActivity(i);
     }
 
     private void refresh() {
@@ -161,6 +247,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
+                Log.d("Lpp", "List: " +msg);
                 if (msg.contains("token过期")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override

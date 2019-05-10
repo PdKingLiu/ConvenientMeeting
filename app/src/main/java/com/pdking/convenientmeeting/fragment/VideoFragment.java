@@ -263,7 +263,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                 }
                 bean = new Gson().fromJson(msg, AddVideoMessageBean.class);
                 if (!(bean == null || bean.status != 0 || bean.data == null)) {
-                    enterRoom(room, password, bean.data.id);
+                    enterRoom(room, bean.data.id);
                 } else {
                     UIUtils.showToast(getActivity(), "创建失败");
                 }
@@ -271,11 +271,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void enterRoom(String room, String password, int id) {
+    private void enterRoom(String room, int id) {
         int cRole = Constants.CLIENT_ROLE_BROADCASTER;
         Intent i = new Intent(getActivity(), LiveRoomActivity.class);
         i.putExtra(ConstantApp.ACTION_KEY_CROLE, cRole);
-        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, room);
+        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, String.valueOf(id));
         i.putExtra("liveId", String.valueOf(id));
         startActivity(i);
     }

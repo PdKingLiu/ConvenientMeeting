@@ -216,4 +216,11 @@ public class Api {
     public static String[] ExitLiveRoomHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
+    public static String[] EnterLiveRoomBody = {"liveId", "userId","password" };
+
+    public static String EnterLiveRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/live/joinLive";
+
+    public static String[] EnterLiveRoomHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
 }
