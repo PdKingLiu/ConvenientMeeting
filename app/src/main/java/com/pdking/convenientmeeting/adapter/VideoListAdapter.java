@@ -84,10 +84,11 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             tvName.setText(dataBean.liveName);
             if (dataBean.status == 1) {
                 tvStatus.setText("正在进行");
+                tvPeoples.setText(String.valueOf("在线人数：" + dataBean.onlineNum + "人"));
             } else {
                 tvStatus.setText("结束");
+                tvPeoples.setText(String.valueOf("参与人数：" + dataBean.onlineNum + "人"));
             }
-            tvPeoples.setText(String.valueOf("在线人数：" + dataBean.onlineNum + "人"));
             long time = dataBean.startTime;
             tvTime.setText(String.valueOf("时间：" + sdf.format(new Date(time))));
             if (i == beanList.size() - 1) {
