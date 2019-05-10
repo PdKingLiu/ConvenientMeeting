@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.weight.AddVideoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends Fragment {
+public class VideoFragment extends Fragment implements View.OnClickListener {
 
     private static VideoFragment INSTANCE;
 
@@ -66,6 +67,7 @@ public class VideoFragment extends Fragment {
         mTabLayout = view.findViewById(R.id.tl_title);
         mViewPager = view.findViewById(R.id.vp_video_content);
         fabAddVideo = view.findViewById(R.id.fab_add_video);
+        fabAddVideo.setOnClickListener(this);
     }
 
     private void initPagerAndTabLayout() {
@@ -167,4 +169,18 @@ public class VideoFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab_add_video:
+                addVideoMeeting(v);
+                break;
+        }
+    }
+
+    private void addVideoMeeting(View v) {
+        AddVideoDialog dialog = new AddVideoDialog(getContext(), R.style.DialogTheme);
+        dialog.setCancelable(true);
+        dialog.show();
+    }
 }
