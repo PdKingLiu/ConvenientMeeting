@@ -9,14 +9,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.AddVideoMessageBean;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.UIUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
@@ -50,6 +55,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     private FragmentPagerAdapter pagerAdapter;
 
     private FloatingActionButton fabAddVideo;
+
+    private AddVideoMessageBean bean;
 
     private boolean[] isFirst = {false, true};
 
@@ -216,7 +223,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
             UIUtils.showToast(getActivity(), "未知错误");
             return;
         }
-        FormBody.Builder body = new FormBody.Builder();
+        final FormBody.Builder body = new FormBody.Builder();
         body.add(Api.AddVideoBody[0], room);
         body.add(Api.AddVideoBody[1], password);
         body.add(Api.AddVideoBody[2], String.valueOf(UserAccountUtils.getUserInfo(getActivity()
@@ -237,8 +244,27 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            UserAccountUtils.getUserToken(getActivity().getApplication())
+                                    .setToken(newToken.getToken());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
+                        }
+                    });
+                    return;
+                }
+                bean = new Gson().fromJson(msg, AddVideoMessageBean.class);
+                if (!(bean == null || bean.status != 0 || bean.data == null)) {
+                    enterRoom();
+                } else {
+                    UIUtils.showToast(getActivity(),"创建失败");
+                }
             }
         });
+    }
+
+    private void enterRoom() {
     }
 }

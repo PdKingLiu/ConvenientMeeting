@@ -239,6 +239,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
                             UserAccountUtils.setUserToken(newToken, getActivity().getApplication());
                         }
                     });
+                    refreshLayout.finishRefresh(false);
                     return;
                 }
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);

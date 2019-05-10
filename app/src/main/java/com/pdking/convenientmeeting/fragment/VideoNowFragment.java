@@ -14,11 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
+import com.pdking.convenientmeeting.adapter.OnItemClickListener;
+import com.pdking.convenientmeeting.adapter.VideoListAdapter;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.QueryVideoMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
@@ -32,11 +36,12 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -51,9 +56,9 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
 
-    private List<MeetingMessage> beanList;
+    private List<QueryVideoMessageBean.DataBean> beanList;
 
-    private MeetingMineAdapter mineAdapter;
+    private VideoListAdapter videoListAdapter;
 
 
     public static VideoNowFragment newInstance() {
@@ -117,17 +122,15 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initRecyclerAndFlush() {
-        mineAdapter = new MeetingMineAdapter(beanList, getContext());
-        mineAdapter.setListener(new MeetingMineAdapter.OnItemClickListener() {
+        videoListAdapter = new VideoListAdapter(beanList, getContext());
+        videoListAdapter.setListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getContext(), MeetingDetailsActivity.class);
-                intent.putExtra("meetingId", beanList.get(position).meetingId + "");
-                startActivity(intent);
+
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(mineAdapter);
+        recyclerView.setAdapter(videoListAdapter);
         refreshLayout.setEnableAutoLoadMore(false);
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
@@ -163,7 +166,6 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "VideoList: " + msg);
                 if (msg.contains("token过期")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
@@ -176,7 +178,26 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                     refreshLayout.finishRefresh(false);
                     return;
                 }
-                refreshLayout.finishRefresh(true);
+               QueryVideoMessageBean bean = new Gson().fromJson(msg, QueryVideoMessageBean.class);
+                if (!(bean == null || bean.status != 0 || bean.data == null)) {
+                    beanList.clear();
+                    for (int i = 0; i < bean.data.size(); i++) {
+                        if (bean.data.get(i).status == 1) {
+                            beanList.add(bean.data.get(i));
+                        }
+                    }
+                    Collections.sort(beanList, new Comparator<QueryVideoMessageBean.DataBean>() {
+                        @Override
+                        public int compare(QueryVideoMessageBean.DataBean o1,
+                                           QueryVideoMessageBean.DataBean o2) {
+                            return (int) (o1.startTime-o2.startTime);
+                        }
+                    });
+                    notifyDataChanged();
+                    refreshLayout.finishRefresh(true);
+                } else {
+                    refreshLayout.finishRefresh(false);
+                }
             }
         });
     }
@@ -185,14 +206,14 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mineAdapter != null && beanList != null) {
+                if (videoListAdapter != null && beanList != null) {
                     if (beanList.size() == 0) {
                         rlHaveNothing.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     } else {
                         rlHaveNothing.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        mineAdapter.notifyDataSetChanged();
+                        videoListAdapter.notifyDataSetChanged();
                     }
                 } else {
                     rlHaveNothing.setVisibility(View.VISIBLE);
