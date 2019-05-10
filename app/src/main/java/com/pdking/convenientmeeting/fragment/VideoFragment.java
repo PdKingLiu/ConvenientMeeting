@@ -180,7 +180,17 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 
     private void addVideoMeeting(View v) {
         AddVideoDialog dialog = new AddVideoDialog(getContext(), R.style.DialogTheme);
+        dialog.setListener(new AddVideoDialog.OnClickListener() {
+            @Override
+            public void onClick(String room, String password) {
+                addRoom(room, password);
+            }
+        });
         dialog.setCancelable(true);
         dialog.show();
+    }
+
+    private void addRoom(String room, String password) {
+
     }
 }
