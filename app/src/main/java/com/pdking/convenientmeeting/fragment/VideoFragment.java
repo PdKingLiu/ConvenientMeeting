@@ -9,16 +9,28 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.AddVideoDialog;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +51,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 
     private FloatingActionButton fabAddVideo;
 
-    private boolean[] isFirst = {true, false, true};
+    private boolean[] isFirst = {false, true};
 
     public static VideoFragment getINSTANCE() {
         if (INSTANCE == null) {
@@ -138,13 +150,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         switch (i) {
             case 0:
                 if (isFirst[0]) {
-//                    ((VideoNowFragment) fragmentList.get(0)).autoRefresh();
+                    ((VideoNowFragment) fragmentList.get(0)).autoRefresh();
                     isFirst[0] = false;
                 }
                 break;
             case 1:
                 if (isFirst[1]) {
-//                    ((VideoHistoryFragment) fragmentList.get(1)).autoRefresh();
+                    ((VideoHistoryFragment) fragmentList.get(1)).autoRefresh();
                     isFirst[1] = false;
                 }
                 break;
@@ -191,6 +203,42 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     }
 
     private void addRoom(String room, String password) {
+        if (room.equals("") || password.equals("")) {
+            UIUtils.showToast(getActivity(), "输入有误");
+            return;
+        }
+        if (room.length() < 2 || password.length() < 6) {
+            UIUtils.showToast(getActivity(), "输入长度有误");
+            return;
+        }
+        if (UserAccountUtils.getUserInfo(getActivity().getApplication()) == null
+                || UserAccountUtils.getUserToken(getActivity().getApplication()) == null) {
+            UIUtils.showToast(getActivity(), "未知错误");
+            return;
+        }
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.AddVideoBody[0], room);
+        body.add(Api.AddVideoBody[1], password);
+        body.add(Api.AddVideoBody[2], String.valueOf(UserAccountUtils.getUserInfo(getActivity()
+                .getApplication()).getUserId()));
+        Request request = new Request.Builder()
+                .url(Api.AddVideoApi)
+                .post(body.build())
+                .header(Api.AddVideoHeader[0], Api.AddVideoHeader[1])
+                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(getActivity(), "网络错误");
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
+            }
+        });
     }
 }

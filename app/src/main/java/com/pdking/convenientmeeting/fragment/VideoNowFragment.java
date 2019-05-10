@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,28 @@ import android.widget.RelativeLayout;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
 import com.pdking.convenientmeeting.adapter.MeetingMineAdapter;
+import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.MeetingMessage;
+import com.pdking.convenientmeeting.db.UserInfo;
+import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.LoginCallBack;
+import com.pdking.convenientmeeting.utils.LoginStatusUtils;
+import com.pdking.convenientmeeting.utils.OkHttpUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,6 +84,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
         initList();
         initRecyclerAndFlush();
+        refreshLayout.autoRefresh();
     }
 
     private void initList() {
@@ -128,6 +144,41 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     }
 
     private void refresh() {
+        if (UserAccountUtils.getUserToken(getActivity().getApplication()) == null) {
+            refreshLayout.finishRefresh(false);
+            return;
+        }
+        final Request request = new Request.Builder()
+                .header(Api.GetVideoListHeader[0], Api.GetVideoListHeader[1])
+                .addHeader("token", UserAccountUtils.getUserToken(getActivity().getApplication())
+                        .getToken())
+                .url(Api.GetVideoListApi)
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                refreshLayout.finishRefresh(false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d("Lpp", "VideoList: " + msg);
+                if (msg.contains("token过期")) {
+                    LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            UserAccountUtils.getUserToken(getActivity().getApplication())
+                                    .setToken(newToken.getToken());
+                            UserAccountUtils.setUserInfo(newInfo, getActivity().getApplication());
+                        }
+                    });
+                    refreshLayout.finishRefresh(false);
+                    return;
+                }
+                refreshLayout.finishRefresh(true);
+            }
+        });
     }
 
     private void notifyDataChanged() {

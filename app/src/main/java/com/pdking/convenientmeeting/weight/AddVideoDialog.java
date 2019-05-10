@@ -69,6 +69,8 @@ public class AddVideoDialog extends Dialog implements View.OnClickListener, Comp
                 if (listener != null) {
                     listener.onClick(room, password);
                 }
+                this.hide();
+                this.dismiss();
                 break;
         }
     }
@@ -78,7 +80,8 @@ public class AddVideoDialog extends Dialog implements View.OnClickListener, Comp
         if (isChecked) {
             edRoomPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         } else {
-            edRoomPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            edRoomPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType
+                    .TYPE_TEXT_VARIATION_PASSWORD);
         }
     }
 

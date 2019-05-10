@@ -189,11 +189,24 @@ public class Api {
 
     public static String[] VoteBody = {"userId", "voteId", "optionIds"};
 
-    public static String LeaveApi = "http://www.shidongxuan.top/smartMeeting_Web/user/applyLeave.do";
+    public static String LeaveApi = "http://www.shidongxuan.top/smartMeeting_Web/user/applyLeave" +
+            ".do";
 
     public static String[] LeaveHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
     public static String[] LeaveBody = {"userId", "meetingId"};
+
+    public static String AddVideoApi = "http://www.shidongxuan.top/smartMeeting_Web/live/addMeeting";
+
+    public static String[] AddVideoHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] AddVideoBody = {"liveName", "livePwd", "createId"};
+
+    public static String GetVideoListApi = "http://www.shidongxuan.top/smartMeeting_Web/live/getList";
+
+    public static String[] GetVideoListHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
 
 }
