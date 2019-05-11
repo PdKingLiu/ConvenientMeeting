@@ -92,7 +92,6 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
         Log.d("Lpp", "onCreate:meetingRoomId " + meetingRoomId);
         Log.d("Lpp", "onCreate:roomStatus " + roomStatus);
-
         switch (roomStatus) {
             case 1:
                 changeTextViewText(tvRoomStatus, "状态：空闲");

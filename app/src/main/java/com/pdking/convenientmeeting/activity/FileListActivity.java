@@ -232,6 +232,7 @@ public class FileListActivity extends AppCompatActivity implements FileAdapter.O
             public void onResponse(Call call, Response response) throws IOException {
                 hideProgressBar();
                 String msg = response.body().string();
+                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(FileListActivity.this, new LoginCallBack() {
                         @Override

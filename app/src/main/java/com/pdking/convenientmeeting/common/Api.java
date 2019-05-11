@@ -197,30 +197,42 @@ public class Api {
 
     public static String[] LeaveBody = {"userId", "meetingId"};
 
-    public static String AddVideoApi = "http://www.shidongxuan.top/smartMeeting_Web/live/addMeeting";
+    public static String AddVideoApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/live/addMeeting";
 
     public static String[] AddVideoHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
     public static String[] AddVideoBody = {"liveName", "livePwd", "createId"};
 
-    public static String GetVideoListApi = "http://www.shidongxuan.top/smartMeeting_Web/live/getList";
+    public static String GetVideoListApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/live/getList";
 
     public static String[] GetVideoListHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
-    public static String[] ExitLiveRoomBody = {"liveId", "userId" };
+    public static String[] ExitLiveRoomBody = {"liveId", "userId"};
 
-    public static String ExitLiveRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/live/quitLive";
+    public static String ExitLiveRoomApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/live/quitLive";
 
     public static String[] ExitLiveRoomHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
-    public static String[] EnterLiveRoomBody = {"liveId", "userId","password" };
+    public static String[] EnterLiveRoomBody = {"liveId", "userId", "password"};
 
-    public static String EnterLiveRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/live/joinLive";
+    public static String EnterLiveRoomApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/live/joinLive";
 
     public static String[] EnterLiveRoomHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] GetUserFileListBody = {"userId"};
+
+    public static String GetUserFileListApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/user/getMyFiles.do";
+
+    public static String[] GetUserFileListHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
 }

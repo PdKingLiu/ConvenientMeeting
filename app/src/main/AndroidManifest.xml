@@ -85,7 +85,7 @@
         <activity
             android:name=".livemeeting.openlive.ui.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".livemeeting.openlive.ui.LiveRoomActivity"
             android:screenOrientation="portrait"
@@ -114,7 +114,8 @@
             android:exported="true" />
 
         <activity android:name=".activity.ScanMeetingMemberListActivity" />
-        <activity android:name=".activity.MeetingSettingActivity"></activity>
+        <activity android:name=".activity.MeetingSettingActivity" />
+        <activity android:name=".activity.MyUploadActivity"></activity>
     </application>
 
 </manifest>

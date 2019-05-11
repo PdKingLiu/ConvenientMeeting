@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+import com.pdking.convenientmeeting.App;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.adapter.OnItemClickListener;
 import com.pdking.convenientmeeting.adapter.VideoListAdapter;
@@ -151,6 +152,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     }
 
     private void enterRoom(final int position) {
+        ((App) getActivity().getApplication()).initWorkerThread();
         EnterLiveMeetingDialog dialog = new EnterLiveMeetingDialog(getContext(), R.style
                 .DialogTheme);
         dialog.setListener(new EnterLiveMeetingDialog.OnClickListener() {
@@ -173,7 +175,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
             body.add(Api.EnterLiveRoomBody[2], password);
             Log.d("Lpp", "enterRoom: " + String.valueOf(bean.id) + String.valueOf
                     (UserAccountUtils.getUserInfo
-                    (getActivity().getApplication()).userId) + password);
+                            (getActivity().getApplication()).userId) + password);
             Request request = new Request.Builder()
                     .post(body.build())
                     .url(Api.EnterLiveRoomApi)
@@ -247,7 +249,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "List: " +msg);
+                Log.d("Lpp", "List: " + msg);
                 if (msg.contains("token过期")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override

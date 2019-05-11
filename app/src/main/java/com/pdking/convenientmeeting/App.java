@@ -71,6 +71,7 @@ public class App extends Application {
             mWorkerThread.start();
             mWorkerThread.waitForReady();
         }
+        Log.d("Lpp", "initWorkerThread: " + mWorkerThread);
     }
 
     public synchronized WorkerThread getWorkerThread() {

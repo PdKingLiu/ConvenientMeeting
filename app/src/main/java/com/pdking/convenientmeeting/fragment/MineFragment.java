@@ -21,6 +21,7 @@ import com.pdking.convenientmeeting.activity.AboutAppActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.activity.MeetingSettingActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
+import com.pdking.convenientmeeting.activity.MyUploadActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
@@ -50,6 +51,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlUserData;
     private RelativeLayout rlSettingSafety;
     private RelativeLayout rlMeetingSetting;
+    private RelativeLayout rlMyUpload;
     private CircleImageView civUserIcon;
     private File iconFile;
     private TextView tvUserEmail;
@@ -80,6 +82,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         tvUserEmail = view.findViewById(R.id.tv_user_email);
         rlSettingSafety = view.findViewById(R.id.rl_setting_safety);
         rlMeetingSetting = view.findViewById(R.id.rl_meeting_setting);
+        rlMyUpload = view.findViewById(R.id.rl_my_upload);
         tvUserName = view.findViewById(R.id.tv_user_name);
         rlAboutApp = view.findViewById(R.id.rl_about_app);
         init();
@@ -101,6 +104,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         civUserIcon.setOnClickListener(this);
         rlSettingSafety.setOnClickListener(this);
         rlMeetingSetting.setOnClickListener(this);
+        rlMyUpload.setOnClickListener(this);
     }
 
     @Override
@@ -121,6 +125,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rl_meeting_setting:
                 startActivity(new Intent(getContext(), MeetingSettingActivity.class));
+                break;
+            case R.id.rl_my_upload:
+                startActivity(new Intent(getContext(), MyUploadActivity.class));
                 break;
         }
     }
