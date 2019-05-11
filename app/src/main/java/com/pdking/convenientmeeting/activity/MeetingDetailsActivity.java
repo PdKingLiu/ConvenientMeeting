@@ -27,6 +27,7 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.AllUserBean;
 import com.pdking.convenientmeeting.db.MeetingByIdMessage;
 import com.pdking.convenientmeeting.db.MeetingByIdMessageBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
@@ -39,9 +40,12 @@ import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UIUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
+import com.pdking.convenientmeeting.weight.AddMultiMemberDialog;
+import com.pdking.convenientmeeting.weight.AddMultiMemberListener;
 import com.pdking.convenientmeeting.weight.TitleView;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,6 +96,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private StringBuilder stringBuilder = new StringBuilder();
 
     private ProgressDialog dialog;
+
+    private AllUserBean allUserBean;
 
     private boolean networkFlag = false;
 
@@ -325,7 +331,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.btn_add_member, R.id.fab_start_or_end, R.id.ll_meeting_files, R.id.rl_vote, R
-            .id.rl_note,R.id.fl_member_list})
+            .id.rl_note, R.id.fl_member_list})
     void onClick(View view) {
         if (!networkFlag) {
             showToast("加载错误");
@@ -333,7 +339,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         }
         switch (view.getId()) {
             case R.id.btn_add_member:
-                addMember();
+                addMultiMember();
                 break;
             case R.id.fl_member_list:
                 scanMemberList();
@@ -384,28 +390,58 @@ public class MeetingDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void addMember() {
-        final EditText editText = new EditText(this);
-        editText.setGravity(Gravity.CENTER);
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("输入成员电话")
-                .setCancelable(true)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+    private void addMultiMember() {
+        FormBody.Builder body = new FormBody.Builder();
+        Request request = new Request.Builder()
+                .header("token", UserAccountUtils.getUserToken(getApplication()).getToken())
+                .url(Api.GetAllUserApi)
+                .post(body.build())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "获取所有用户: " + e.getMessage());
+                UIUtils.showToast(MeetingDetailsActivity.this, "网络错误");
+                return;
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                allUserBean = new Gson().fromJson(msg, AllUserBean.class);
+                if (allUserBean == null || allUserBean.data == null) {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "未知错误");
+                    return;
+                }
+                if (allUserBean.data.size() == 0) {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "暂无可邀请的成员");
+                    return;
+                }
+                createDialog(allUserBean.data);
+            }
+        });
+    }
+
+    private void createDialog(final List<AllUserBean.DataBean> data) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AddMultiMemberDialog dialog = new AddMultiMemberDialog(MeetingDetailsActivity.this,
+                        R.style.DialogTheme, allUserBean.data, new AddMultiMemberListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        dealAdd(editText.getText().toString());
+                    public void addMemberCallBack(List<AllUserBean.DataBean> checkedBean) {
+                        startInvite(checkedBean);
                     }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setView(editText)
-                .show();
+                });
+                dialog.setCancelable(true);
+                dialog.show();
+            }
+        });
+    }
+
+    private void startInvite(List<AllUserBean.DataBean> checkedBean) {
+        Log.d(TAG, "startInvite: " + checkedBean.size());
+        Log.d(TAG, "startInvite: " + checkedBean);
     }
 
     private void dealAdd(String phone) {

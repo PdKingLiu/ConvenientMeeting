@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:maxHeight="300dp"
+    android:layout_height="345dp"
     android:background="@drawable/view_add_video"
     android:orientation="vertical"
     android:padding="20dp">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_gravity="center_horizontal"
         android:text="邀请会议成员"
         android:textColor="@android:color/black"
         android:textSize="19sp" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_member_list"
-        android:layout_marginTop="20dp"
+        android:id="@+id/rv_member"
         android:layout_width="200dp"
-        android:layout_height="match_parent">
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp">
+
     </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp">
 

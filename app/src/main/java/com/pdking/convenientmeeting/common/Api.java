@@ -235,4 +235,6 @@ public class Api {
     public static String[] GetUserFileListHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
+    public static String GetAllUserApi = "http://www.shidongxuan.top/smartMeeting_Web/user/getAll.do";
+
 }
