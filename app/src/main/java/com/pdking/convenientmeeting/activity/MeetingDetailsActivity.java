@@ -2,19 +2,14 @@ package com.pdking.convenientmeeting.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +26,7 @@ import com.pdking.convenientmeeting.db.AllUserBean;
 import com.pdking.convenientmeeting.db.MeetingByIdMessage;
 import com.pdking.convenientmeeting.db.MeetingByIdMessageBean;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
+import com.pdking.convenientmeeting.db.SMSSendStatusBean;
 import com.pdking.convenientmeeting.db.UserDataBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
@@ -440,8 +436,48 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     }
 
     private void startInvite(List<AllUserBean.DataBean> checkedBean) {
-        Log.d(TAG, "startInvite: " + checkedBean.size());
-        Log.d(TAG, "startInvite: " + checkedBean);
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.AddMultiMemberBody[0], meetingId);
+        for (int i = 0; i < checkedBean.size(); i++) {
+            body.add(Api.AddMultiMemberBody[1], String.valueOf(checkedBean.get(i).id));
+        }
+        Request request = new Request.Builder()
+                .post(body.build())
+                .url(Api.AddMultiMemberApi)
+                .header(Api.AddMultiMemberHeader[0], Api.AddMultiMemberHeader[1])
+                .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
+                .build();
+        OkHttpUtils.requestHelper(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(MeetingDetailsActivity.this, "网络错误");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                Log.d(TAG, "邀请: " + msg);
+                if (msg.contains("token")) {
+                    LoginStatusUtils.stateFailure(MeetingDetailsActivity.this, new LoginCallBack() {
+                        @Override
+                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
+                            UserAccountUtils.setUserToken(newToken, getApplication());
+                        }
+                    });
+                    return;
+                }
+                SMSSendStatusBean bean = new Gson().fromJson(msg, SMSSendStatusBean.class);
+                if (bean == null) {
+                    UIUtils.showToast(MeetingDetailsActivity.this, "未知错误");
+                } else {
+                    if (bean.status != 0) {
+                        UIUtils.showToast(MeetingDetailsActivity.this, "邀请失败");
+                    } else {
+                        UIUtils.showToast(MeetingDetailsActivity.this, "邀请成功");
+                    }
+                }
+            }
+        });
     }
 
     private void dealAdd(String phone) {

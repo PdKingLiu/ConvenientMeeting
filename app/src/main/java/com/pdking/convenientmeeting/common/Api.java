@@ -235,6 +235,14 @@ public class Api {
     public static String[] GetUserFileListHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
-    public static String GetAllUserApi = "http://www.shidongxuan.top/smartMeeting_Web/user/getAll.do";
+    public static String GetAllUserApi = "http://www.shidongxuan.top/smartMeeting_Web/user/getAll" +
+            ".do";
 
+    public static String AddMultiMemberApi = "http://www.shidongxuan" +
+            ".top/smartMeeting_Web/meeting/inviteMembers.do";
+
+    public static String[] AddMultiMemberHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
+    public static String[] AddMultiMemberBody = {"meetingId", "userIds"};
 }
