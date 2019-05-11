@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.AboutAppActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
+import com.pdking.convenientmeeting.activity.MeetingSettingActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
@@ -48,6 +49,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     final private int UPDATE_USER_DATA = 1;
     private RelativeLayout rlUserData;
     private RelativeLayout rlSettingSafety;
+    private RelativeLayout rlMeetingSetting;
     private CircleImageView civUserIcon;
     private File iconFile;
     private TextView tvUserEmail;
@@ -77,9 +79,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         civUserIcon = view.findViewById(R.id.civ_user_icon);
         tvUserEmail = view.findViewById(R.id.tv_user_email);
         rlSettingSafety = view.findViewById(R.id.rl_setting_safety);
+        rlMeetingSetting = view.findViewById(R.id.rl_meeting_setting);
         tvUserName = view.findViewById(R.id.tv_user_name);
         rlAboutApp = view.findViewById(R.id.rl_about_app);
-        rlAboutApp.setOnClickListener(this);
         init();
         initListener();
     }
@@ -94,9 +96,11 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initListener() {
+        rlAboutApp.setOnClickListener(this);
         rlUserData.setOnClickListener(this);
         civUserIcon.setOnClickListener(this);
         rlSettingSafety.setOnClickListener(this);
+        rlMeetingSetting.setOnClickListener(this);
     }
 
     @Override
@@ -114,6 +118,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rl_about_app:
                 startActivity(new Intent(getContext(), AboutAppActivity.class));
+                break;
+            case R.id.rl_meeting_setting:
+                startActivity(new Intent(getContext(), MeetingSettingActivity.class));
                 break;
         }
     }

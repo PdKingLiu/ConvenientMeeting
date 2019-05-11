@@ -29,7 +29,6 @@
     <!-- <uses-PermissionUtil android:name="android.PermissionUtil.WRITE_EXTERNAL_STORAGE" /> -->
     <!-- 读取SD卡的权限:打开相册选取图片所必须的权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -86,16 +85,15 @@
         <activity
             android:name=".livemeeting.openlive.ui.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".livemeeting.openlive.ui.LiveRoomActivity"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".livemeeting.openlive.ui.SettingsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/label_settings" />
+            android:label="@string/label_settings"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MeetingNoteActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -115,7 +113,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".activity.ScanMeetingMemberListActivity"></activity>
+        <activity android:name=".activity.ScanMeetingMemberListActivity" />
+        <activity android:name=".activity.MeetingSettingActivity"></activity>
     </application>
 
 </manifest>

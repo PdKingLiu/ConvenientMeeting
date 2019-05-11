@@ -12,16 +12,24 @@ import android.view.MenuItem;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
+import com.pdking.convenientmeeting.utils.SystemUtil;
+import com.pdking.convenientmeeting.weight.TitleView;
 
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements TitleView.RightClickListener, TitleView.LeftClickListener {
+
     private VideoProfileAdapter mVideoProfileAdapter;
+
+    private TitleView titleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        SystemUtil.setTitleMode(getWindow());
+        titleView = findViewById(R.id.title_view);
+        titleView.setRightClickListener(this);
+        titleView.setLeftClickListener(this);
         initUi();
     }
 
@@ -50,13 +58,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.confirm:
                 doSaveProfile();
-
                 onBackPressed();
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -65,10 +70,20 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void doSaveProfile() {
         int profileIndex = mVideoProfileAdapter.getSelected();
-
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt(ConstantApp.PrefManager.PREF_PROPERTY_PROFILE_IDX, profileIndex);
         editor.apply();
+    }
+
+    @Override
+    public void OnRightButtonClick() {
+        doSaveProfile();
+        onBackPressed();
+    }
+
+    @Override
+    public void OnLeftButtonClick() {
+        finish();
     }
 }

@@ -23,8 +23,6 @@ public class VideoProfileAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_profile_item, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-
         ProfileHolder ph = new ProfileHolder(v);
         return ph;
     }

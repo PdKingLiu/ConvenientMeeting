@@ -1,29 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".livemeeting.openlive.ui.SettingsActivity">
+
+    <com.pdking.convenientmeeting.weight.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftTextVisibility="false"
+        app:rightText="保存"
+        app:rightTextVisibility="true"
+        app:titleText="远程视频会议设置">
+
+    </com.pdking.convenientmeeting.weight.TitleView>
 
     <LinearLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/label_title_resolution"
-            android:gravity="center" />
+            android:textColor="@android:color/black" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/label_title_frame_rate"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="@string/label_title_frame_rate" />
 
     </LinearLayout>
 
@@ -32,4 +46,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title" />
-</RelativeLayout>
+</LinearLayout>
