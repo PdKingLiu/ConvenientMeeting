@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.activity.MeetingDetailsActivity;
+import com.pdking.convenientmeeting.activity.LiveMeetingDetailActivity;
 import com.pdking.convenientmeeting.adapter.OnItemClickListener;
 import com.pdking.convenientmeeting.adapter.VideoListAdapter;
 import com.pdking.convenientmeeting.common.Api;
@@ -121,6 +121,9 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
         videoListAdapter.setListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getContext(), LiveMeetingDetailActivity.class);
+                intent.putExtra("liveId", String.valueOf(beanList.get(position).id));
+                startActivity(intent);
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

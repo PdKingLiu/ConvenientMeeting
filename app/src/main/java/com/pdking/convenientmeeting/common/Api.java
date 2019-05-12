@@ -245,4 +245,10 @@ public class Api {
             "application/x-www-form-urlencoded"};
 
     public static String[] AddMultiMemberBody = {"meetingId", "userIds"};
+
+    public static String GetLiveMessageApi = "http://www.shidongxuan.top/smartMeeting_Web/live/getSpecificInfo";
+
+    public static String[] GetLiveMessageHeader = {"Content-Type",
+            "application/x-www-form-urlencoded"};
+
 }
