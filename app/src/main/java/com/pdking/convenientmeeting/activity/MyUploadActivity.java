@@ -40,7 +40,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -82,6 +81,7 @@ public class MyUploadActivity extends AppCompatActivity implements FileAdapter
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         smartRefreshLayout.setOnRefreshListener(this);
+        smartRefreshLayout.autoRefresh();
     }
 
     @Override
@@ -145,15 +145,12 @@ public class MyUploadActivity extends AppCompatActivity implements FileAdapter
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        FormBody.Builder body = new FormBody.Builder();
-        body.add(Api.GetUserFileListBody[0], String.valueOf(UserAccountUtils.getUserInfo
-                (getApplication()).getUserId()));
         Request request = new Request.Builder()
                 .header(Api.GetUserFileListHeader[0], Api.GetUserFileListHeader[1])
                 .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
-                .post(body.build())
                 .get()
-                .url(Api.GetUserFileListApi)
+                .url(Api.GetUserFileListApi + "?userId=" + UserAccountUtils.getUserInfo
+                        (getApplication()).getUserId())
                 .build();
         OkHttpUtils.requestHelper(request, new Callback() {
             @Override
@@ -165,7 +162,6 @@ public class MyUploadActivity extends AppCompatActivity implements FileAdapter
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(MyUploadActivity.this, new LoginCallBack() {
                         @Override
@@ -184,8 +180,8 @@ public class MyUploadActivity extends AppCompatActivity implements FileAdapter
                     } else {
                         fileList.clear();
                         fileList.addAll(fileDataListBean.data);
+                        notifyDataChanged();
                         smartRefreshLayout.finishRefresh(true);
-
                     }
                 }
             }
