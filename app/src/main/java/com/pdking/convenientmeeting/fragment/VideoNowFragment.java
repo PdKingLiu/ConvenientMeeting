@@ -208,7 +208,13 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                         UIUtils.showToast(getActivity(), "未知错误");
                     } else {
                         if (bean1.status != 0) {
-                            UIUtils.showToast(getActivity(), "密码错误");
+                            if (msg.contains("结束")) {
+                                UIUtils.showToast(getActivity(), "已结束");
+                            } else if (msg.contains("错误")) {
+                                UIUtils.showToast(getActivity(), "密码错误");
+                            } else {
+                                UIUtils.showToast(getActivity(),"未知错误");
+                            }
                         } else {
                             enterRoomActivity(bean.id);
                         }
@@ -249,7 +255,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                if (msg.contains("token过期")) {
+                if (msg.contains("token")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
                         public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
