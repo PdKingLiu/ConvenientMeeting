@@ -64,7 +64,7 @@
             android:layout_gravity="center_horizontal"
             android:background="@mipmap/icon_button_background_outline"
             android:text="检查更新"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 

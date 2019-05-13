@@ -36,16 +36,23 @@ public class LiveMemberAdapter extends RecyclerView.Adapter<LiveMemberAdapter.Vi
 
         CircleImageView circleImageView;
         TextView textView;
+        View viewLine;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             circleImageView = itemView.findViewById(R.id.civ_icon);
             textView = itemView.findViewById(R.id.tv_name);
+            viewLine = itemView.findViewById(R.id.view_line);
         }
 
-        public void setData(LiveDetailBean.DataBean.MeetingMembersBean meetingMembersBean) {
+        public void setData(LiveDetailBean.DataBean.MeetingMembersBean meetingMembersBean, int i) {
             Glide.with(mContext).load(meetingMembersBean.avatarUrl).into(circleImageView);
             textView.setText(meetingMembersBean.username);
+            if (i == list.size() - 1) {
+                viewLine.setVisibility(View.INVISIBLE);
+            } else {
+                viewLine.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -58,7 +65,7 @@ public class LiveMemberAdapter extends RecyclerView.Adapter<LiveMemberAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull LiveMemberAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.setData(list.get(i));
+        viewHolder.setData(list.get(i),i);
     }
 
     @Override
