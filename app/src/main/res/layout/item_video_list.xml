@@ -50,7 +50,8 @@
             android:lines="1"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="正在进行" />
+            android:text="正在进行"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -79,7 +80,7 @@
             android:layout_marginLeft="5dp"
             android:minWidth="80dp"
             android:text="在线人数：8人"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -106,8 +107,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:text="时间：2019-08-01  20:00"
-            android:textSize="14sp" />
-
+            android:textSize="16sp" />
 
     </LinearLayout>
 

@@ -61,6 +61,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     RelativeLayout rlVote;
     @BindView(R.id.rl_note)
     RelativeLayout rlNote;
+    @BindView(R.id.tv_meeting_name)
+    TextView tvMeetingName;
     @BindView(R.id.tv_people_sum)
     TextView tvPeopleSum;
     @BindView(R.id.tv_meeting_status)
@@ -100,7 +102,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_meeting_details);
+        setContentView(R.layout.layout_meeting_detil_tem);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -400,7 +402,6 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 UIUtils.showToast(MeetingDetailsActivity.this, "网络错误");
                 return;
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
@@ -586,7 +587,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @SuppressLint("RestrictedApi")
             @Override
             public void run() {
-                titleView.setTitleText(bean.data.meetingName);
+                tvMeetingName.setText(bean.data.meetingName);
                 tvPeopleSum.setText(bean.data.peopleNum + " 人");
                 switch (bean.data.status) {
                     case 1:
@@ -599,9 +600,9 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                         tvMeetingStatus.setText("未开始");
                         break;
                 }
-                tvStartTime.setText("开始时间：" + bean.data.startTime);
-                tvEndTime.setText("结束时间：" + bean.data.endTime);
-                tvPlace.setText("地点：" + bean.data.roomName);
+                tvStartTime.setText(bean.data.startTime);
+                tvEndTime.setText(bean.data.endTime);
+                tvPlace.setText(bean.data.roomName);
                 tvIntroduce.setText(bean.data.meetingIntro);
                 if (UserAccountUtils.getUserInfo(getApplication()).userId != bean.data.masterId) {
                     btnAddMember.setVisibility(View.GONE);

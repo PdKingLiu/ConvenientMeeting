@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,6 +49,7 @@
                         android:src="@mipmap/icon_query_master" />
 
                     <TextView
+                        android:textSize="16sp"
                         android:id="@+id/tv_user_kind"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -74,6 +76,7 @@
                     <TextView
                         android:id="@+id/tv_status"
                         android:layout_width="wrap_content"
+                        android:textSize="16sp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
@@ -85,5 +88,12 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="85dp"
+        android:background="#e5e5e5" />
 
 </LinearLayout>

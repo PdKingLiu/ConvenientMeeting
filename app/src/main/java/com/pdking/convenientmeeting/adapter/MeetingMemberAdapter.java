@@ -44,7 +44,7 @@ public class MeetingMemberAdapter extends RecyclerView.Adapter<MeetingMemberAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.setData(list.get(i));
+        viewHolder.setData(list.get(i),i);
     }
 
     @Override
@@ -59,6 +59,7 @@ public class MeetingMemberAdapter extends RecyclerView.Adapter<MeetingMemberAdap
         LinearLayout llUserKind;
         TextView tvUserStatus;
         ImageView ivUserKind;
+        View viewLine;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,9 +68,10 @@ public class MeetingMemberAdapter extends RecyclerView.Adapter<MeetingMemberAdap
             llUserKind = itemView.findViewById(R.id.ll_user_kind);
             tvUserStatus = itemView.findViewById(R.id.tv_status);
             ivUserKind = itemView.findViewById(R.id.iv_user_kind);
+            viewLine = itemView.findViewById(R.id.view_line);
         }
 
-        public void setData(MeetingByIdMessage.MemberStatusBean memberStatusBean) {
+        public void setData(MeetingByIdMessage.MemberStatusBean memberStatusBean, int i) {
             Glide.with(mContext).load(memberStatusBean.avatarUrl).into(civIcon);
             if (masterId == memberStatusBean.userId) {
                 llUserKind.setVisibility(View.VISIBLE);
@@ -98,6 +100,11 @@ public class MeetingMemberAdapter extends RecyclerView.Adapter<MeetingMemberAdap
                             .icon_user_status_leave));
                     tvUserStatus.setText("请假");
                     break;
+            }
+            if (i == list.size() - 1) {
+                viewLine.setVisibility(View.INVISIBLE);
+            } else {
+                viewLine.setVisibility(View.VISIBLE);
             }
         }
     }

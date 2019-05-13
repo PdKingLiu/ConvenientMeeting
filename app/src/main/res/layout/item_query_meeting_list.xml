@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <View
@@ -25,9 +25,9 @@
         android:textSize="19sp" />
 
     <LinearLayout
-        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         android:paddingBottom="2dp"
         android:paddingLeft="25dp"
@@ -48,7 +48,8 @@
             android:layout_marginLeft="5dp"
             android:minWidth="80dp"
             android:text="刘沛栋"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
+
         <ImageView
             android:layout_width="17dp"
             android:layout_height="20dp"
@@ -63,7 +64,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:text="04-28"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -91,7 +92,7 @@
             android:layout_marginLeft="5dp"
             android:minWidth="80dp"
             android:text="Fz155"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:layout_width="17dp"
@@ -107,14 +108,14 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:text="19:30  -  21:00"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_marginBottom="7dp"
         android:layout_height="25dp"
+        android:layout_marginBottom="7dp"
         android:orientation="horizontal"
         android:paddingBottom="2dp"
         android:paddingLeft="25dp"
@@ -137,7 +138,8 @@
             android:lines="1"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="关于xxx的会议" />
+            android:text="关于xxx的会议"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
