@@ -90,8 +90,6 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         roomContent = getIntent().getIntExtra("content", -1);
         roomStatus = getIntent().getIntExtra("status", -1);
         meetingRoomId = getIntent().getIntExtra("meetingRoomId", -1);
-        Log.d("Lpp", "onCreate:meetingRoomId " + meetingRoomId);
-        Log.d("Lpp", "onCreate:roomStatus " + roomStatus);
         switch (roomStatus) {
             case 1:
                 changeTextViewText(tvRoomStatus, "状态：空闲");
@@ -188,7 +186,6 @@ public class MeetingRoomDetailsActivity extends AppCompatActivity {
         matrix.postScale(scaleWidth, scaleHeight);
         newBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
         bm.recycle();
-        bm = null;
         return newBitmap;
     }
 

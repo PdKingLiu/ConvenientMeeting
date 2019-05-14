@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.common.Api;
@@ -382,6 +384,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent
             data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+        if (result != null) {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            for (Fragment f : fragments) {
+                if (f instanceof MeetingFragment) {
+                    ((MeetingFragment) f).onActivityResult(requestCode, resultCode,
+                            data);
+                }
+            }
+        }
         switch (requestCode) {
             case UPDATE_USER_DATA:
                 if (resultCode == RESULT_OK && data != null) {

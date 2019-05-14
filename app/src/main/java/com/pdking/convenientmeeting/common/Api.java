@@ -251,4 +251,6 @@ public class Api {
     public static String[] GetLiveMessageHeader = {"Content-Type",
             "application/x-www-form-urlencoded"};
 
+    public static String GetIdByRoomApi = "http://www.shidongxuan.top/smartMeeting_Web/room/getIdByRoom.do";
+
 }

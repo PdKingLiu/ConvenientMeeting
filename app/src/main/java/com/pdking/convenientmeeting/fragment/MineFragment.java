@@ -16,12 +16,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.AboutAppActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.activity.MeetingSettingActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.activity.MyUploadActivity;
+import com.pdking.convenientmeeting.activity.ScanQRActivity;
 import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
@@ -233,4 +235,5 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         tvUserEmail.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).email);
         tvUserName.setText(UserAccountUtils.getUserInfo(getActivity().getApplication()).username);
     }
+
 }

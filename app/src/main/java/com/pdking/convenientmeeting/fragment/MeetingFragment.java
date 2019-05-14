@@ -17,19 +17,32 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.BookRoomActivity;
+import com.pdking.convenientmeeting.activity.MeetingRoomDetailsActivity;
 import com.pdking.convenientmeeting.activity.ScanQRActivity;
-import com.pdking.convenientmeeting.activity.ScanResultActivity;
+import com.pdking.convenientmeeting.common.Api;
+import com.pdking.convenientmeeting.db.OneMeetingRoomMessageBean;
+import com.pdking.convenientmeeting.utils.DesUtil;
+import com.pdking.convenientmeeting.utils.UIUtils;
+import com.pdking.convenientmeeting.utils.UserAccountUtils;
 import com.pdking.convenientmeeting.weight.PopMenu;
 import com.pdking.convenientmeeting.weight.PopMenuItem;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @author liupeidong
@@ -152,7 +165,6 @@ public class MeetingFragment extends Fragment {
 
     }
 
-
     private void loadFirstDate(int i) {
         switch (i) {
             case 0:
@@ -250,16 +262,53 @@ public class MeetingFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
-                Toast.makeText(getContext(), "" + result.getContents(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), ScanResultActivity.class);
-                intent.putExtra("data", result.getContents());
-                startActivity(intent);
+                String roomId;
+                try {
+                    roomId = DesUtil.talker.decrypt(result.getContents());
+                    queryRoomById(roomId);
+                } catch (Exception e) {
+                    UIUtils.showToast(getActivity(), "二维码异常，请扫描正确的会议室二维码");
+                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    private void queryRoomById(String data) {
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.GetOneMeetingRoomMessageBody[0], data);
+        Request request = new Request.Builder()
+                .header("token", String.valueOf(UserAccountUtils.getUserToken(getActivity()
+                        .getApplication())
+                        .getToken()))
+                .url(Api.GetOneMeetingRoomMessageApi)
+                .post(body.build())
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                UIUtils.showToast(getActivity(), "网络错误");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String msg = response.body().string();
+                OneMeetingRoomMessageBean bean = new Gson().fromJson(msg,
+                        OneMeetingRoomMessageBean.class);
+                Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
+                intent.putExtra("roomNumber", bean.data.roomNumber);
+                intent.putExtra("content", bean.data.content);
+                intent.putExtra("status", bean.data.status);
+                intent.putExtra("meetingRoomId", bean.data.meetingRoomId);
+                startActivity(intent);
+            }
+        });
+    }
+
+
 }
