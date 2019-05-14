@@ -73,7 +73,6 @@ public class RemindMeetingStartService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d("Lpp", "RemindMeetingStartService:onCreate");
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         super.onCreate();
     }
@@ -98,7 +97,6 @@ public class RemindMeetingStartService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d("Lpp", "Service:onDestroy");
         super.onDestroy();
     }
 }

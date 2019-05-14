@@ -116,7 +116,12 @@
         <activity android:name=".activity.ScanMeetingMemberListActivity" />
         <activity android:name=".activity.MeetingSettingActivity" />
         <activity android:name=".activity.MyUploadActivity" />
-        <activity android:name=".activity.LiveMeetingDetailActivity"></activity>
+        <activity android:name=".activity.LiveMeetingDetailActivity" />
+
+        <service
+            android:name=".service.VoteRemindService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -30,6 +30,7 @@ import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
 import com.pdking.convenientmeeting.fragment.VideoFragment;
 import com.pdking.convenientmeeting.service.RemindMeetingStartService;
+import com.pdking.convenientmeeting.service.VoteRemindService;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.PollUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -94,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         init();
         initFragment();
         initUser();
-        initPoll();
     }
 
     private void initPoll() {
@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
                         UserAccountUtils.setUserInfo(loginInfo.data, getApplication());
                         ActivityContainer.removeAllActivity();
                         loadDate();
+                        initPoll();
+                        initWebSocket();
                     }
                 }
             });
@@ -379,6 +381,11 @@ public class MainActivity extends AppCompatActivity {
         if (snackbar != null) {
             snackbar.dismiss();
         }
+    }
+
+    private void initWebSocket() {
+        Intent intent = new Intent(this, VoteRemindService.class);
+        startService(intent);
     }
 
     @Override
