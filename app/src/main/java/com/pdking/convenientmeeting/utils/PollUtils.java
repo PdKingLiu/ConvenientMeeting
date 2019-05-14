@@ -12,11 +12,11 @@ import android.content.Intent;
 public class PollUtils {
 
     public static void startPoll(Context context, Class<?> cls, int second) {
-/*      AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+      AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, cls);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 5000,
-                second * 1000, pendingIntent);*/
+                second * 1000, pendingIntent);
     }
 
     public static void shopPoll(Context context, Class<?> cls) {

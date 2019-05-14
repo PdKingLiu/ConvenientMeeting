@@ -65,9 +65,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
     @BindView(R.id.btn_ok)
     Button btnOk;
 
-    @BindView(R.id.btn_start)
-    Button btnStart;
-
     @BindView(R.id.iv_face)
     ImageView ivFace;
 
@@ -109,13 +106,12 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         mTitleView.setLeftClickListener(this);
+        activeEngine();
         File file = new File(getExternalFilesDir(null) + "/user/userFace", "user_face_" +
                 getIntent().getStringExtra("phone") + ".jpg");
         btnOk.setEnabled(false);
         try {
             mBitmap = new Compressor(this).compressToBitmap(file);
-//            mBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(faceUri));
-            Log.d(TAG, "onCreate:mBitmap.getByteCount " + mBitmap.getByteCount());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,10 +122,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
 
     }
 
-    private void activeEngine(final View view) {
-        if (view != null) {
-            view.setClickable(false);
-        }
+    private void activeEngine() {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
@@ -152,25 +145,13 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                         if (activeCode == ErrorInfo.MOK) {
                             btnOk.setEnabled(true);
                             initEngine();
-                            Toast.makeText(ShowFaceResultActivity.this, "激活成功", Toast.LENGTH_SHORT)
-                                    .show();
                         } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
                             btnOk.setEnabled(true);
                             initEngine();
-                            Toast.makeText(ShowFaceResultActivity.this, "已激活，无需再激活", Toast
-                                    .LENGTH_SHORT)
-                                    .show();
                         } else {
                             btnOk.setEnabled(false);
-                            Toast.makeText(ShowFaceResultActivity.this, "激活失败", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-
-                        if (view != null) {
-                            view.setClickable(true);
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
 
@@ -185,7 +166,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
 
     }
 
-    @OnClick({R.id.btn_ok, R.id.btn_start})
+    @OnClick({R.id.btn_ok})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_ok:
@@ -194,9 +175,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                 } else {
                     startRecognition(view);
                 }
-                break;
-            case R.id.btn_start:
-                activeEngine(view);
                 break;
         }
     }
@@ -257,19 +235,12 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         final SpannableStringBuilder notificationSpannableStringBuilder = new
                 SpannableStringBuilder();
         if (faceEngineCode != ErrorInfo.MOK) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, " face engine not " +
-                    "initialized!");
-            showNotificationAndFinish(notificationSpannableStringBuilder);
             return;
         }
         if (bitmap == null) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, " bitmap is null!");
-            showNotificationAndFinish(notificationSpannableStringBuilder);
             return;
         }
         if (faceEngine == null) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, " faceEngine is null!");
-            showNotificationAndFinish(notificationSpannableStringBuilder);
             return;
         }
 
@@ -277,8 +248,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
 
 
         if (bitmap == null) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, " bitmap is null!");
-            showNotificationAndFinish(notificationSpannableStringBuilder);
             return;
         }
         int width = bitmap.getWidth();
@@ -296,14 +265,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         //bitmap转bgr
         byte[] bgr24 = ImageUtil.bitmapToBgr(bitmap);
 
-        addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface.BOLD),
-                "start face detection,imageWidth is " + width + ", imageHeight is " + height +
-                        "\n");
-
         if (bgr24 == null) {
-            addNotificationInfo(notificationSpannableStringBuilder, new ForegroundColorSpan(Color
-                    .RED), "can not get bgr24 data of bitmap!\n");
-            showNotificationAndFinish(notificationSpannableStringBuilder);
             return;
         }
         List<FaceInfo> faceInfoList = new ArrayList<>();
@@ -324,14 +286,10 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         Bitmap bitmapForDraw = bitmap.copy(Bitmap.Config.RGB_565, true);
         Canvas canvas = new Canvas(bitmapForDraw);
         Paint paint = new Paint();
-        addNotificationInfo(notificationSpannableStringBuilder, null, "detect result:\nerrorCode " +
-                "is :", String.valueOf(detectCode), "   face Number is ", String.valueOf
-                (faceInfoList.size()), "\n");
         /**
          * 3.若检测结果人脸数量大于0，则在bitmap上绘制人脸框并且重新显示到ImageView，若人脸数量为0，则无法进行下一步操作，操作结束
          */
         if (faceInfoList.size() > 0) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, "face list:\n");
             paint.setAntiAlias(true);
             paint.setStrokeWidth(5);
             paint.setColor(Color.YELLOW);
@@ -346,8 +304,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
 
                 canvas.drawText(String.valueOf(i), faceInfoList.get(i).getRect().left,
                         faceInfoList.get(i).getRect().top, paint);
-                addNotificationInfo(notificationSpannableStringBuilder, null, "face[", String
-                        .valueOf(i), "]:", faceInfoList.get(i).toString(), "\n");
             }
             //显示
             final Bitmap finalBitmapForDraw = bitmapForDraw;
@@ -358,8 +314,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                 }
             });
         } else {
-            addNotificationInfo(notificationSpannableStringBuilder, null, "can not do further " +
-                    "action, exit!");
             addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface
                     .BOLD), "\n\n错误，未检测到数据\n");
             flag = true;
@@ -383,8 +337,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                         .ASF_FACE3DANGLE | FaceEngine.ASF_LIVENESS);
 
         if (faceProcessCode != ErrorInfo.MOK) {
-            addNotificationInfo(notificationSpannableStringBuilder, new ForegroundColorSpan(Color
-                    .RED), "process failed! code is ", String.valueOf(faceProcessCode), "\n");
         } else {
         }
         //年龄信息结果
@@ -402,11 +354,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
         int livenessCode = faceEngine.getLiveness(livenessInfoList);
 
         if ((ageCode | genderCode | face3DAngleCode | livenessCode) != ErrorInfo.MOK) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, "at least one of age," +
-                            "gender,face3DAngle detect failed!,codes are:",
-                    String.valueOf(ageCode), " , ", String.valueOf(genderCode), " , ", String
-                            .valueOf(face3DAngleCode));
-            showNotificationAndFinish(notificationSpannableStringBuilder);
             return;
         }
         /**
@@ -414,45 +361,23 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
          */
         //年龄数据
         if (ageInfoList.size() > 0) {
-            addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface.BOLD),
-                    "age of each face:\n");
         }
         for (int i = 0; i < ageInfoList.size(); i++) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, "face[", String.valueOf
-                    (i), "]:", String.valueOf(ageInfoList.get(i).getAge()), "\n");
         }
-        addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
 
         //性别数据
         if (genderInfoList.size() > 0) {
-            addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface.BOLD),
-                    "gender of each face:\n");
         }
         for (int i = 0; i < genderInfoList.size(); i++) {
-            addNotificationInfo(notificationSpannableStringBuilder, null, "face[", String.valueOf
-                            (i), "]:"
-                    , genderInfoList.get(i).getGender() == GenderInfo.MALE ?
-                            "MALE" : (genderInfoList.get(i).getGender() == GenderInfo.FEMALE ?
-                            "FEMALE" : "UNKNOWN"), "\n");
         }
-        addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
-
-
         //人脸三维角度数据
         if (face3DAngleList.size() > 0) {
-            addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface.BOLD),
-                    "face3DAngle of each face:\n");
             for (int i = 0; i < face3DAngleList.size(); i++) {
-                addNotificationInfo(notificationSpannableStringBuilder, null, "face[", String
-                        .valueOf(i), "]:", face3DAngleList.get(i).toString(), "\n");
             }
         }
-        addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
 
         //活体检测数据
         if (livenessInfoList.size() > 0) {
-            addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface.BOLD),
-                    "liveness of each face:\n");
             for (int i = 0; i < livenessInfoList.size(); i++) {
                 String liveness = null;
                 switch (livenessInfoList.get(i).getLiveness()) {
@@ -472,11 +397,8 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                         liveness = "UNKNOWN";
                         break;
                 }
-                addNotificationInfo(notificationSpannableStringBuilder, null, "face[", String
-                        .valueOf(i), "]:", liveness, "\n");
             }
         }
-        addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
 
         /**
          * 6.最后将图片内的所有人脸进行一一比对并添加到提示文字中
@@ -486,8 +408,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
             FaceFeature[] faceFeatures = new FaceFeature[faceInfoList.size()];
             int[] extractFaceFeatureCodes = new int[faceInfoList.size()];
 
-            addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface.BOLD),
-                    "faceFeatureExtract:\n");
             for (int i = 0; i < faceInfoList.size(); i++) {
                 faceFeatures[i] = new FaceFeature();
                 //从图片解析出人脸特征数据
@@ -496,44 +416,19 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                         FaceEngine.CP_PAF_BGR24, faceInfoList.get(i), faceFeatures[i]);
 
                 if (extractFaceFeatureCodes[i] != ErrorInfo.MOK) {
-                    addNotificationInfo(notificationSpannableStringBuilder, null, "faceFeature of" +
-                                    " face[", String.valueOf(i), "]",
-                            " extract failed, code is ", String.valueOf
-                                    (extractFaceFeatureCodes[i]), "\n");
                 } else {
-//                    Log.i(TAG, "processImage: fr costTime = " + (System.currentTimeMillis() -
-// frStartTime));
-                    addNotificationInfo(notificationSpannableStringBuilder, null, "faceFeature of" +
-                                    " face[", String.valueOf(i), "]",
-                            " extract success\n");
                 }
             }
-            addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
-
             //人脸特征的数量大于2，将所有特征进行比较
             if (faceFeatures.length >= 2) {
-
-                addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface
-                        .BOLD), "similar of faces:\n");
-
                 for (int i = 0; i < faceFeatures.length; i++) {
                     for (int j = i + 1; j < faceFeatures.length; j++) {
-                        addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan
-                                        (Typeface.BOLD_ITALIC), "compare face[", String.valueOf
-                                        (i), "] and  face["
-                                , String.valueOf(j), "]:\n");
                         //若其中一个特征提取失败，则不进行比对
                         boolean canCompare = true;
                         if (extractFaceFeatureCodes[i] != 0) {
-                            addNotificationInfo(notificationSpannableStringBuilder, null,
-                                    "faceFeature of face[", String.valueOf(i), "] extract failed," +
-                                            " can not compare!\n");
                             canCompare = false;
                         }
                         if (extractFaceFeatureCodes[j] != 0) {
-                            addNotificationInfo(notificationSpannableStringBuilder, null,
-                                    "faceFeature of face[", String.valueOf(j), "] extract failed," +
-                                            " can not compare!\n");
                             canCompare = false;
                         }
                         if (!canCompare) {
@@ -544,10 +439,6 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                         //比对两个人脸特征获取相似度信息
                         faceEngine.compareFaceFeature(faceFeatures[i], faceFeatures[j], matching);
                         //新增相似度比对结果信息
-                        addNotificationInfo(notificationSpannableStringBuilder, null, "similar of" +
-                                        " face[", String.valueOf(i), "] and  face[",
-                                String.valueOf(j), "] is:", String.valueOf(matching.getScore()),
-                                "\n");
                     }
                 }
                 addNotificationInfo(notificationSpannableStringBuilder, new StyleSpan(Typeface
@@ -631,6 +522,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
             @Override
             public void run() {
                 if (tvStatus != null) {
+                    tvStatus.setVisibility(View.VISIBLE);
                     tvStatus.setText(stringBuilder);
                 }
                 if (progressDialog != null && progressDialog.isShowing()) {
