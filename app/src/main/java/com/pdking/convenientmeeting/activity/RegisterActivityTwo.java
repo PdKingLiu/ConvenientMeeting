@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.SMSSendStatusBean;
@@ -122,7 +121,6 @@ public class RegisterActivityTwo extends AppCompatActivity implements TitleView.
         setContentView(R.layout.layout_register_two);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
-        ActivityContainer.addActivity(this);
         mTitleView.setLeftClickListener(this);
         Message msg = new Message();
         final Message msg2 = new Message();

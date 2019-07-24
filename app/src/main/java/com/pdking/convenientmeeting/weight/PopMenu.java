@@ -59,7 +59,6 @@ public class PopMenu {
     private PopupWindow mPopupWindow;
 
     public PopMenu(final Context context) {
-        mContext = context;
         mItemList = new ArrayList<>();
         View view = onCreateView(context);
         view.setFocusableInTouchMode(true);

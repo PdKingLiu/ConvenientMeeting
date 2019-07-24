@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
@@ -142,9 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     loginInfo = new Gson().fromJson(message, LoginBean.class);
                     if (loginInfo != null && loginInfo.status == 1) {
                         showToast("密码错误,请重新登录");
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        ActivityContainer.removeAllActivity();
-                        finish();
+                        ActivityUtils.removeAllActivity(MainActivity.this, LoginActivity.class);
                     } else {
                         showToast("登录成功");
                         UserToken userToken = new UserToken(loginInfo.msg);
@@ -152,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                         loginInfo.data.save();
                         UserAccountUtils.setUserToken(userToken, getApplication());
                         UserAccountUtils.setUserInfo(loginInfo.data, getApplication());
-                        ActivityContainer.removeAllActivity();
                         loadDate();
                         initPoll();
                         initWebSocket();
@@ -160,9 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            ActivityContainer.removeAllActivity();
-            finish();
+            ActivityUtils.removeAllActivity(MainActivity.this, LoginActivity.class);
         }
     }
 
@@ -381,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
         if (snackbar != null) {
             snackbar.dismiss();
         }
+        snackbar = null;
     }
 
     private void initWebSocket() {

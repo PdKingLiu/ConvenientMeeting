@@ -6,11 +6,13 @@ import android.util.Log;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.WorkerThread;
+/*import com.squareup.leakcanary.LeakCanary;*/
 import com.tencent.smtt.sdk.QbSdk;
 
 import org.litepal.LitePal;
 
 import java.util.List;
+
 
 /**
  * @author liupeidong
@@ -42,6 +44,10 @@ public class App extends Application {
             public void onViewInitFinished(boolean b) {
             }
         });
+/*        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);*/
     }
 
     @Override

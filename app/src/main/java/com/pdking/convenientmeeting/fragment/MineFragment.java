@@ -16,15 +16,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.AboutAppActivity;
 import com.pdking.convenientmeeting.activity.AccountAndSafetyActivity;
 import com.pdking.convenientmeeting.activity.MeetingSettingActivity;
 import com.pdking.convenientmeeting.activity.ModificationUserDataActivity;
 import com.pdking.convenientmeeting.activity.MyUploadActivity;
-import com.pdking.convenientmeeting.activity.ScanQRActivity;
-import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
@@ -48,7 +45,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class MineFragment extends Fragment implements View.OnClickListener {
 
-    private static MineFragment INSTANCE = null;
     final private int UPDATE_USER_DATA = 1;
     private RelativeLayout rlUserData;
     private RelativeLayout rlSettingSafety;
@@ -63,10 +59,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private String avatarUrl;
 
     public static MineFragment getINSTANCE() {
-        if (INSTANCE == null) {
-            INSTANCE = new MineFragment();
-        }
-        return INSTANCE;
+        return  new MineFragment();
     }
 
     @Nullable
@@ -118,7 +111,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                         ModificationUserDataActivity.class), UPDATE_USER_DATA);
                 break;
             case R.id.rl_setting_safety:
-                ActivityContainer.addActivity(getActivity());
                 getActivity().startActivity(new Intent(getContext(), AccountAndSafetyActivity
                         .class));
                 break;

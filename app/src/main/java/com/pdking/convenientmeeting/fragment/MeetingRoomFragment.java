@@ -48,7 +48,6 @@ import okhttp3.Response;
 
 public class MeetingRoomFragment extends Fragment implements View.OnClickListener {
 
-    private static MeetingRoomFragment meetingRoomFragment;
     private SmartRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private MeetingRoomAdapter roomAdapter;
@@ -63,10 +62,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     public static MeetingRoomFragment newInstance() {
-        if (meetingRoomFragment == null) {
-            meetingRoomFragment = new MeetingRoomFragment();
-        }
-        return meetingRoomFragment;
+        return new MeetingRoomFragment();
     }
 
     @Override
@@ -106,7 +102,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     private void initRecycleViewAndRefresh() {
-        roomAdapter = new MeetingRoomAdapter(getContext(), roomMessageList);
+        roomAdapter = new MeetingRoomAdapter(roomMessageList);
         roomAdapter.setItemClickListener(new MeetingRoomAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

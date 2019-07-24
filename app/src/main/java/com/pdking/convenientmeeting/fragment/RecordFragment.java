@@ -76,7 +76,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class RecordFragment extends Fragment implements View.OnClickListener {
 
-    private static RecordFragment INSTANCE = null;
     final private int UPDATE_USER_DATA = 1;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat format = new
@@ -119,10 +118,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private float[] chartIdentity = {0, 0};
 
     public static RecordFragment getINSTANCE() {
-        if (INSTANCE == null) {
-            INSTANCE = new RecordFragment();
-        }
-        return INSTANCE;
+        return new RecordFragment();
     }
 
     @Nullable

@@ -34,7 +34,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.haozhang.lib.SlantedTextView;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserAccount;
@@ -111,7 +111,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         ButterKnife.bind(this);
         applyPermission();
         endClipUri = null;
-        ActivityContainer.addActivity(this);
         mTitleView.setLeftClickListener(this);
         btnLogin.setEnabled(false);
         dialog = new AlertDialog.Builder(this)
@@ -321,13 +320,11 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
                 if (bean.status == 0) {
                     showToast("注册成功");
-                    Intent intent = new Intent(RegisterActivityThree.this, MainActivity.class);
                     UserAccount account = new UserAccount(userInfo.getPhone(), userInfo
                             .getPassword());
                     LitePal.deleteAll(UserAccount.class);
                     account.save();
-                    startActivity(intent);
-                    ActivityContainer.removeAllActivity();
+                    ActivityUtils.removeAllActivity(RegisterActivityThree.this, MainActivity.class);
                 } else {
                     showToast("注册失败，该账号可能已经注册");
                 }

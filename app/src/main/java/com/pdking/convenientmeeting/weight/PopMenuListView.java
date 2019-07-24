@@ -11,7 +11,6 @@ import android.widget.ListView;
  */
 public class PopMenuListView extends ListView {
 
-
     public PopMenuListView(Context context) {
         super(context);
     }

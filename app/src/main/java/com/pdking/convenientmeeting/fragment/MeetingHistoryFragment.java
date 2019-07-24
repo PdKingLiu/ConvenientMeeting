@@ -52,7 +52,6 @@ import okhttp3.Response;
 
 public class MeetingHistoryFragment extends Fragment implements View.OnClickListener {
 
-    private static MeetingHistoryFragment meetingHistoryFragment;
     private RecyclerView recyclerView;
     private SmartRefreshLayout refreshLayout;
     private RelativeLayout rlHaveNothing;
@@ -63,10 +62,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     }
 
     public static MeetingHistoryFragment newInstance() {
-        if (meetingHistoryFragment == null) {
-            meetingHistoryFragment = new MeetingHistoryFragment();
-        }
-        return meetingHistoryFragment;
+        return new MeetingHistoryFragment();
     }
 
     public void autoRefresh() {

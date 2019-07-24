@@ -47,8 +47,6 @@ import okhttp3.Response;
  */
 public class VideoFragment extends Fragment implements View.OnClickListener {
 
-    private static VideoFragment INSTANCE;
-
     private TabLayout mTabLayout;
 
     private ViewPager mViewPager;
@@ -66,10 +64,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     private boolean[] isFirst = {false, true};
 
     public static VideoFragment getINSTANCE() {
-        if (INSTANCE == null) {
-            INSTANCE = new VideoFragment();
-        }
-        return INSTANCE;
+        return new VideoFragment();
     }
 
 

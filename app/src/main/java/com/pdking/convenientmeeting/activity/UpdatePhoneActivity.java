@@ -1,6 +1,5 @@
 package com.pdking.convenientmeeting.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.SMSSendStatusBean;
@@ -82,7 +81,6 @@ public class UpdatePhoneActivity extends AppCompatActivity {
                 finish();
             }
         });
-        ActivityContainer.addActivity(this);
         getLocalData();
     }
 
@@ -250,9 +248,7 @@ public class UpdatePhoneActivity extends AppCompatActivity {
                 } else {
                     hideProgressBar();
                     showToast("修改成功");
-                    startActivity(new Intent(UpdatePhoneActivity.this, LoginActivity.class));
-                    ActivityContainer.removeAllActivity();
-                    finish();
+                    ActivityUtils.removeAllActivity(UpdatePhoneActivity.this, LoginActivity.class);
                 }
             }
         });

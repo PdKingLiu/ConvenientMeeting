@@ -1,6 +1,5 @@
 package com.pdking.convenientmeeting.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserInfo;
@@ -58,7 +57,6 @@ public class UpdatePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_update_password);
         SystemUtil.setTitleMode(getWindow());
-        ActivityContainer.addActivity(this);
         ButterKnife.bind(this);
         title.setLeftClickListener(new TitleView.LeftClickListener() {
             @Override
@@ -137,8 +135,7 @@ public class UpdatePasswordActivity extends AppCompatActivity {
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 0) {
                     showToast("修改成功");
-                    startActivity(new Intent(UpdatePasswordActivity.this, LoginActivity.class));
-                    ActivityContainer.removeAllActivity();
+                    ActivityUtils.removeAllActivity(UpdatePasswordActivity.this, LoginActivity.class);
                 } else {
                     showToast("修改失败，密码有误");
                 }

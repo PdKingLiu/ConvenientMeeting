@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
@@ -30,7 +30,6 @@ public class AccountAndSafetyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_account_and_safety);
-        ActivityContainer.addActivity(this);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
         title.setLeftClickListener(new TitleView.LeftClickListener() {
@@ -51,8 +50,7 @@ public class AccountAndSafetyActivity extends AppCompatActivity {
                 startActivity(new Intent(this, UpdatePhoneActivity.class));
                 break;
             case R.id.rl_out_login:
-                startActivity(new Intent(this, LoginActivity.class));
-                ActivityContainer.removeAllActivity();
+                ActivityUtils.removeAllActivity(this, LoginActivity.class);
                 break;
         }
     }

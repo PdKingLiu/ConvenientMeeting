@@ -50,8 +50,6 @@ import okhttp3.Response;
  */
 public class MeetingFragment extends Fragment {
 
-    private static MeetingFragment INSTANCE = null;
-
     private PopMenu mPopMenu;
 
     private LinearLayout mLinearLayout;
@@ -71,10 +69,7 @@ public class MeetingFragment extends Fragment {
     private boolean[] isFirst = {true, false, true};
 
     public static MeetingFragment getINSTANCE() {
-        if (INSTANCE == null) {
-            INSTANCE = new MeetingFragment();
-        }
-        return INSTANCE;
+        return new MeetingFragment();
     }
 
     @Nullable

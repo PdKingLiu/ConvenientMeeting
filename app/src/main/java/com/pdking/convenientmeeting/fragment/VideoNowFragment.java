@@ -55,8 +55,6 @@ import okhttp3.Response;
  */
 public class VideoNowFragment extends Fragment implements View.OnClickListener {
 
-    private static VideoNowFragment videoNowFragment;
-
     private SmartRefreshLayout refreshLayout;
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
@@ -67,10 +65,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
 
 
     public static VideoNowFragment newInstance() {
-        if (videoNowFragment == null) {
-            videoNowFragment = new VideoNowFragment();
-        }
-        return videoNowFragment;
+        return new VideoNowFragment();
     }
 
 

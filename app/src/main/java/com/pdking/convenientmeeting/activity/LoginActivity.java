@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
         dialog.setMessage("正在登录...");
         dialog.setTitle("登录中");
         dialog.setCancelable(false);
-        ActivityContainer.addActivity(this);
         if (!checkPermission()) {
             applyPermission();
         }
@@ -103,8 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityContainer.removeAllActivity();
-                                finish();
+                                ActivityUtils.removeAllActivity(LoginActivity.this);
                             }
                         })
                         .create();
@@ -212,9 +210,9 @@ public class LoginActivity extends AppCompatActivity {
                     userInfo.save();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("where", 1);
                     startActivity(intent);
-                    ActivityContainer.removeAllActivity();
                 }
 
             }

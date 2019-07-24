@@ -23,12 +23,10 @@ import java.util.List;
 public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.ViewHolder>
         implements View.OnClickListener {
 
-    private Context mContext;
     private List<OneMeetingRoomMessage> roomMessageList;
     private OnItemClickListener itemClickListener;
 
-    public MeetingRoomAdapter(Context mContext, List<OneMeetingRoomMessage> roomMessageList) {
-        this.mContext = mContext;
+    public MeetingRoomAdapter(List<OneMeetingRoomMessage> roomMessageList) {
         this.roomMessageList = roomMessageList;
     }
 
@@ -98,12 +96,12 @@ public class MeetingRoomAdapter extends RecyclerView.Adapter<MeetingRoomAdapter.
             switch (oneMeetingRoomMessage.status) {
                 case 1:
                     stvStatus.setText("空闲");
-                    stvStatus.setSlantedBackgroundColor(mContext.getResources().getColor(R.color
+                    stvStatus.setSlantedBackgroundColor(view.getContext().getResources().getColor(R.color
                             .pie_green));
                     break;
                 case 2:
                     stvStatus.setText("使用中");
-                    stvStatus.setSlantedBackgroundColor(mContext.getResources().getColor(R.color
+                    stvStatus.setSlantedBackgroundColor(view.getContext().getResources().getColor(R.color
                             .pie_orange));
                     break;
                 case 3:

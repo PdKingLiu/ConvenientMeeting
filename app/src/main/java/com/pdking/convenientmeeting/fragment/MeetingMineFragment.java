@@ -59,7 +59,6 @@ import okhttp3.Response;
 
 public class MeetingMineFragment extends Fragment implements View.OnClickListener {
 
-    private static MeetingMineFragment meetingMineFragment;
     private SmartRefreshLayout refreshLayout;
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
@@ -71,10 +70,7 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
     }
 
     public static MeetingMineFragment newInstance() {
-        if (meetingMineFragment == null) {
-            meetingMineFragment = new MeetingMineFragment();
-        }
-        return meetingMineFragment;
+        return new MeetingMineFragment();
     }
 
     @Override

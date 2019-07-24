@@ -47,8 +47,6 @@ import okhttp3.Response;
  */
 public class VideoHistoryFragment extends Fragment implements View.OnClickListener {
 
-    private static VideoHistoryFragment videoHistoryFragment;
-
     private SmartRefreshLayout refreshLayout;
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
@@ -58,10 +56,7 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
     private VideoListAdapter videoListAdapter;
 
     public static VideoHistoryFragment newInstance() {
-        if (videoHistoryFragment == null) {
-            videoHistoryFragment = new VideoHistoryFragment();
-        }
-        return videoHistoryFragment;
+        return new VideoHistoryFragment();
     }
 
 

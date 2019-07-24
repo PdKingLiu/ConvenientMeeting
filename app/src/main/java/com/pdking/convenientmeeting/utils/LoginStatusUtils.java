@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.activity.LoginActivity;
-import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
@@ -46,9 +44,7 @@ public class LoginStatusUtils {
                         .setNegativeButton("退出登录", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                activity.startActivity(new Intent(activity, LoginActivity.class));
-                                activity.finish();
-                                ActivityContainer.removeAllActivity();
+                                ActivityUtils.removeAllActivity(activity, LoginActivity.class);
                             }
                         })
                         .setPositiveButton("重新登录", new DialogInterface.OnClickListener() {
@@ -77,9 +73,7 @@ public class LoginStatusUtils {
         if (userAccount == null || userAccount.size() == 0) {
             UIUtils.hideProgressBar(activity, progress);
             UIUtils.showToast(activity, "发生未知错误，请重新登录");
-            activity.startActivity(new Intent(activity, LoginActivity.class));
-            activity.finish();
-            ActivityContainer.removeAllActivity();
+            ActivityUtils.removeAllActivity(activity, LoginActivity.class);
             progress.dismiss();
             return;
         }
@@ -97,9 +91,7 @@ public class LoginStatusUtils {
             public void onFailure(Call call, IOException e) {
                 UIUtils.hideProgressBar(activity, progress);
                 UIUtils.showToast(activity, "连接登录失败,请重新登录");
-                activity.startActivity(new Intent(activity, LoginActivity.class));
-                activity.finish();
-                ActivityContainer.removeAllActivity();
+                ActivityUtils.removeAllActivity(activity, LoginActivity.class);
                 progress.dismiss();
             }
 
@@ -111,9 +103,7 @@ public class LoginStatusUtils {
                 if (loginInfo != null) {
                     if (loginInfo.status == 1) {
                         UIUtils.showToast(activity, "密码错误,请重新登录");
-                        activity.startActivity(new Intent(activity, LoginActivity.class));
-                        activity.finish();
-                        ActivityContainer.removeAllActivity();
+                        ActivityUtils.removeAllActivity(activity, LoginActivity.class);
                     } else {
                         UIUtils.showToast(activity, "登录成功");
                         UserToken userToken = new UserToken(loginInfo.msg);
@@ -123,9 +113,7 @@ public class LoginStatusUtils {
                 } else {
                     UIUtils.hideProgressBar(activity, progress);
                     UIUtils.showToast(activity, "连接登录失败,请重新登录");
-                    activity.startActivity(new Intent(activity, LoginActivity.class));
-                    activity.finish();
-                    ActivityContainer.removeAllActivity();
+                    ActivityUtils.removeAllActivity(activity, LoginActivity.class);
                 }
                 progress.dismiss();
             }

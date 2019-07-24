@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.common.ActivityContainer;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
@@ -48,8 +47,6 @@ public class RegisterActivityOne extends AppCompatActivity implements TitleView.
         ButterKnife.bind(this);
         bt_Next.setEnabled(false);
         mTitleView.setLeftClickListener(this);
-        ActivityContainer.addActivity(this);
-
     }
 
     @OnClick(R.id.bt_register_next)
