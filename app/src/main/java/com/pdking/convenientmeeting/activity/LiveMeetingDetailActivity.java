@@ -76,6 +76,7 @@ public class LiveMeetingDetailActivity extends AppCompatActivity implements Titl
     }
 
     private void loadData() {
+        Log.d("Lpp", "liveId: " + liveId);
         Request request = new Request.Builder()
                 .header(Api.GetLiveMessageHeader[0], Api.GetLiveMessageHeader[1])
                 .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())

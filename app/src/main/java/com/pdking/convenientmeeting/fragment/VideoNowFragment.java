@@ -166,7 +166,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
         final VideoMessageBean bean = beanList.get(position);
         if (bean.status == 1) {
             FormBody.Builder body = new FormBody.Builder();
-            body.add(Api.EnterLiveRoomBody[0], String.valueOf(bean.id));
+            body.add(Api.EnterLiveRoomBody[0], String.valueOf(bean.videoId));
             body.add(Api.EnterLiveRoomBody[1], String.valueOf(UserAccountUtils.getUserInfo
                     (getActivity().getApplication()).userId));
             body.add(Api.EnterLiveRoomBody[2], password);
@@ -209,7 +209,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                                 UIUtils.showToast(getActivity(), "未知错误");
                             }
                         } else {
-                            enterRoomActivity(bean.id);
+                            enterRoomActivity(bean.videoId);
                         }
                     }
                 }

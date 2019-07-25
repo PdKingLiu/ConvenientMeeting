@@ -9,9 +9,10 @@ import org.litepal.crud.LitePalSupport;
  * Created on 2019/7/25 10:51
  */
 public class VideoMessageBean extends LitePalSupport {
+
     public int kind;
     @SerializedName("id")
-    public int id;
+    public int videoId;
     @SerializedName("liveName")
     public String liveName;
     @SerializedName("livePwd")
