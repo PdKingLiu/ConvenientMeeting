@@ -3,6 +3,7 @@ package com.pdking.convenientmeeting.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -11,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -24,6 +24,7 @@ import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
+import com.pdking.convenientmeeting.fragment.MeetingRoomFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
 import com.pdking.convenientmeeting.fragment.VideoFragment;
@@ -89,14 +90,50 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.layout_main);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
-        bottomNavigationViewListener();
-        mFragmentManager = getSupportFragmentManager();
-        init();
         if (savedInstanceState == null) {
             where = getIntent().getIntExtra("where", -1);
-            initFragment();
-            initUser();
+            if (where == 1) {
+                init("加载中", "正在加载资源...");
+                mFragmentManager = getSupportFragmentManager();
+                initFragment();
+                bottomNavigationViewListener();
+                loadDate();
+                showProgressBar();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideProgressBar();
+                        List<Fragment> list = getSupportFragmentManager().getFragments();
+                        for (int i = 0; i < list.size(); i++) {
+                            Fragment fragment = list.get(i);
+                            if (fragment instanceof MeetingRoomFragment) {
+                                ((MeetingRoomFragment) fragment).autoRefresh();
+                                break;
+                            }
+                        }
+                    }
+                }, 2500);
+            } else {
+                final List<UserAccount> accounts = LitePal.findAll(UserAccount.class);
+                if (accounts.size() == 0) {
+                    ActivityUtils.removeAllActivity(MainActivity.this, LoginActivity.class);
+                } else {
+                    init("登录中", "正在登录...");
+                    mFragmentManager = getSupportFragmentManager();
+                    initFragment();
+                    bottomNavigationViewListener();
+                    showProgressBar();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            initUser(accounts.get(0));
+                        }
+                    }, 2000);
+                }
+            }
         } else {
+            mFragmentManager = getSupportFragmentManager();
+            bottomNavigationViewListener();
             bottomFlag = savedInstanceState.getInt("bottomFlag", -1);
             mMeetingFragment = (MeetingFragment) getSupportFragmentManager().findFragmentByTag(
                     "meeting");
@@ -117,66 +154,66 @@ public class MainActivity extends AppCompatActivity {
         PollUtils.startPoll(this, RemindMeetingStartService.class, 10);
     }
 
-    private void init() {
+    private void init(String s1, String s2) {
         if (snackbar == null) {
             snackbar = Snackbar.make(mBottomNavigationView, "再按一次退出", Snackbar.LENGTH_SHORT);
             snackbar.setDuration(2000);
         }
+        if (dialog == null) {
+            dialog = new ProgressDialog(this);
+            dialog.setMessage(s2);
+            dialog.setTitle(s1);
+            dialog.setCancelable(false);
+        }
     }
 
-    private void initUser() {
-        List<UserAccount> accounts = LitePal.findAll(UserAccount.class);
-        if (where == 1) {
-            loadDate();
-        } else if (accounts.size() != 0) {
-            UserAccount account = accounts.get(0);
-            dialog = new ProgressDialog(this);
-            dialog.setMessage("正在登录...");
-            dialog.setTitle("登录中");
-            dialog.setCancelable(false);
-            OkHttpClient okHttpClient = new OkHttpClient();
-            FormBody.Builder body = new FormBody.Builder();
-            body.add(Api.LoginBody[0], account.getPhone());
-            body.add(Api.LoginBody[1], account.getPassword());
-            Request request = new Request.Builder()
-                    .url(Api.LoginApi)
-                    .post(body.build())
-                    .header(Api.LoginHeader[0], Api.LoginHeader[1])
-                    .build();
-            showProgressBar();
-            okHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    hideProgressBar();
-                    showToast("连接登录失败,请重新登录");
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
+    private void initUser(UserAccount account) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        FormBody.Builder body = new FormBody.Builder();
+        body.add(Api.LoginBody[0], account.getPhone());
+        body.add(Api.LoginBody[1], account.getPassword());
+        Request request = new Request.Builder()
+                .url(Api.LoginApi)
+                .post(body.build())
+                .header(Api.LoginHeader[0], Api.LoginHeader[1])
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                hideProgressBar();
+                showToast("连接登录失败,请重新登录");
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    hideProgressBar();
-                    String message = response.body().string();
-                    loginInfo = new Gson().fromJson(message, LoginBean.class);
-                    if (loginInfo != null && loginInfo.status == 1) {
-                        showToast("密码错误,请重新登录");
-                        ActivityUtils.removeAllActivity(MainActivity.this, LoginActivity.class);
-                    } else {
-                        showToast("登录成功");
-                        UserToken userToken = new UserToken(loginInfo.msg);
-                        userToken.save();
-                        loginInfo.data.save();
-                        UserAccountUtils.setUserToken(userToken, getApplication());
-                        UserAccountUtils.setUserInfo(loginInfo.data, getApplication());
-                        loadDate();
-                        initPoll();
-                        initWebSocket();
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                hideProgressBar();
+                String message = response.body().string();
+                loginInfo = new Gson().fromJson(message, LoginBean.class);
+                if (loginInfo != null && loginInfo.status == 1) {
+                    showToast("密码错误,请重新登录");
+                    ActivityUtils.removeAllActivity(MainActivity.this, LoginActivity.class);
+                } else {
+                    showToast("登录成功");
+                    UserToken userToken = new UserToken(loginInfo.msg);
+                    UserAccountUtils.setUserToken(userToken, getApplication());
+                    UserAccountUtils.setUserInfo(loginInfo.data, getApplication());
+                    List<Fragment> list = getSupportFragmentManager().getFragments();
+                    for (int i = 0; i < list.size(); i++) {
+                        Fragment fragment = list.get(i);
+                        if (fragment instanceof MeetingRoomFragment) {
+                            ((MeetingRoomFragment) fragment).autoRefresh();
+                        }
                     }
+                    loadDate();
+                    initPoll();
+                    initWebSocket();
+                    userToken.save();
+                    loginInfo.data.save();
                 }
-            });
-        } else {
-            ActivityUtils.removeAllActivity(MainActivity.this, LoginActivity.class);
-        }
+            }
+        });
     }
 
     private void loadDate() {
@@ -192,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
         OkHttpUtils.requestHelper(request, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("Lpp", "onFailure: " + e.getMessage());
             }
 
             @Override
@@ -211,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
                     inputStream.close();
                     fileOutputStream.close();
                 } catch (Exception e) {
-                    Log.d("Lpp", "onResponse: " + e.getMessage());
                 }
             }
         });
@@ -425,6 +460,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (snackbar == null) {
+            snackbar = Snackbar.make(mBottomNavigationView, "再按一次退出", Snackbar.LENGTH_SHORT);
+            snackbar.setDuration(2000);
+        }
         long len = System.currentTimeMillis() - exitTime;
         if (len < 2000) {
             finish();

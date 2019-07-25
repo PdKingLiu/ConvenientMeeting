@@ -59,10 +59,10 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     private SmartRefreshLayout refreshLayout;
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
-
     private List<VideoMessageBean> beanList;
-
     private VideoListAdapter videoListAdapter;
+
+    private boolean isFirst = true;
 
 
     public static VideoNowFragment newInstance() {
@@ -88,8 +88,17 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            isFirst = savedInstanceState.getBoolean("isFirst", false);
+        }
         initList();
         initRecyclerAndFlush();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isFirst", isFirst);
     }
 
     private void initList() {
@@ -146,6 +155,13 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                 refresh();
             }
         });
+        if (getActivity() != null && getActivity().getApplication() != null
+                && UserAccountUtils.getUserToken(getActivity().getApplication()) != null
+                && UserAccountUtils.getUserInfo(getActivity().getApplication()) != null
+                && isFirst) {
+            refreshLayout.autoRefresh();
+            isFirst = false;
+        }
     }
 
     private void enterRoom(final int position) {

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,7 +162,6 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token过期")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
@@ -177,7 +175,6 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
                     return;
                 }
                 QueryVideoMessageBean bean = new Gson().fromJson(msg, QueryVideoMessageBean.class);
-                Log.d("Lpp", "onResponse: " + bean);
                 if (!(bean == null || bean.status != 0 || bean.data == null)) {
                     beanList.clear();
                     for (int i = 0; i < bean.data.size(); i++) {

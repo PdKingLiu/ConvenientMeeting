@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -76,7 +75,6 @@ public class LiveMeetingDetailActivity extends AppCompatActivity implements Titl
     }
 
     private void loadData() {
-        Log.d("Lpp", "liveId: " + liveId);
         Request request = new Request.Builder()
                 .header(Api.GetLiveMessageHeader[0], Api.GetLiveMessageHeader[1])
                 .addHeader("token", UserAccountUtils.getUserToken(getApplication()).getToken())
@@ -92,7 +90,6 @@ public class LiveMeetingDetailActivity extends AppCompatActivity implements Titl
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "onResponse: " + msg);
                 if (msg.contains("token")) {
                     LoginStatusUtils.stateFailure(LiveMeetingDetailActivity.this, new
                             LoginCallBack() {

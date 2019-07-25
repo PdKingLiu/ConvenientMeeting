@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,7 +124,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                 requestLoadMore();
             }
         });
-        refreshLayout.autoRefresh();
     }
 
     private void enterRoomDetails(OneMeetingRoomMessage meetingRoomMessage) {

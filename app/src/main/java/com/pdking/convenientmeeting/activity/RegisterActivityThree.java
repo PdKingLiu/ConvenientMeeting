@@ -19,7 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +37,6 @@ import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserInfo;
-import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.utils.IOUtil;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
@@ -277,12 +275,7 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             }
 
             faceSavePath2 = new Compressor(this).compressToFile(faceSavePath);
-            Log.d(TAG, "requestRegister: iconFile" + endClipFile == null ? endClipFile.length() +
-                    "" : "null" + "-" + iconFile.length());
-            Log.d(TAG, "requestRegister: faceSavePath" + faceSavePath.length() + "-" +
-                    faceSavePath2.length());
         } catch (Exception e) {
-            Log.d(TAG, "requestRegister: " + e.getMessage());
         }
 
 
@@ -319,12 +312,14 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
                 hideDialog();
                 RequestReturnBean bean = new Gson().fromJson(string, RequestReturnBean.class);
                 if (bean.status == 0) {
-                    showToast("注册成功");
+                    showToast("注册成功，请登录");
                     UserAccount account = new UserAccount(userInfo.getPhone(), userInfo
                             .getPassword());
                     LitePal.deleteAll(UserAccount.class);
                     account.save();
-                    ActivityUtils.removeAllActivity(RegisterActivityThree.this, MainActivity.class);
+                    Intent intent = new Intent(RegisterActivityThree.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 } else {
                     showToast("注册失败，该账号可能已经注册");
                 }
@@ -408,7 +403,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
         } else {
             cameraFileUri = Uri.fromFile(cameraSavePath);
         }
-        Log.d(TAG, "onClick: " + cameraFileUri);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraFileUri);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(intent, CAMERA_REQUEST);
@@ -436,7 +430,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Log.d(TAG, "onActivityResult: " + requestCode + resultCode + data);
         switch (requestCode) {
             case FACE_ACTIVITY:
                 if (data != null) {
@@ -477,7 +470,6 @@ public class RegisterActivityThree extends AppCompatActivity implements TitleVie
             case CLIP_REQUEST:
                 if (resultCode == RESULT_OK) {
                     try {
-                        Log.d(TAG, "endClipFile.length " + endClipFile.length());
                         Glide.with(this)
                                 .load(endClipFile)
                                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy

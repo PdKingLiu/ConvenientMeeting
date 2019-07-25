@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
@@ -23,13 +24,13 @@ import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
-import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
 import org.litepal.LitePal;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,7 +129,13 @@ public class LoginActivity extends AppCompatActivity {
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                startLogin();
+                showProgressBar();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startLogin();
+                    }
+                }, 2000);
                 break;
             case R.id.bt_login_register:
                 startActivity(new Intent(this, RegisterActivityOne.class));
@@ -179,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
                 .post(body.build())
                 .header(Api.LoginHeader[0], Api.LoginHeader[1])
                 .build();
-        showProgressBar();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -210,9 +216,9 @@ public class LoginActivity extends AppCompatActivity {
                     userInfo.save();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("where", 1);
                     startActivity(intent);
+                    finish();
                 }
 
             }
@@ -272,8 +278,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void changeText() {
-        if (LitePal.findAll(UserAccount.class).size() != 0) {
-            UserAccount account = LitePal.findAll(UserAccount.class).get(0);
+        List<UserAccount> list = LitePal.findAll(UserAccount.class);
+        if (list.size() != 0) {
+            UserAccount account = list.get(0);
             edPhone.setText(account.getPhone());
             edPassword.setText(account.getPassword());
         }

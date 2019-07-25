@@ -62,7 +62,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 
     private AddVideoMessageBean bean;
 
-    private boolean[] isFirst = {true, true};
+    private boolean[] isFirst = {false, true};
 
     public static VideoFragment getINSTANCE() {
         return new VideoFragment();
