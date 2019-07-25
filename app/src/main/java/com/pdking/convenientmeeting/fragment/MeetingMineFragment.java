@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,9 +126,6 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
 
     private void setLeave(MeetingMessage meetingMessage) {
         FormBody.Builder body = new FormBody.Builder();
-        Log.d("Lpp", "setLeave: " + UserAccountUtils.getUserInfo(getActivity().getApplication())
-                .getUserId() + UserAccountUtils.getUserToken(getActivity().getApplication())
-                .getToken());
         body.add(Api.LeaveBody[0], UserAccountUtils.getUserInfo(getActivity().getApplication())
                 .getUserId() + "");
         body.add(Api.LeaveBody[1], meetingMessage.meetingId + "");
@@ -149,7 +145,6 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
-                Log.d("Lpp", "msg: " + msg);
                 if (msg.contains("token过期")) {
                     LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                         @Override
@@ -306,12 +301,14 @@ public class MeetingMineFragment extends Fragment implements View.OnClickListene
     }
 
     public void autoRefresh() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                refreshLayout.autoRefresh();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.autoRefresh();
+                }
+            });
+        }
     }
 
     @Override

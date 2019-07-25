@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.ParcelableSpan;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
@@ -152,6 +151,7 @@ public class ShowFaceResultActivity extends AppCompatActivity implements TitleVi
                             btnOk.setEnabled(false);
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
 

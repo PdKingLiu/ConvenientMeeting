@@ -16,7 +16,7 @@ import com.pdking.convenientmeeting.R;
  * @author liupeidong
  * Created on 2019/5/13 21:09
  */
-public class BookRoomByRoomNameDialog extends Dialog  implements View.OnClickListener{
+public class BookRoomByRoomNameDialog extends Dialog implements View.OnClickListener {
 
     private View view;
     private EditText edRoomName;

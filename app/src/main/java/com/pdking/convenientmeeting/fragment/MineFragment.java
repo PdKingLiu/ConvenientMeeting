@@ -59,7 +59,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private String avatarUrl;
 
     public static MineFragment getINSTANCE() {
-        return  new MineFragment();
+        return new MineFragment();
     }
 
     @Nullable

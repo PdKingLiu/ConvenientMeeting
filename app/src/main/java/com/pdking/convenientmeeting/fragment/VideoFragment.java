@@ -4,6 +4,7 @@ package com.pdking.convenientmeeting.fragment;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -61,12 +62,27 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 
     private AddVideoMessageBean bean;
 
-    private boolean[] isFirst = {false, true};
+    private boolean[] isFirst = {true, true};
 
     public static VideoFragment getINSTANCE() {
         return new VideoFragment();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isFirst1", isFirst[0]);
+        outState.putBoolean("isFirst2", isFirst[1]);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            isFirst[0] = savedInstanceState.getBoolean("isFirst1");
+            isFirst[1] = savedInstanceState.getBoolean("isFirst2");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

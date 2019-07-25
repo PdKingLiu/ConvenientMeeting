@@ -12,6 +12,7 @@
         <mapping class="com.pdking.convenientmeeting.db.OneMeetingRoomMessage"></mapping>
         <mapping class="com.pdking.convenientmeeting.db.RoomOfMeetingMessage"></mapping>
         <mapping class="com.pdking.convenientmeeting.db.MeetingMessage"></mapping>
+        <mapping class="com.pdking.convenientmeeting.db.VideoMessageBean"></mapping>
     </list>
 
 </litepal>

@@ -40,17 +40,15 @@ import okhttp3.Response;
 public class ScanMeetingMemberListActivity extends AppCompatActivity implements TitleView
         .LeftClickListener {
 
-    private String meetingId;
-    private String masterId;
-    private List<MeetingByIdMessage.MemberStatusBean> list;
-
     @BindView(R.id.title)
     TitleView title;
     @BindView(R.id.srl_flush)
     SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.rv_member_list)
     RecyclerView recyclerView;
-
+    private String meetingId;
+    private String masterId;
+    private List<MeetingByIdMessage.MemberStatusBean> list;
     private MeetingMemberAdapter adapter;
 
     @Override
@@ -102,12 +100,13 @@ public class ScanMeetingMemberListActivity extends AppCompatActivity implements 
                 if (msg.contains("token过期!")) {
                     LoginStatusUtils.stateFailure(ScanMeetingMemberListActivity.this, new
                             LoginCallBack() {
-                        @Override
-                        public void newMessageCallBack(UserInfo newInfo, UserToken newToken) {
-                            UserAccountUtils.setUserInfo(newInfo, getApplication());
-                            UserAccountUtils.setUserToken(newToken, getApplication());
-                        }
-                    });
+                                @Override
+                                public void newMessageCallBack(UserInfo newInfo,
+                                                               UserToken newToken) {
+                                    UserAccountUtils.setUserInfo(newInfo, getApplication());
+                                    UserAccountUtils.setUserToken(newToken, getApplication());
+                                }
+                            });
                     smartRefreshLayout.finishRefresh(false);
                     return;
                 }

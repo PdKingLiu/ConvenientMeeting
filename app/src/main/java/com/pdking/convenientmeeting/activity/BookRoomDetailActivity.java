@@ -381,7 +381,8 @@ public class BookRoomDetailActivity extends AppCompatActivity implements TitleVi
                     intent.putExtra("dateLen", len);
                     setResult(RESULT_OK, intent);
                     saveFlag = true;
-                    Intent intent1 = new Intent(BookRoomDetailActivity.this, MeetingDetailsActivity.class);
+                    Intent intent1 = new Intent(BookRoomDetailActivity.this,
+                            MeetingDetailsActivity.class);
                     intent1.putExtra("meetingId", String.valueOf(bean.data.meetingId));
                     startActivity(intent1);
                     finish();

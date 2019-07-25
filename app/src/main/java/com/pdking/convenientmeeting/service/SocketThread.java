@@ -9,13 +9,10 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MainActivity;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
-
-import java.io.IOException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -35,30 +32,20 @@ public class SocketThread extends Thread {
     private static final long HEART_BEAT_RATE = 15 * 1000;//每隔15秒进行一次对长连接的心跳检测
     private static String WEBSOCKET_HOST_AND_PORT = "ws://www.shidongxuan" +
             ".top:8080/smartMeeting_Web/socket/";//可替换为自己的主机名和端口号
+    private static int i = 0;
     private WebSocket mWebSocket;
     private Handler mHandler = new Handler();
-
     private long sendTime = 0L;
-
-    private static int i = 0;
-
     private Application application;
 
     private Notification notification;
 
     private NotificationManager manager;
-
-    public SocketThread(Application application) {
-        this.application = application;
-        manager = (NotificationManager) application.getSystemService(NOTIFICATION_SERVICE);
-    }
-
     private Runnable heartBeatRunnable = new Runnable() {
         @Override
         public void run() {
             if (System.currentTimeMillis() - sendTime >= HEART_BEAT_RATE) {
                 boolean isSuccess = mWebSocket.send("测试");//发送一个空消息给服务器，通过发送消息的成功失败来判断长连接的连接状态
-                Log.d(TAG, "run: isSuccess" + isSuccess);
                 if (!isSuccess) {//长连接已断开
                     mHandler.removeCallbacks(heartBeatRunnable);
                     mWebSocket.cancel();//取消掉以前的长连接
@@ -71,13 +58,17 @@ public class SocketThread extends Thread {
             mHandler.postDelayed(this, HEART_BEAT_RATE);//每隔一定的时间，对长连接进行一次心跳检测
         }
     };
+    private String TAG = "Lpp";
+
+    public SocketThread(Application application) {
+        this.application = application;
+        manager = (NotificationManager) application.getSystemService(NOTIFICATION_SERVICE);
+    }
 
     @Override
     public void run() {
         initSocket();
     }
-
-    private String TAG = "Lpp";
 
     private void initSocket() {
         if (application != null) {
@@ -90,45 +81,29 @@ public class SocketThread extends Thread {
                     @Override
                     public void onOpen(WebSocket webSocket, Response response) {
                         mWebSocket = webSocket;
-                        try {
-                            Log.d(TAG, "onOpen: " + response.body().string());
-                        } catch (IOException e) {
-                            Log.d(TAG, "IOException: ");
-                            e.printStackTrace();
-                        }
-                        Log.d(TAG, "onOpen: 2");
                     }
 
                     @Override
                     public void onMessage(WebSocket webSocket, String text) {
                         showNotification(text);
-                        Log.d(TAG, "onMessage: " + text);
                     }
 
                     @Override
                     public void onMessage(WebSocket webSocket, ByteString bytes) {
-                        Log.d(TAG, "onMessage: " + bytes.toString());
+                        this.onMessage(webSocket, bytes.toString());
                     }
 
                     @Override
                     public void onClosing(WebSocket webSocket, int code, String reason) {
-                        Log.d(TAG, "onClosing: ");
                     }
 
                     @Override
                     public void onClosed(WebSocket webSocket, int code, String reason) {
-                        Log.d(TAG, "onClosed: ");
                     }
 
                     @Override
                     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response
                             response) {
-                        Log.d(TAG, "onFailure: " + t.getMessage());
-                        try {
-                            Log.d(TAG, "onFailure: " + response.body().string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                     }
                 });
                 client.dispatcher().executorService().shutdown();

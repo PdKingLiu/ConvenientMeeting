@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +65,14 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
     }
 
     public void autoRefresh() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                refreshLayout.autoRefresh();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.autoRefresh();
+                }
+            });
+        }
     }
 
     @Override
@@ -146,7 +147,7 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
                 MeetingMessageBean bean = new Gson().fromJson(msg, MeetingMessageBean.class);
                 if (bean != null && bean.status == 0) {
                     for (MeetingMessage message : bean.data) {
-                        message.meetingType = 1;
+                        message.meetingType = 2;
                     }
                     refreshLayout.finishRefresh(true);
                     beanList.clear();
@@ -167,7 +168,6 @@ public class MeetingHistoryFragment extends Fragment implements View.OnClickList
                             return (int) (date2.getTime() - date.getTime());
                         }
                     });
-                    Log.d("Lpp", "onResponse: " + beanList.size());
                     LitePal.deleteAll(MeetingMessage.class, "meetingType = ?", "2");
                     LitePal.saveAll(beanList);
                     notifyDataChanged();

@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -14,9 +13,8 @@ import com.pdking.convenientmeeting.R;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private Button btnEnter;
-
     CountDownTimer timer;
+    private Button btnEnter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

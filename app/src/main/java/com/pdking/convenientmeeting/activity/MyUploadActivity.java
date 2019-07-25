@@ -46,17 +46,16 @@ import okhttp3.Response;
 public class MyUploadActivity extends AppCompatActivity implements FileAdapter
         .OnItemClickListener, OnRefreshListener {
 
-    private FileAdapter adapter;
-    private FileDataListBean fileDataListBean;
-    private List<FileData> fileList;
-    private ProgressDialog dialog;
-
     @BindView(R.id.title)
     TitleView titleView;
     @BindView(R.id.rl_file_list)
     RecyclerView recyclerView;
     @BindView(R.id.srl_flush)
     SmartRefreshLayout smartRefreshLayout;
+    private FileAdapter adapter;
+    private FileDataListBean fileDataListBean;
+    private List<FileData> fileList;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

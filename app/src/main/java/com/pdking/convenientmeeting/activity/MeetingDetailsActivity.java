@@ -402,6 +402,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                 UIUtils.showToast(MeetingDetailsActivity.this, "网络错误");
                 return;
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();

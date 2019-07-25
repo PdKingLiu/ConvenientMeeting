@@ -11,11 +11,10 @@ import javax.crypto.IllegalBlockSizeException;
  * Created on 2019/5/13 20:55
  */
 public class DesUtil {
+    public static DesUtil talker = new DesUtil("Muss es sein?Es muss sein!");
     private static String defaultSecretKey = "default_secret_key"; //默认密钥
     private Cipher encryptCipher = null; //加密器
     private Cipher decryptCipher = null; //解密器
-
-    public static DesUtil talker = new DesUtil("Muss es sein?Es muss sein!");
 
     public DesUtil() throws Exception {
         this(defaultSecretKey);
@@ -35,38 +34,6 @@ public class DesUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 加密 (逻辑: 1. 将要加密的字符串转换为字节数组(byte array)<br/>
-     *            2. 将第一步的字节数组作为输入使用加密器(Cipher)的doFinal方法进行加密, 返回字节数组<br/>
-     *            3. 把加密后的字节数组转换成十六进制的字符串)<br/>
-     * @param strIn 要加密的字符串
-     * @return 返回加密后的十六进制字符串
-     * @throws Exception
-     */
-    public String encrypt(String strIn) throws BadPaddingException, IllegalBlockSizeException {
-        return byteArr2HexStr(encrypt(strIn.getBytes()));
-    }
-
-    public byte[] encrypt(byte[] arrB) throws BadPaddingException, IllegalBlockSizeException {
-        return encryptCipher.doFinal(arrB);
-    }
-
-    /**
-     * 解密 (逻辑: 1. 把加密后的十六进制字符串转换成字节数组(byte array)<br/>
-     *            2. 将第一步的字节数组作为输入使用加密器(Cipher)的doFinal方法进行解密, 返回字节数组(byte array)<br/>
-     *            3. 把解密后的字节数组转换成字符串)<br/>
-     * @param strIn
-     * @return
-     * @throws Exception
-     */
-    public String decrypt(String strIn) throws BadPaddingException, IllegalBlockSizeException {
-        return new String(decrypt(hexStr2ByteArr(strIn)));
-    }
-
-    public byte[] decrypt(byte[] arrB) throws BadPaddingException, IllegalBlockSizeException {
-        return decryptCipher.doFinal(arrB);
     }
 
     public static String byteArr2HexStr(byte[] arrB) {
@@ -98,6 +65,40 @@ public class DesUtil {
             arrOut[i / 2] = (byte) Integer.parseInt(strTmp, 16);
         }
         return arrOut;
+    }
+
+    /**
+     * 加密 (逻辑: 1. 将要加密的字符串转换为字节数组(byte array)<br/>
+     * 2. 将第一步的字节数组作为输入使用加密器(Cipher)的doFinal方法进行加密, 返回字节数组<br/>
+     * 3. 把加密后的字节数组转换成十六进制的字符串)<br/>
+     *
+     * @param strIn 要加密的字符串
+     * @return 返回加密后的十六进制字符串
+     * @throws Exception
+     */
+    public String encrypt(String strIn) throws BadPaddingException, IllegalBlockSizeException {
+        return byteArr2HexStr(encrypt(strIn.getBytes()));
+    }
+
+    public byte[] encrypt(byte[] arrB) throws BadPaddingException, IllegalBlockSizeException {
+        return encryptCipher.doFinal(arrB);
+    }
+
+    /**
+     * 解密 (逻辑: 1. 把加密后的十六进制字符串转换成字节数组(byte array)<br/>
+     * 2. 将第一步的字节数组作为输入使用加密器(Cipher)的doFinal方法进行解密, 返回字节数组(byte array)<br/>
+     * 3. 把解密后的字节数组转换成字符串)<br/>
+     *
+     * @param strIn
+     * @return
+     * @throws Exception
+     */
+    public String decrypt(String strIn) throws BadPaddingException, IllegalBlockSizeException {
+        return new String(decrypt(hexStr2ByteArr(strIn)));
+    }
+
+    public byte[] decrypt(byte[] arrB) throws BadPaddingException, IllegalBlockSizeException {
+        return decryptCipher.doFinal(arrB);
     }
 
     private Key getKey(byte[] arrBTmp) {

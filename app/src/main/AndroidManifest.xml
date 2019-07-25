@@ -32,7 +32,6 @@
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.FinishAllActivityActivity"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

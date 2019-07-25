@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MainActivity;
@@ -39,7 +38,6 @@ public class RemindMeetingStartService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d("Lpp", "run: " + Thread.currentThread());
                 long now = System.currentTimeMillis();
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new
                         SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -56,7 +54,6 @@ public class RemindMeetingStartService extends Service {
                                     && (startTime - now) / 1000 / 60 > 0
                                     && message.isPoll == -1) {
                                 message.isPoll = 1;
-                                Log.d("Lpp", "showNotification");
                                 showNotification("您有一个会议即将开始，请及时参加会议：" + message.meetingName,
                                         message);
                             }

@@ -82,23 +82,55 @@ public class MeetingFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isFirst1", isFirst[0]);
+        outState.putBoolean("isFirst2", isFirst[1]);
+        outState.putBoolean("isFirst3", isFirst[2]);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            isFirst[0] = savedInstanceState.getBoolean("isFirst1");
+            isFirst[1] = savedInstanceState.getBoolean("isFirst2");
+            isFirst[2] = savedInstanceState.getBoolean("isFirst3");
+        }
     }
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        fragmentList = new ArrayList<>();
+        if (savedInstanceState == null) {
+            fragmentList.add(MeetingMineFragment.newInstance());
+            fragmentList.add(MeetingRoomFragment.newInstance());
+            fragmentList.add(MeetingHistoryFragment.newInstance());
+        } else {
+            List<Fragment> list = getFragmentManager().getFragments();
+            for (int j = 0; j < list.size(); j++) {
+                if (list.get(j) instanceof MeetingMineFragment) {
+                    fragmentList.add(list.get(j));
+                }
+            }
+            for (int j = 0; j < list.size(); j++) {
+                if (list.get(j) instanceof MeetingRoomFragment) {
+                    fragmentList.add(list.get(j));
+                }
+            }
+            for (int j = 0; j < list.size(); j++) {
+                if (list.get(j) instanceof MeetingHistoryFragment) {
+                    fragmentList.add(list.get(j));
+                }
+            }
+        }
         initMenu();
         initPagerAndTabLayout();
     }
 
     private void initPagerAndTabLayout() {
-        fragmentList = new ArrayList<>();
-        fragmentList.add(MeetingMineFragment.newInstance());
-        fragmentList.add(MeetingRoomFragment.newInstance());
-        fragmentList.add(MeetingHistoryFragment.newInstance());
         pagerAdapter = new FragmentPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getItem(int i) {

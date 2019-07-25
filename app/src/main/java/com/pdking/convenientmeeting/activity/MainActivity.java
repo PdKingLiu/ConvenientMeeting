@@ -19,18 +19,17 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserToken;
 import com.pdking.convenientmeeting.fragment.MeetingFragment;
-import com.pdking.convenientmeeting.fragment.MeetingRoomFragment;
 import com.pdking.convenientmeeting.fragment.MineFragment;
 import com.pdking.convenientmeeting.fragment.RecordFragment;
 import com.pdking.convenientmeeting.fragment.VideoFragment;
 import com.pdking.convenientmeeting.service.RemindMeetingStartService;
 import com.pdking.convenientmeeting.service.VoteRemindService;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
 import com.pdking.convenientmeeting.utils.PollUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
@@ -56,9 +55,10 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     final private int UPDATE_USER_DATA = 1;
+
     @BindView(R.id.bnv)
     BottomNavigationView mBottomNavigationView;
-    private String TAG = "Lpp";
+
     private int bottomFlag = -1;
 
     private FragmentManager mFragmentManager;
@@ -89,12 +89,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.layout_main);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
-        where = getIntent().getIntExtra("where", -1);
-        mFragmentManager = getSupportFragmentManager();
         bottomNavigationViewListener();
+        mFragmentManager = getSupportFragmentManager();
         init();
-        initFragment();
-        initUser();
+        if (savedInstanceState == null) {
+            where = getIntent().getIntExtra("where", -1);
+            initFragment();
+            initUser();
+        } else {
+            bottomFlag = savedInstanceState.getInt("bottomFlag", -1);
+            mMeetingFragment = (MeetingFragment) getSupportFragmentManager().findFragmentByTag(
+                    "meeting");
+            mVideoFragment = (VideoFragment) getSupportFragmentManager().findFragmentByTag("video");
+            mRecordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(
+                    "record");
+            mMineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag("mine");
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("bottomFlag", bottomFlag);
     }
 
     private void initPoll() {
@@ -102,8 +118,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        snackbar = Snackbar.make(mBottomNavigationView, "再按一次退出", Snackbar.LENGTH_SHORT);
-        snackbar.setDuration(2000);
+        if (snackbar == null) {
+            snackbar = Snackbar.make(mBottomNavigationView, "再按一次退出", Snackbar.LENGTH_SHORT);
+            snackbar.setDuration(2000);
+        }
     }
 
     private void initUser() {
@@ -168,13 +186,6 @@ public class MainActivity extends AppCompatActivity {
         }
         iconFile = new File(file, "user_icon_clip_"
                 + UserAccountUtils.getUserInfo(getApplication()).getPhone() + ".jpg");
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof MeetingRoomFragment) {
-                Log.d(TAG, "autoRefresh: ");
-                ((MeetingRoomFragment) fragment).autoRefresh();
-            }
-        }
         Request request = new Request.Builder()
                 .url(UserAccountUtils.getUserInfo(getApplication()).avatarUrl)
                 .build();
@@ -189,14 +200,11 @@ public class MainActivity extends AppCompatActivity {
                 InputStream inputStream = null;
                 byte[] bytes = new byte[1024];
                 FileOutputStream fileOutputStream = null;
-                long current = 0;
                 int len;
                 try {
-                    long total = response.body().contentLength();
                     inputStream = response.body().byteStream();
                     fileOutputStream = new FileOutputStream(iconFile);
                     while ((len = inputStream.read(bytes)) != -1) {
-                        current += len;
                         fileOutputStream.write(bytes, 0, len);
                     }
                     fileOutputStream.flush();
@@ -288,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
     private void initFragment() {
         mMeetingFragment = MeetingFragment.getINSTANCE();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.add(R.id.fl_main, mMeetingFragment);
+        mFragmentTransaction.add(R.id.fl_main, mMeetingFragment, "meeting");
         bottomFlag = R.id.bnv_meet;
         mFragmentTransaction.commit();
     }
@@ -300,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bnv_meet:
                 if (mMeetingFragment == null) {
                     mMeetingFragment = MeetingFragment.getINSTANCE();
-                    fragmentTransaction.add(R.id.fl_main, mMeetingFragment);
+                    fragmentTransaction.add(R.id.fl_main, mMeetingFragment, "meeting");
                 } else {
                     fragmentTransaction.show(mMeetingFragment);
                 }
@@ -308,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bnv_video:
                 if (mVideoFragment == null) {
                     mVideoFragment = VideoFragment.getINSTANCE();
-                    fragmentTransaction.add(R.id.fl_main, mVideoFragment);
+                    fragmentTransaction.add(R.id.fl_main, mVideoFragment, "video");
                 } else {
                     fragmentTransaction.show(mVideoFragment);
                 }
@@ -316,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bnv_record:
                 if (mRecordFragment == null) {
                     mRecordFragment = RecordFragment.getINSTANCE();
-                    fragmentTransaction.add(R.id.fl_main, mRecordFragment);
+                    fragmentTransaction.add(R.id.fl_main, mRecordFragment, "record");
                 } else {
                     fragmentTransaction.show(mRecordFragment);
                 }
@@ -324,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bnv_mine:
                 if (mMineFragment == null) {
                     mMineFragment = MineFragment.getINSTANCE();
-                    fragmentTransaction.add(R.id.fl_main, mMineFragment);
+                    fragmentTransaction.add(R.id.fl_main, mMineFragment, "mine");
                 } else {
                     fragmentTransaction.show(mMineFragment);
                 }

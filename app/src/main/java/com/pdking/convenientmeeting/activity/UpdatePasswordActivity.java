@@ -15,11 +15,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.RequestReturnBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.weight.TitleView;
 
@@ -135,7 +135,8 @@ public class UpdatePasswordActivity extends AppCompatActivity {
                 RequestReturnBean bean = new Gson().fromJson(msg, RequestReturnBean.class);
                 if (bean.status == 0) {
                     showToast("修改成功");
-                    ActivityUtils.removeAllActivity(UpdatePasswordActivity.this, LoginActivity.class);
+                    ActivityUtils.removeAllActivity(UpdatePasswordActivity.this,
+                            LoginActivity.class);
                 } else {
                     showToast("修改失败，密码有误");
                 }

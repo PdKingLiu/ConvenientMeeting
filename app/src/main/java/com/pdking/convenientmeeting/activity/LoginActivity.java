@@ -18,12 +18,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.LoginBean;
 import com.pdking.convenientmeeting.db.UserAccount;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.utils.ActivityUtils;
 import com.pdking.convenientmeeting.utils.SystemUtil;
 import com.pdking.convenientmeeting.utils.UserAccountUtils;
 
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
     private String[] permissicns = new
             String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission
             .CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission
-            .WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO};
+            .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +88,13 @@ public class LoginActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == 1 && grantResults.length > 0) {
-            boolean[] flag = {false, false, false, false,false};
+            boolean[] flag = {false, false, false, false, false};
             for (int i = 0; i < grantResults.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     flag[i] = true;
                 }
             }
-            if (!(flag[0] && flag[1] && flag[2] && flag[3]&& flag[4])) {
+            if (!(flag[0] && flag[1] && flag[2] && flag[3] && flag[4])) {
                 dia = new AlertDialog.Builder(this)
                         .setTitle("警告")
                         .setMessage("拒绝权限软件将无法使用")
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityUtils.removeAllActivity(LoginActivity.this);
+                                finish();
                             }
                         })
                         .create();
@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public boolean checkPermission() {
-        boolean[] flag = {false, false, false, false,false};
+        boolean[] flag = {false, false, false, false, false};
         for (int i = 0; i < permissicns.length; i++) {
             if (ContextCompat.checkSelfPermission(this, permissicns[i])
                     != PackageManager.PERMISSION_GRANTED) {
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                 flag[i] = true;
             }
         }
-        return flag[0] && flag[1] && flag[2] && flag[3]&& flag[4];
+        return flag[0] && flag[1] && flag[2] && flag[3] && flag[4];
     }
 
     @OnClick({R.id.bt_login_register, R.id.bt_login_find_password, R.id.btn_login})

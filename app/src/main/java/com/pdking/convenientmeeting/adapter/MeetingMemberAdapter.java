@@ -44,7 +44,7 @@ public class MeetingMemberAdapter extends RecyclerView.Adapter<MeetingMemberAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.setData(list.get(i),i);
+        viewHolder.setData(list.get(i), i);
     }
 
     @Override

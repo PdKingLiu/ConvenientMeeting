@@ -22,6 +22,7 @@ import com.pdking.convenientmeeting.common.Api;
 import com.pdking.convenientmeeting.db.QueryVideoMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.db.VideoMessageBean;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
 import com.pdking.convenientmeeting.utils.LoginStatusUtils;
 import com.pdking.convenientmeeting.utils.OkHttpUtils;
@@ -31,8 +32,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.litepal.LitePal;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -51,7 +53,7 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
 
-    private List<QueryVideoMessageBean.DataBean> beanList;
+    private List<VideoMessageBean> beanList;
 
     private VideoListAdapter videoListAdapter;
 
@@ -83,7 +85,7 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
     }
 
     private void initList() {
-        beanList = new ArrayList<>();
+        beanList = LitePal.where("kind = ?", "2").find(VideoMessageBean.class);
         if (beanList.size() == 0) {
             rlHaveNothing.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -103,12 +105,14 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
     }
 
     public void autoRefresh() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                refreshLayout.autoRefresh();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.autoRefresh();
+                }
+            });
+        }
     }
 
     private void initRecyclerAndFlush() {
@@ -175,16 +179,19 @@ public class VideoHistoryFragment extends Fragment implements View.OnClickListen
                     beanList.clear();
                     for (int i = 0; i < bean.data.size(); i++) {
                         if (bean.data.get(i).status != 1) {
+                            bean.data.get(i).kind = 2;
                             beanList.add(bean.data.get(i));
                         }
                     }
-                    Collections.sort(beanList, new Comparator<QueryVideoMessageBean.DataBean>() {
+                    Collections.sort(beanList, new Comparator<VideoMessageBean>() {
                         @Override
-                        public int compare(QueryVideoMessageBean.DataBean o1,
-                                           QueryVideoMessageBean.DataBean o2) {
+                        public int compare(VideoMessageBean o1,
+                                           VideoMessageBean o2) {
                             return (int) (o2.startTime - o1.startTime);
                         }
                     });
+                    LitePal.deleteAll(VideoMessageBean.class, "kind = ?", "2");
+                    LitePal.saveAll(beanList);
                     notifyDataChanged();
                     refreshLayout.finishRefresh(true);
                 } else {

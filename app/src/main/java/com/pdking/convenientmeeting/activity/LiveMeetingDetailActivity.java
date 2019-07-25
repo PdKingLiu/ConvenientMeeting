@@ -39,8 +39,6 @@ import okhttp3.Response;
 public class LiveMeetingDetailActivity extends AppCompatActivity implements TitleView
         .LeftClickListener {
 
-    private String liveId;
-
     @BindView(R.id.tv_live_name)
     TextView tvName;
     @BindView(R.id.tv_member_count)
@@ -51,10 +49,9 @@ public class LiveMeetingDetailActivity extends AppCompatActivity implements Titl
     TextView tvEndTime;
     @BindView(R.id.rv_member_list)
     RecyclerView recyclerView;
-
     @BindView(R.id.title)
     TitleView title;
-
+    private String liveId;
     private LiveMemberAdapter adapter;
     private List<LiveDetailBean.DataBean.MeetingMembersBean> list;
     private LiveDetailBean bean;

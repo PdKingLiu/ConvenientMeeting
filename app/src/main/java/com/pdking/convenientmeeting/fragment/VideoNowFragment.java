@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import com.pdking.convenientmeeting.db.EnterLiveVideoBean;
 import com.pdking.convenientmeeting.db.QueryVideoMessageBean;
 import com.pdking.convenientmeeting.db.UserInfo;
 import com.pdking.convenientmeeting.db.UserToken;
+import com.pdking.convenientmeeting.db.VideoMessageBean;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
 import com.pdking.convenientmeeting.livemeeting.openlive.ui.LiveRoomActivity;
 import com.pdking.convenientmeeting.utils.LoginCallBack;
@@ -37,8 +37,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.litepal.LitePal;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -59,7 +60,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlHaveNothing;
     private RecyclerView recyclerView;
 
-    private List<QueryVideoMessageBean.DataBean> beanList;
+    private List<VideoMessageBean> beanList;
 
     private VideoListAdapter videoListAdapter;
 
@@ -89,11 +90,10 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
         initList();
         initRecyclerAndFlush();
-        refreshLayout.autoRefresh();
     }
 
     private void initList() {
-        beanList = new ArrayList<>();
+        beanList = LitePal.where("kind = ?", "1").find(VideoMessageBean.class);
         if (beanList.size() == 0) {
             rlHaveNothing.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -113,12 +113,14 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     }
 
     public void autoRefresh() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                refreshLayout.autoRefresh();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.autoRefresh();
+                }
+            });
+        }
     }
 
     private void initRecyclerAndFlush() {
@@ -161,16 +163,13 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
     }
 
     private void enterRoom(String password, int position) {
-        final QueryVideoMessageBean.DataBean bean = beanList.get(position);
+        final VideoMessageBean bean = beanList.get(position);
         if (bean.status == 1) {
             FormBody.Builder body = new FormBody.Builder();
             body.add(Api.EnterLiveRoomBody[0], String.valueOf(bean.id));
             body.add(Api.EnterLiveRoomBody[1], String.valueOf(UserAccountUtils.getUserInfo
                     (getActivity().getApplication()).userId));
             body.add(Api.EnterLiveRoomBody[2], password);
-            Log.d("Lpp", "enterRoom: " + String.valueOf(bean.id) + String.valueOf
-                    (UserAccountUtils.getUserInfo
-                            (getActivity().getApplication()).userId) + password);
             Request request = new Request.Builder()
                     .post(body.build())
                     .url(Api.EnterLiveRoomApi)
@@ -187,7 +186,6 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String msg = response.body().string();
-                    Log.d("Lpp", "进入房间: " + msg);
                     if (msg.contains("token")) {
                         LoginStatusUtils.stateFailure(getActivity(), new LoginCallBack() {
                             @Override
@@ -208,7 +206,7 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                             } else if (msg.contains("错误")) {
                                 UIUtils.showToast(getActivity(), "密码错误");
                             } else {
-                                UIUtils.showToast(getActivity(),"未知错误");
+                                UIUtils.showToast(getActivity(), "未知错误");
                             }
                         } else {
                             enterRoomActivity(bean.id);
@@ -267,16 +265,19 @@ public class VideoNowFragment extends Fragment implements View.OnClickListener {
                     beanList.clear();
                     for (int i = 0; i < bean.data.size(); i++) {
                         if (bean.data.get(i).status == 1) {
+                            bean.data.get(i).kind = 1;
                             beanList.add(bean.data.get(i));
                         }
                     }
-                    Collections.sort(beanList, new Comparator<QueryVideoMessageBean.DataBean>() {
+                    Collections.sort(beanList, new Comparator<VideoMessageBean>() {
                         @Override
-                        public int compare(QueryVideoMessageBean.DataBean o1,
-                                           QueryVideoMessageBean.DataBean o2) {
+                        public int compare(VideoMessageBean o1,
+                                           VideoMessageBean o2) {
                             return (int) (o2.startTime - o1.startTime);
                         }
                     });
+                    LitePal.deleteAll(VideoMessageBean.class, "kind = ?", "1");
+                    LitePal.saveAll(beanList);
                     notifyDataChanged();
                     refreshLayout.finishRefresh(true);
                 } else {

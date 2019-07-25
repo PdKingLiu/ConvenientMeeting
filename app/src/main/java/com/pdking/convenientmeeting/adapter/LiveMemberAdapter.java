@@ -32,6 +32,23 @@ public class LiveMemberAdapter extends RecyclerView.Adapter<LiveMemberAdapter.Vi
         this.list = list;
     }
 
+    @NonNull
+    @Override
+    public LiveMemberAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
+                .item_live_member, viewGroup, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull LiveMemberAdapter.ViewHolder viewHolder, int i) {
+        viewHolder.setData(list.get(i), i);
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView circleImageView;
@@ -54,22 +71,5 @@ public class LiveMemberAdapter extends RecyclerView.Adapter<LiveMemberAdapter.Vi
                 viewLine.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    @NonNull
-    @Override
-    public LiveMemberAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
-                .item_live_member, viewGroup, false));
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull LiveMemberAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.setData(list.get(i),i);
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
     }
 }

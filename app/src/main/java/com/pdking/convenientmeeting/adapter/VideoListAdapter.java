@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pdking.convenientmeeting.R;
-import com.pdking.convenientmeeting.db.QueryVideoMessageBean;
+import com.pdking.convenientmeeting.db.VideoMessageBean;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,13 +24,13 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
     private OnItemClickListener listener;
 
-    private List<QueryVideoMessageBean.DataBean> beanList;
+    private List<VideoMessageBean> beanList;
 
     private Context mContext;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    public VideoListAdapter(List<QueryVideoMessageBean.DataBean> beanList, Context mContext) {
+    public VideoListAdapter(List<VideoMessageBean> beanList, Context mContext) {
         this.beanList = beanList;
         this.mContext = mContext;
     }
@@ -61,6 +61,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
         }
     }
 
+    public void setListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         View view;
         View viewLine;
@@ -79,7 +83,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             viewLine = itemView.findViewById(R.id.view_line);
         }
 
-        public void setData(QueryVideoMessageBean.DataBean dataBean, int i) {
+        public void setData(VideoMessageBean dataBean, int i) {
             view.setTag(i);
             tvName.setText(dataBean.liveName);
             if (dataBean.status == 1) {
@@ -97,9 +101,5 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                 viewLine.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    public void setListener(OnItemClickListener listener) {
-        this.listener = listener;
     }
 }

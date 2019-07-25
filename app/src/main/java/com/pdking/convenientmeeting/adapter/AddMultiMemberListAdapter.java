@@ -48,6 +48,10 @@ public class AddMultiMemberListAdapter extends RecyclerView.Adapter<AddMultiMemb
         return beanList.size();
     }
 
+    public List<AllUserBean.DataBean> getCheckedList() {
+        return checkedList;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements CompoundButton
             .OnCheckedChangeListener {
 
@@ -82,9 +86,5 @@ public class AddMultiMemberListAdapter extends RecyclerView.Adapter<AddMultiMemb
                 }
             }
         }
-    }
-
-    public List<AllUserBean.DataBean> getCheckedList() {
-        return checkedList;
     }
 }

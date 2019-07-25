@@ -125,6 +125,7 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                 requestLoadMore();
             }
         });
+        refreshLayout.autoRefresh();
     }
 
     private void enterRoomDetails(OneMeetingRoomMessage meetingRoomMessage) {
@@ -143,7 +144,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
             public void onFailure(Call call, IOException e) {
                 hideProgressBar();
                 showToast("加载失败，请重新尝试");
-                Log.d("Lpp", "加载失败: " + e.getMessage());
             }
 
             @Override
@@ -167,7 +167,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     if (meetingRoomMessageBean.data != null && meetingRoomMessageBean.data
                             .recentlyMeetings != null) {
                         allMeetingList = meetingRoomMessageBean.data.recentlyMeetings;
-                        Log.d("Lpp", "onResponse: MeetingRoomFragment" + allMeetingList);
                         LitePal.deleteAll(RoomOfMeetingMessage.class);
                         LitePal.saveAll(allMeetingList);
                         Intent intent = new Intent(getContext(), MeetingRoomDetailsActivity.class);
@@ -241,7 +240,6 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
                     refreshLayout.finishRefresh(true);
                     roomMessageList.clear();
                     roomMessageList.addAll(roomMessageBean.data);
-                    Log.d("Lpp", "onResponse: " + roomMessageList.size());
                     LitePal.deleteAll(OneMeetingRoomMessage.class);
                     LitePal.saveAll(roomMessageList);
                     notifyDataChanged();
@@ -283,12 +281,14 @@ public class MeetingRoomFragment extends Fragment implements View.OnClickListene
     }
 
     public void autoRefresh() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                refreshLayout.autoRefresh();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.autoRefresh();
+                }
+            });
+        }
     }
 
 
