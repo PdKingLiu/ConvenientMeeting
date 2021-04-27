@@ -1,13 +1,14 @@
 package com.pdking.convenientmeeting.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.MeetingMessage;
@@ -29,10 +30,10 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
     Calendar calendar = Calendar.getInstance();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private List<MeetingMessage> meetingBeanList;
-    private Activity activity;
+    private AppCompatActivity activity;
     private OnItemClickListener mListener;
 
-    public MeetingHistoryAdapter(List<MeetingMessage> meetingBeanList, Activity activity) {
+    public MeetingHistoryAdapter(List<MeetingMessage> meetingBeanList, AppCompatActivity activity) {
         this.meetingBeanList = meetingBeanList;
         this.activity = activity;
     }

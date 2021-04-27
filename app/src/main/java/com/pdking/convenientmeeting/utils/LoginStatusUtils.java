@@ -1,9 +1,9 @@
 package com.pdking.convenientmeeting.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.activity.LoginActivity;
@@ -64,7 +64,7 @@ public class LoginStatusUtils {
 
     private static void againLogin(final Activity activity, final LoginCallBack
             callBack) {
-        progress = new ProgressDialog(activity);
+        progress = new AlertDialog.Builder(activity).create();
         progress.setMessage("正在登录...");
         progress.setTitle("登录中");
         progress.setCancelable(false);

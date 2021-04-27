@@ -2,9 +2,10 @@ package com.pdking.convenientmeeting.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.utils.ActivityUtils;

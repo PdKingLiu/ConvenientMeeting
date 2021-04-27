@@ -43,7 +43,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@mipmap/open_light" />
+                app:srcCompat="@mipmap/open_light" />
 
             <TextView
                 android:id="@+id/tv_open_light"

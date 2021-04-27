@@ -3,15 +3,16 @@ package com.pdking.convenientmeeting.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -37,7 +38,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static android.app.Activity.RESULT_OK;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 /**
  * @author liupeidong
@@ -179,7 +180,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private void loadUserData() {
         if (iconFile.exists()) {
-            Glide.with(this)
+            Glide.with(this.getContext())
                     .load(iconFile)
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
                             .NONE).skipMemoryCache(true))
@@ -218,7 +219,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             });
-            Glide.with(this)
+            Glide.with(getContext())
                     .load(iconFile)
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
                             .NONE).skipMemoryCache(true))

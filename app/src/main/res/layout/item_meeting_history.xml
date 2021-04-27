@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -54,7 +55,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/history_meeting_people_sum" />
+            app:srcCompat="@mipmap/history_meeting_people_sum" />
 
         <TextView
             android:id="@+id/tv_people_number"
@@ -71,7 +72,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
-            android:src="@mipmap/history_meeting_status" />
+            app:srcCompat="@mipmap/history_meeting_status" />
 
         <TextView
             android:id="@+id/tv_user_status"
@@ -99,7 +100,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/history_meeting_place" />
+            app:srcCompat="@mipmap/history_meeting_place" />
 
         <TextView
             android:id="@+id/tv_place"
@@ -117,7 +118,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
-            android:src="@mipmap/history_meeting_time_sum" />
+            app:srcCompat="@mipmap/history_meeting_time_sum" />
 
         <TextView
             android:id="@+id/tv_meeting_time_length"
@@ -146,7 +147,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/history_meeting_master" />
+            app:srcCompat="@mipmap/history_meeting_master" />
 
         <TextView
             android:id="@+id/tv_meeting_master"
@@ -163,7 +164,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
-            android:src="@mipmap/history_meeting_date" />
+            app:srcCompat="@mipmap/history_meeting_date" />
 
         <TextView
             android:id="@+id/tv_meeting_date"
@@ -189,7 +190,7 @@
             android:layout_width="16dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/history_meeting_time" />
+            app:srcCompat="@mipmap/history_meeting_time" />
 
         <TextView
             android:id="@+id/tv_meeting_time"
@@ -216,7 +217,7 @@
             android:layout_width="17dp"
             android:layout_height="18dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/history_meeting_content" />
+            app:srcCompat="@mipmap/history_meeting_content" />
 
         <TextView
             android:id="@+id/tv_meeting_introduce"

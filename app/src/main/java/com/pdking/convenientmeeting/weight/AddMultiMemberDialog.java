@@ -2,14 +2,15 @@ package com.pdking.convenientmeeting.weight;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.adapter.AddMultiMemberListAdapter;

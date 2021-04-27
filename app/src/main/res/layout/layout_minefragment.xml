@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -47,7 +47,7 @@
                         android:layout_height="25dp"
                         android:layout_centerInParent="true"
                         android:focusable="false"
-                        android:src="@mipmap/icon_mine_mine" />
+                        app:srcCompat="@mipmap/icon_mine_mine" />
 
                 </RelativeLayout>
 
@@ -96,7 +96,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
-                        android:src="@mipmap/icon_mine_no_authentication" />
+                        app:srcCompat="@mipmap/icon_mine_no_authentication" />
 
                 </LinearLayout>
 
@@ -119,7 +119,7 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="15dp"
-                        android:src="@mipmap/icon_mine_upload" />
+                        app:srcCompat="@mipmap/icon_mine_upload" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </RelativeLayout>
 
@@ -158,7 +158,7 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="15dp"
-                        android:src="@mipmap/icon_meeting_setting" />
+                        app:srcCompat="@mipmap/icon_meeting_setting" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -176,7 +176,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </RelativeLayout>
 
@@ -197,7 +197,7 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="15dp"
-                        android:src="@mipmap/icon_app_setting" />
+                        app:srcCompat="@mipmap/icon_app_setting" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -215,7 +215,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </RelativeLayout>
 
@@ -236,7 +236,7 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="15dp"
-                        android:src="@mipmap/icon_about_app" />
+                        app:srcCompat="@mipmap/icon_about_app" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -254,14 +254,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 </LinearLayout>

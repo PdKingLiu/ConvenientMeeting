@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -39,7 +40,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/meeting_message" />
+            app:srcCompat="@mipmap/meeting_message" />
 
         <TextView
             android:id="@+id/tv_video_status"
@@ -70,7 +71,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/icon_query_master" />
+            app:srcCompat="@mipmap/icon_query_master" />
 
         <TextView
             android:id="@+id/tv_video_peoples"
@@ -98,7 +99,7 @@
             android:layout_width="17dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/icon_query_time" />
+            app:srcCompat="@mipmap/icon_query_time" />
 
         <TextView
             android:id="@+id/tv_video_time"

@@ -50,7 +50,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_right_gray" />
+                app:srcCompat="@mipmap/icon_right_gray" />
 
         </RelativeLayout>
 
@@ -82,7 +82,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_right_gray" />
+                app:srcCompat="@mipmap/icon_right_gray" />
 
         </RelativeLayout>
 
@@ -115,7 +115,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_right_gray" />
+                app:srcCompat="@mipmap/icon_right_gray" />
 
         </RelativeLayout>
     </LinearLayout>

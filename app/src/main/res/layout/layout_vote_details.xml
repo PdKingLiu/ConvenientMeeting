@@ -303,7 +303,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -374,7 +374,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -445,7 +445,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -516,7 +516,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -586,7 +586,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -619,7 +619,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -652,7 +652,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -685,7 +685,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -718,7 +718,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -752,7 +752,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@mipmap/icon_right_icon"
+                                app:srcCompat="@mipmap/icon_right_icon"
                                 android:visibility="invisible" />
 
                             <TextView

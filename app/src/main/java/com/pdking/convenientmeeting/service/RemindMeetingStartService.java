@@ -8,7 +8,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.activity.MainActivity;

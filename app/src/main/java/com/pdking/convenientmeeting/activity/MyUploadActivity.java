@@ -1,14 +1,15 @@
 package com.pdking.convenientmeeting.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.pdking.convenientmeeting.R;
@@ -55,7 +56,7 @@ public class MyUploadActivity extends AppCompatActivity implements FileAdapter
     private FileAdapter adapter;
     private FileDataListBean fileDataListBean;
     private List<FileData> fileList;
-    private ProgressDialog dialog;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MyUploadActivity extends AppCompatActivity implements FileAdapter
         setContentView(R.layout.layout_my_upload);
         SystemUtil.setTitleMode(getWindow());
         ButterKnife.bind(this);
-        dialog = new ProgressDialog(this);
+        dialog = new AlertDialog.Builder(this).create();
         titleView.setLeftClickListener(new TitleView.LeftClickListener() {
             @Override
             public void OnLeftButtonClick() {

@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
@@ -68,7 +69,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static android.app.Activity.RESULT_OK;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 /**
  * @author liupeidong
@@ -438,7 +439,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private void loadUserData() {
         if (iconFile.exists()) {
-            Glide.with(this)
+            Glide.with(getContext())
                     .load(iconFile)
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy
                             .NONE).skipMemoryCache(true))

@@ -29,13 +29,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.appcompat.widget.RecyclerView
             android:id="@+id/rv_absence"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#f8f8f8">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.appcompat.widget.RecyclerView>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

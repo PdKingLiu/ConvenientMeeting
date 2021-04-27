@@ -169,7 +169,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
-                            android:src="@mipmap/icon_vote_delete_item" />
+                            app:srcCompat="@mipmap/icon_vote_delete_item" />
 
                         <EditText
                             android:id="@+id/ed_choose_3"
@@ -220,7 +220,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
-                            android:src="@mipmap/icon_vote_delete_item" />
+                            app:srcCompat="@mipmap/icon_vote_delete_item" />
 
                         <EditText
                             android:id="@+id/ed_choose_4"
@@ -271,7 +271,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
-                            android:src="@mipmap/icon_vote_delete_item" />
+                            app:srcCompat="@mipmap/icon_vote_delete_item" />
 
                         <EditText
                             android:id="@+id/ed_choose_5"
@@ -319,7 +319,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
-                            android:src="@mipmap/icon_vote_add_item" />
+                            app:srcCompat="@mipmap/icon_vote_add_item" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -373,7 +373,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </LinearLayout>
 
@@ -412,7 +412,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </LinearLayout>
 
@@ -452,7 +452,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/icon_right_gray" />
+                    app:srcCompat="@mipmap/icon_right_gray" />
 
             </LinearLayout>
 

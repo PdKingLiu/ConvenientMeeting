@@ -44,7 +44,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/item_sum" />
+                    app:srcCompat="@mipmap/item_sum" />
 
                 <TextView
                     android:id="@+id/tv_people_sum"
@@ -67,7 +67,7 @@
                     android:id="@+id/iv_recent_meeting"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/icon_recent_meeting_sum" />
+                    app:srcCompat="@mipmap/icon_recent_meeting_sum" />
 
                 <TextView
                     android:id="@+id/tv_recent_meeting_sum"

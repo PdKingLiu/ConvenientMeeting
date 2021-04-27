@@ -1,8 +1,9 @@
 package com.pdking.convenientmeeting.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 /**
  * @author liupeidong

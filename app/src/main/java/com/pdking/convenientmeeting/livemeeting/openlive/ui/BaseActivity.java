@@ -6,11 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -18,9 +13,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.pdking.convenientmeeting.App;
-import com.pdking.convenientmeeting.BuildConfig;
-import com.pdking.convenientmeeting.livemeeting.common.Constant;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.AGEventHandler;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.EngineConfig;
@@ -212,10 +210,6 @@ public abstract class BaseActivity extends AppCompatActivity implements AGEventH
     }
 
     protected void initVersionInfo() {
-        String version = "V " + BuildConfig.VERSION_NAME + "(Build: " + BuildConfig.VERSION_CODE
-                + ", " + ConstantApp.APP_BUILD_DATE + ", SDK: " + Constant.MEDIA_SDK_VERSION + ")";
-//        TextView textVersion = (TextView) findViewById(R.id.app_version);
-//        textVersion.setText(version);
     }
 
 

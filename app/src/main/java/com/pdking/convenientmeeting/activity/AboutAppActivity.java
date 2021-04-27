@@ -1,7 +1,8 @@
 package com.pdking.convenientmeeting.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.utils.SystemUtil;

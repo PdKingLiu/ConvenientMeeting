@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -36,7 +37,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/meeting_message" />
+            app:srcCompat="@mipmap/meeting_message" />
 
         <TextView
             android:id="@+id/tv_meeting_message"
@@ -66,7 +67,7 @@
             android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/meeting_status" />
+            app:srcCompat="@mipmap/meeting_status" />
 
         <TextView
             android:id="@+id/tv_meeting_status"
@@ -83,7 +84,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
-            android:src="@mipmap/meeting_time" />
+            app:srcCompat="@mipmap/meeting_time" />
 
         <TextView
             android:id="@+id/tv_meeting_time"

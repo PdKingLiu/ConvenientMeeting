@@ -103,7 +103,7 @@
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center_horizontal"
-                                android:src="@mipmap/icon_file_white" />
+                                app:srcCompat="@mipmap/icon_file_white" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -131,7 +131,7 @@
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center_horizontal"
-                                android:src="@mipmap/icon_meeting_share" />
+                                app:srcCompat="@mipmap/icon_meeting_share" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center_horizontal"
-                                android:src="@mipmap/icon_meeting_note" />
+                                app:srcCompat="@mipmap/icon_meeting_note" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center_horizontal"
-                                android:src="@mipmap/icon_meeting_vote" />
+                                app:srcCompat="@mipmap/icon_meeting_vote" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -335,7 +335,7 @@
                         android:layout_gravity="right|top"
                         android:layout_marginRight="20dp"
                         android:layout_marginTop="5dp"
-                        android:src="@mipmap/icon_more_member" />
+                        app:srcCompat="@mipmap/icon_more_member" />
 
                 </FrameLayout>
 

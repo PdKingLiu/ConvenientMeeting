@@ -3,7 +3,6 @@ package com.pdking.convenientmeeting.livemeeting.openlive.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -13,6 +12,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;

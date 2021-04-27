@@ -31,13 +31,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.appcompat.widget.RecyclerView
             android:id="@+id/rl_vote_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#efefef">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.appcompat.widget.RecyclerView>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

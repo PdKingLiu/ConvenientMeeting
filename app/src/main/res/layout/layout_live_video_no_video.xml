@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_gradient_title">
@@ -15,13 +16,13 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:src="@mipmap/app_icon" />
+            app:srcCompat="@mipmap/app_icon" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:src="@mipmap/icon_welcome_1" />
+            app:srcCompat="@mipmap/icon_welcome_1" />
 
         <TextView
             android:layout_width="wrap_content"

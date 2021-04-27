@@ -1,13 +1,14 @@
 package com.pdking.convenientmeeting.adapter;
 
-import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.db.FileData;
@@ -23,11 +24,11 @@ import java.util.List;
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> implements View
         .OnClickListener {
 
-    private Activity activity;
+    private AppCompatActivity activity;
     private List<FileData> dataList;
     private OnItemClickListener mListener;
 
-    public FileAdapter(Activity activity, List<FileData> dataList) {
+    public FileAdapter(AppCompatActivity activity, List<FileData> dataList) {
         this.activity = activity;
         this.dataList = dataList;
     }

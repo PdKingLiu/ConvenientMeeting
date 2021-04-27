@@ -25,7 +25,7 @@
         android:visibility="gone" />
 
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_data_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -193,6 +193,6 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

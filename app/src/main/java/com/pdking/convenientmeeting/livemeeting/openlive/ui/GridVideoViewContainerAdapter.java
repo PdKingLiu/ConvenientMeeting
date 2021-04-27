@@ -1,8 +1,6 @@
 package com.pdking.convenientmeeting.livemeeting.openlive.ui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,6 +10,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.pdking.convenientmeeting.R;
 import com.pdking.convenientmeeting.livemeeting.openlive.model.ConstantApp;
@@ -37,7 +38,7 @@ public class GridVideoViewContainerAdapter extends RecyclerView.Adapter<Recycler
 
     public GridVideoViewContainerAdapter(Context context, int localUid, HashMap<Integer, SurfaceView> uids, VideoViewEventListener listener) {
         mContext = context;
-        mInflater = ((Activity) context).getLayoutInflater();
+        mInflater = ((AppCompatActivity) context).getLayoutInflater();
 
         mListener = listener;
 

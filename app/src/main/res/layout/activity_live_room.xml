@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -103,28 +104,28 @@
                     android:layout_height="54dp"
                     android:onClick="onShowHideClicked"
                     android:padding="14dp"
-                    android:src="@drawable/btn_hide" />
+                    app:srcCompat="@drawable/btn_hide" />
 
                 <ImageView
                     android:id="@+id/btn_1"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:padding="14dp"
-                    android:src="@drawable/btn_request_broadcast" />
+                    app:srcCompat="@drawable/btn_request_broadcast" />
 
                 <ImageView
                     android:id="@+id/btn_3"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:padding="14dp"
-                    android:src="@drawable/btn_mute" />
+                    app:srcCompat="@drawable/btn_mute" />
 
                 <ImageView
                     android:id="@+id/btn_2"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:padding="14dp"
-                    android:src="@drawable/btn_switch_camera" />
+                    app:srcCompat="@drawable/btn_switch_camera" />
 
                 <View
                     android:layout_width="0dp"
@@ -137,7 +138,7 @@
                     android:layout_height="54dp"
                     android:onClick="onBtn4Clicked"
                     android:padding="14dp"
-                    android:src="@drawable/btn_beautification" />
+                    app:srcCompat="@drawable/btn_beautification" />
             </com.pdking.convenientmeeting.livemeeting.ui.AGLinearLayout>
 
         </LinearLayout>
